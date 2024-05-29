@@ -21,21 +21,6 @@ export const RegisForm = () => {
     
         try {
             
-            const resUserExists = await fetch("api/check-user", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-                body: JSON.stringify({ email }),
-            });
-            
-            const { user } = await resUserExists.json();
-                
-            if (user) {
-                setError(`Email "${email}" already used by another user.`);
-                return;
-            }
-            
             const res = await fetch("api/register", {
                 method: "POST",
                 headers: {
@@ -48,13 +33,13 @@ export const RegisForm = () => {
                 }),
             });
     
+            const regisRes = await res.json()            
             if (res.ok) {
                 const form = e.target as HTMLFormElement;
-                form.reset();
-                console.log(res)
+                form.reset();                
                 router.push("/");
-            } else {
-                console.log("User registration failed.");
+            } else {                                
+                setError(regisRes.message);
             }
         } catch (error) {
             console.log("Error during registration: ", error);

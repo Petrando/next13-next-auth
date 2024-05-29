@@ -3,18 +3,30 @@ import { NextResponse, NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
 
 export async function POST(req:NextRequest) {
-    try {
-        const { name, email, password } = await req.json();
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const client = await clientPromise;
-        const db = client.db("test");
-        await db.collection("users").insertOne({ name, email, password: hashedPassword });        
+    const { name, email, password } = await req.json();
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const client = await clientPromise;
 
-        return NextResponse.json({ message: "User Registered." }, { status: 201 });
+    const session = client.startSession();
+    try {
+        session.startTransaction()
+        const users = client.db("test").collection("users");
+        const user = await users.findOne({ email })
+        
+        if(user){
+            throw `Email ${email} sudah terdaftar`
+        }
+        await users.insertOne({ name, email, password: hashedPassword });        
+        await session.commitTransaction()
+
+        return NextResponse.json({ message: "Pengguna berhasil terdaftar." }, { status: 201 });
     } catch (error) {
+        await session.abortTransaction()        
         return NextResponse.json(
-            { message: "An error occurred while registering the user." },
+            { message: error === `Email ${email} sudah terdaftar`?error:"Kesalahan sewaktu mendaftar." },
             { status: 500 }
         );
+    }finally {
+        await session.endSession();
     }
 }
