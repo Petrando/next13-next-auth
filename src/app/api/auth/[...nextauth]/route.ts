@@ -1,16 +1,17 @@
-import { connectMongoDB } from "@/lib/mongodb";
-import User from "@/models/user";
-import NextAuth, { NextAuthOptions } from "next-auth";
+import { Db, WithId, Document } from "mongodb";
+import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import clientPromise from "@/lib/mongodb";
 
-// Define the shape of credentials
-interface Credentials {
+interface User {
+    _id: string;
     email: string;
     password: string;
+    name: string;
 }
 
-export const authOptions: NextAuthOptions = {
+export const authOptions: AuthOptions = {
     providers: [
         CredentialsProvider({
             name: "credentials",
@@ -19,15 +20,18 @@ export const authOptions: NextAuthOptions = {
                 if (!credentials) {
                     throw new Error("Invalid credentials");
                 }
-                const { email, password } = credentials as Credentials;
+                const { email, password } = credentials as { email: string, password: string };
 
                 try {
-                    await connectMongoDB();
-                    const user = await User.findOne({ email });
+                    const client = await clientPromise;
+                    const db: Db = client.db("test");
+                    const userDoc: WithId<Document> | null = await db.collection("users").findOne({ email });
 
-                    if (!user) {
+                    if (!userDoc) {
                         return null;
                     }
+
+                    const user = userDoc as unknown as User
 
                     const passwordsMatch = await bcrypt.compare(password, user.password);
 
@@ -39,7 +43,7 @@ export const authOptions: NextAuthOptions = {
                     return {
                         id: user._id,
                         email: user.email,
-                        name: user.name
+                        name: user.name,
                     };
                 } catch (error) {
                     console.error("Error: ", error);

@@ -28,9 +28,9 @@ export const RegisForm = () => {
             },
                 body: JSON.stringify({ email }),
             });
-    
+            
             const { user } = await resUserExists.json();
-    
+                
             if (user) {
                 setError(`Email "${email}" already used by another user.`);
                 return;
