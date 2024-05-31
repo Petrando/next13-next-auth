@@ -24,7 +24,7 @@ export const authOptions: AuthOptions = {
 
                 try {
                     const client = await clientPromise;
-                    const db: Db = client.db("test");
+                    const db: Db = client.db("charity-org");
                     const userDoc: WithId<Document> | null = await db.collection("users").findOne({ email });
 
                     if (!userDoc) {

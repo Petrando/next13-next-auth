@@ -10,7 +10,7 @@ export async function POST(req:NextRequest) {
     const session = client.startSession();
     try {
         session.startTransaction()
-        const users = client.db("test").collection("users");
+        const users = client.db("charity-org").collection("users");
         const user = await users.findOne({ email })
         
         if(user){
@@ -18,7 +18,7 @@ export async function POST(req:NextRequest) {
         }
         await users.insertOne({ name, email, password: hashedPassword });        
         await session.commitTransaction()
-
+        
         return NextResponse.json({ message: "Pengguna berhasil terdaftar." }, { status: 201 });
     } catch (error) {
         await session.abortTransaction()        
