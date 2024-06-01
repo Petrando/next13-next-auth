@@ -1,7 +1,8 @@
 "use client"
 import { useState, FormEvent } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation";
+import { Link } from "@nextui-org/react";
+import {Button} from '@nextui-org/button';
 
 export const RegisForm = () => {
     const [name, setName] = useState("");
@@ -67,16 +68,16 @@ export const RegisForm = () => {
                     type="password"
                     placeholder="Password"
                 />
-                <button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2">
+                <Button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2">
                     Register
-                </button>
+                </Button>
                 {error && (
                     <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
                     {error}
                     </div>
                 )}
 
-                <Link className="text-sm mt-3 text-right" href={"#"}>
+                <Link className="text-sm mt-3 text-right" href={"/"}>
                     Already have an account? <span className="underline">Login</span>
                 </Link>
                 </form>

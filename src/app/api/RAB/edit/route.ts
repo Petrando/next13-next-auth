@@ -47,18 +47,29 @@ export async function PUT(req:NextRequest) {
         
         //if recipients has new items, insert the new items into 'items' collection
         //and update main data accordingly
-        recipientsWithNewItems.forEach(async (d:any)=>{
-            const myNewItems = d.items.filter((di:any) => !di._id)
+        if(recipientsWithNewItems.length > 0){
+            //first process all recipients who has new item(s)
+            recipientsWithNewItems.forEach(async (d:any)=>{
+                const myNewItems = d.items.filter((di:any) => !di._id)
+                //get all new items and insert them into 'items' collection
+                const {insertedIds} = await items.insertMany(myNewItems)
+                
+                //update the new items with newly inserted _id(s)
+                for(let i = 0; i < myNewItems.length; i++){
+                    const myNewItem = myNewItems[i]
+                    const itemIdx = d.items.findIndex((d:any)=> d.name === myNewItem.name && d.productName === myNewItem.productName && d.category === myNewItem.category && d.subCategory === myNewItem.subCategory)
+    
+                    d.items[itemIdx]._id = insertedIds[i]
+                }
 
-            const {insertedIds} = await items.insertMany(myNewItems)
-
-            for(let i = 0; i < myNewItems.length; i++){
-                const myNewItem = myNewItems[i]
-                const itemIdx = d.items.findIndex((d:any)=> d.name === myNewItem.name && d.productName === myNewItem.productName && d.category === myNewItem.category && d.subCategory === myNewItem.subCategory)
-
-                d.items[itemIdx]._id = insertedIds[i]
-            }
-        })
+                //then update the main recipients data
+                if(Array.isArray(recipients)){
+                    const recipientsIdx = recipients.findIndex((dr:any)=> dr.nik === d.nik)
+                    recipients[recipientsIdx].items = d.items
+                }                
+            })            
+        }
+        
         await RAB.updateOne({_id}, { title, date, category, recipients })
         await session.commitTransaction()
 

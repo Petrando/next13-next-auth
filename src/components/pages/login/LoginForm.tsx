@@ -1,10 +1,12 @@
 "use client"
 
 import { FormEvent } from "react";
-import Link from "next/link";
+//import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Link } from "@nextui-org/react";
+import { Button } from '@nextui-org/button';
 
 export const LoginForm = () => {
     
@@ -29,7 +31,8 @@ export const LoginForm = () => {
                 return;
             }
 
-            router.replace("dashboard");
+            console.log(res)
+            router.replace("RAB");
         } catch (error) {
             console.log(error);
         }
@@ -50,18 +53,24 @@ export const LoginForm = () => {
                     type="password"
                     placeholder="Password"
                 />
-                <button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2">
+                <Button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2"
+                    type="submit"
+                >
                     Login
-                </button>
+                </Button>
                 {error && (
                     <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
                     {error}
                     </div>
                 )}
-
-                <Link className="text-sm mt-3 text-right" href={"/register"}>
-                    Don{`'`}t have an account? <span className="underline">Register</span>
-                </Link>
+                {
+                    /*
+                    <Link className="text-sm mt-3 text-right" href={"/register"}>
+                        Don{`'`}t have an account? <span className="underline">Register</span>
+                    </Link>
+                    */
+                }
+                
                 </form>
             </div>
         </div>
