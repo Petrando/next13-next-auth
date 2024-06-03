@@ -22,6 +22,15 @@ export async function POST(req:NextRequest) {
         return acc
     }, [])    
 
+    const items = recipients.map((d:any)=>d.items).flat()
+    const newItems = items.reduce((acc:any[], curr:any)=>{
+        const newItemIdx = acc.findIndex((d:any)=>d.name === curr.name && d.productName === curr.productName && d.category === curr.category && d.subCategory === curr.subCategory)
+        if(newItemIdx === -1){
+            acc.push(curr)
+        }
+        return acc
+    }, [])    
+
     const session = client.startSession()  
         
     try {
@@ -33,51 +42,45 @@ export async function POST(req:NextRequest) {
 
         //if threre are new recipients, insert those new recipients into 'recipients' collection
         //and update main data
-        
-        const newRecipientsIds = await recipientsColl.insertMany(newRecipients)
-        /*{
-            acknowledged: true,
-            insertedCount: 2,
-            insertedIds: {
-                '0': new ObjectId('66587d119608933e96031e1b'),
-                '1': new ObjectId('66587d119608933e96031e1c')
-            }
-        }*/        
-        const {insertedIds} = newRecipientsIds
-
-        for(let i = 0; i<newRecipients.length - 1; i++){
-            //newRecipients[i]._id = insertedIds[i]
-            if(Array.isArray(recipients)){
-                const recipientsIdx = recipients.findIndex((d:any) => d.nik === newRecipients[i].nik)
-
-                recipients[recipientsIdx]._id = insertedIds[i]
-            }                
-        } 
-        
-        //if recipients has new items, insert the new items into 'items' collection
-        //and update main data accordingly
-        if(recipientsWithNewItems.length > 0){
-            //first process all recipients who has new item(s)
-            recipientsWithNewItems.forEach(async (d:any)=>{
-                const myNewItems = d.items.filter((di:any) => !di._id)
-                //get all new items and insert them into 'items' collection
-                const {insertedIds} = await itemsColl.insertMany(myNewItems)
-                
-                //update the new items with newly inserted _id(s)
-                for(let i = 0; i < myNewItems.length; i++){
-                    const myNewItem = myNewItems[i]
-                    const itemIdx = d.items.findIndex((d:any)=> d.name === myNewItem.name && d.productName === myNewItem.productName && d.category === myNewItem.category && d.subCategory === myNewItem.subCategory)
-    
-                    d.items[itemIdx]._id = insertedIds[i]
+        if(newRecipients.length > 0){
+            const newRecipientsIds = await recipientsColl.insertMany(newRecipients)
+            /*{
+                acknowledged: true,
+                insertedCount: 2,
+                insertedIds: {
+                    '0': new ObjectId('66587d119608933e96031e1b'),
+                    '1': new ObjectId('66587d119608933e96031e1c')
                 }
+            }*/        
+            const {insertedIds} = newRecipientsIds
 
-                //then update the main recipients data
+            for(let i = 0; i<newRecipients.length - 1; i++){
+                //newRecipients[i]._id = insertedIds[i]
                 if(Array.isArray(recipients)){
-                    const recipientsIdx = recipients.findIndex((dr:any)=> dr.nik === d.nik)
-                    recipients[recipientsIdx].items = d.items
+                    const recipientsIdx = recipients.findIndex((d:any) => d.nik === newRecipients[i].nik)
+
+                    recipients[recipientsIdx]._id = insertedIds[i]
                 }                
-            })            
+            } 
+        }        
+        
+        if(newItems.length > 0){
+            const newInsertedItems = await itemsColl.insertMany(newItems)
+            const {insertedIds} = newInsertedItems
+
+            newItems.forEach((d:any, i: number) => {
+                d._id = insertedIds[i]
+            })
         }
+
+        recipients.forEach((r:any)=>{
+            r.items.forEach((item:any)=>{
+                if(!item._id){
+                    const {_id} = newItems.find((newItem:any)=> newItem.name === item.name && newItem.productName === item.productName && newItem.category === item.category && newItem.subCategory === item.subCategory)
+                    item._id = _id
+                }
+            })
+        })
         
         //after dealing with new recipients and new items, just simply insert the new RAB data
         await RABColl.insertOne({title, date, category, recipients})        
