@@ -1,21 +1,24 @@
 import React, { useEffect, useState, FC } from "react";
+const _ = require("lodash")
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,  
         Input, Link, DatePicker, Divider } from "@nextui-org/react";
 import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
 import { emptyPerson, emptyOrderedItem } from "@/variables-and-constants";
+import { PersonRecipientWItems } from "@/types";
 
 type TRecipientForm = {
     show: boolean;
     hideForm: ()=>void;
+    submit: (recipient:PersonRecipientWItems)=>void;
 }
 
-export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm }) => {
-    const [recipient, setRecipient] = useState(emptyPerson)
+export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) => {
+    const [recipient, setRecipient] = useState(_.cloneDeep(emptyPerson))
     const [rt, setRt ] = useState("")
     const [rw, setRw ] = useState("")
-    const [item, setItem] = useState(emptyOrderedItem)
-    const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+    
+    const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();    
 
     useEffect(()=>{
         if(show){
@@ -263,7 +266,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm }) => {
                     */}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onPress={hideForm}>
+                    <Button color="primary" onPress={()=>{submit(recipient)}}>
                         Tambahkan
                     </Button>
                     <Button color="danger" variant="flat" onPress={()=>{hideForm()}}>

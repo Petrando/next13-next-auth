@@ -68,7 +68,9 @@ export const RegisForm = () => {
                     type="password"
                     placeholder="Password"
                 />
-                <Button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2">
+                <Button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2"
+                    type="submit"
+                >
                     Register
                 </Button>
                 {error && (

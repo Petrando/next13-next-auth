@@ -1,10 +1,11 @@
+const _ = require("lodash")
 import { PersonRecipientWItems, Item } from "@/types";
 
 export const cloner = (obj:any) => {
     return JSON.parse(JSON.stringify(obj))
 }
 
-export const emptyOrderedItem:Item & {unit:number}  = cloner({
+export const emptyOrderedItem:Item & {unit:number}  = _.cloneDeep({
     name:"",
     productName:"",
     category:"", 
@@ -13,7 +14,7 @@ export const emptyOrderedItem:Item & {unit:number}  = cloner({
     unit: 0
 })
 
-export const emptyPerson:PersonRecipientWItems = {
+export const emptyPerson:PersonRecipientWItems = _.cloneDeep({
     name: '',
     birthdata:{
         birthplace: '',
@@ -32,6 +33,6 @@ export const emptyPerson:PersonRecipientWItems = {
         postCode:''
     },
     contact:[{type:'cellphone', address:''}],
-    items:[emptyOrderedItem]
-}
+    items:[_.cloneDeep(emptyOrderedItem)]
+})
 
