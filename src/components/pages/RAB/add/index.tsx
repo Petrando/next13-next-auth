@@ -34,7 +34,7 @@ export const AddRAB = () => {
             },
             contact:[{type:'cellphone', address:''}],
             items:[]
-        }*/
+        }
         {
             "name": "Hj Nurlela",
             "birthdata": {
@@ -104,7 +104,7 @@ export const AddRAB = () => {
                     "unit": 1
                 }
             ]
-        }
+        }*/
     ])
     const [isAddRecipient, setIsAddRecipient] = useState(false)
     const [recipientOption, setRecptOption] = useState<Set<string>>(new Set(["old"]))

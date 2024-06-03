@@ -42,3 +42,11 @@ export interface Item {
 export interface PersonRecipientWItems extends PersonRecipient{
     items: (Item & {unit:number})[];
 }
+
+export interface IRAB {
+    _id?:string;
+    date: Date;
+    title: string;
+    recipients: PersonRecipientWItems[];
+    category: string;
+}

@@ -10,17 +10,7 @@ export async function POST(req:NextRequest) {
         const {items, ...rest} = d
 
         return {...rest}
-    })
-
-    const recipientsWithNewItems = Array.isArray(recipients) && recipients.reduce((acc, curr)=>{
-        const withNewItems = Array.isArray(curr.items) && curr.items.some((d:any)=>!d._id)
-
-        if(withNewItems){
-            acc.push(curr)
-        }
-
-        return acc
-    }, [])    
+    })      
 
     const items = recipients.map((d:any)=>d.items).flat()
     const newItems = items.reduce((acc:any[], curr:any)=>{
