@@ -14,8 +14,6 @@ export function Navigation() {
     //const session = getServerSession(authOptions)
     const { data: session, status } = useSession()
 
-    console.log(status)
-
     if(status === 'unauthenticated'){
         return null
     }

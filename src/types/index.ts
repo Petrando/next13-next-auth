@@ -36,9 +36,9 @@ export interface Item {
     productName?: string;
     category: string;
     subCategory: string;
-    price: string;
+    price: number;
 }
 
 export interface PersonRecipientWItems extends PersonRecipient{
-    items: Item[];
+    items: (Item & {unit:number})[];
 }

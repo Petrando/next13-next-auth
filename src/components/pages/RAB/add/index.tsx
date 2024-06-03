@@ -6,6 +6,7 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
         DatePicker, Input, RadioGroup, Radio
 
  } from "@nextui-org/react"
+import { NewRecipientForm } from "./NewRecipient"
 import { CogIcon } from "@/components/Icon"
 import { PersonRecipientWItems, Contact } from "@/types"
 
@@ -34,26 +35,26 @@ export const AddRAB = () => {
             items:[]
         }
     ])
-    const [recipientOption, setRecptOption] = useState<Set<string>>(new Set(["new"]))
-    const [selectedKeys, setSelectedKeys] = useState(new Set(["new"]));
-
+    const [isAddRecipient, setIsAddRecipient] = useState(false)
+    const [recipientOption, setRecptOption] = useState<Set<string>>(new Set(["old"]))    
+    
     return (
         <div className="flex flex-col w-screen">
-            <div className="px-1 py-2 flex items-center">
-                <div className="w-fit px-1">
+            <div className="px-0 py-2 flex items-center flex-wrap">
+                <div className="w-fit p-1">
                     <DatePicker label="Tanggal" className="max-w-[284px]" />
                 </div>
-                <div className="flex-auto px-1">
+                <div className="flex-auto p-1">
                     <Input size="lg" variant="underlined" fullWidth label="Judul RAB" value={title} onChange={e => setTitle(e.target.value)} />
                 </div>
-                <div className="w-fit flex items-center px-1">                    
-                    <Button color="primary">
+                <div className="w-full md:w-fit flex justify-end items-center p-1">                    
+                    <Button color="primary" onPress={()=>{if(!isAddRecipient){setIsAddRecipient(true)}}}>
                         + Penerima
                     </Button>
                     <Dropdown className="w-fit" >
                         <DropdownTrigger>
                             <Button 
-                                variant="bordered" 
+                                variant="bordered"                                 
                             >
                             <CogIcon />
                             </Button>
@@ -62,7 +63,10 @@ export const AddRAB = () => {
                             disallowEmptySelection
                             selectionMode="single"
                             selectedKeys={recipientOption}
-                            onSelectionChange={(keys) => setRecptOption(keys as Set<string>)}
+                            onSelectionChange={(keys) => {
+                                setRecptOption(keys as Set<string>)
+                                setIsAddRecipient(false)
+                            }}
                         >
                             <DropdownItem key="new">Penerima Baru</DropdownItem>
                             <DropdownItem key="old">Penerima Lama</DropdownItem>                            
@@ -99,6 +103,13 @@ export const AddRAB = () => {
                     
                 </TableBody>
             </Table>
+            <NewRecipientForm 
+                show={isAddRecipient && recipientOption.has("new")} 
+                hideForm={()=>{
+                    console.log('hide form')
+                    setIsAddRecipient(false)                    
+                }} 
+            />
         </div>
     )
 }
