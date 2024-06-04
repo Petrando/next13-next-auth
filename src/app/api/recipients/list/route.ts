@@ -1,7 +1,7 @@
 import clientPromise from "@/lib/mongodb";
 import { NextResponse, NextRequest } from "next/server";
 
-export async function GET(req:NextRequest) {
+export async function POST(req:NextRequest) {
     const { filter, projection, limit, offset, itemPerPage = 10 } = await req.json();    
     const client = await clientPromise;
 
@@ -9,7 +9,7 @@ export async function GET(req:NextRequest) {
     
     try {        
         const recipients = client.db("charity-org").collection("recipients");
-        const data = await recipients.find(filter, projection).skip(skip).limit(limit)
+        const data = await recipients.find(filter, projection).skip(skip).limit(limit).toArray()
                            
         return NextResponse.json({ message: "Daftar penerima bantuan.", data }, { status: 201 });
     } catch (error) {

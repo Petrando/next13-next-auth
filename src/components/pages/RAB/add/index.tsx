@@ -7,8 +7,9 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
 
  } from "@nextui-org/react"
 import { NewRecipientForm } from "./NewRecipient"
+import { AddExistingRecipients } from "./AddExistingRecipients"
 import { CogIcon } from "@/components/Icon"
-import { PersonRecipientWItems, Contact } from "@/types"
+import { PersonRecipientWItems, PersonRecipient, Contact } from "@/types"
 
 export const AddRAB = () => {
     const [date, setDate] = useState(new Date())
@@ -130,6 +131,7 @@ export const AddRAB = () => {
         } 
     }
     
+    const existingRecipients = recipients.filter((d:PersonRecipientWItems) => d._id)
     return (
         <div className="flex flex-col w-screen">
             <div className="px-0 py-2 flex items-center flex-wrap">
@@ -166,14 +168,14 @@ export const AddRAB = () => {
                     </Dropdown>
                 </div>
             </div>
-            <Table aria-label="Example static collection table">
+            <Table aria-label="Tabel Penerima Bantuan">
                 <TableHeader>
                     <TableColumn>NAMA</TableColumn>
                     <TableColumn>ALAMAT</TableColumn>
                     <TableColumn>NIK</TableColumn>
                     <TableColumn>No KK</TableColumn>
                     <TableColumn>Kontak</TableColumn>
-                    <TableColumn>Barang</TableColumn>
+                    <TableColumn>Bantuan</TableColumn>
                 </TableHeader>                
                 <TableBody>
                     {
@@ -187,7 +189,11 @@ export const AddRAB = () => {
                                     <TableCell>{Array.isArray(d.contact) && d.contact.map((c:Contact, index:number) => (
                                         <div key={index}>{c.type}: {c.address}</div>
                                     ))}</TableCell>
-                                    <TableCell>{d.items[0].name}</TableCell>
+                                    <TableCell>{d.items.length > 0?d.items[0].name:
+                                        <Button color="primary" size="sm">
+                                            + Barang
+                                        </Button>
+                                    }</TableCell>
                                 </TableRow>
                             )
                         })
@@ -226,7 +232,67 @@ export const AddRAB = () => {
                     }}
                 />
             }
-            
+            {
+                isAddRecipient && recipientOption.has("old") &&
+                <AddExistingRecipients 
+                    show={isAddRecipient && recipientOption.has("old")} 
+                    hideForm={()=>{                    
+                        setIsAddRecipient(false)                    
+                    }} 
+                    submit={(newrecipients:PersonRecipientWItems[])=>{
+                        /*const newRecipients = newrecipients.map((d:PersonRecipient)=>{
+                            const recipientWItem = {
+                                ...d,
+                                items:[]
+                            }
+
+                            return recipientWItem
+                        })*/
+                        if(existingRecipients.length === 0){
+                            const updatedRecipients = [...recipients]                    
+                            updatedRecipients.push(...newrecipients)
+                            setRecipients(updatedRecipients)
+                        }
+                        else{
+                            const existingRecipientsNiks = existingRecipients.map((d:PersonRecipientWItems) => d.ids.nik)
+                            const newrecipientsNiks = newrecipients.map((d:PersonRecipientWItems) => d.ids.nik)
+
+                            const removedNiks = existingRecipientsNiks.reduce((acc:string[], curr:string)=>{
+                                if(!newrecipientsNiks.includes(curr)){
+                                    acc.push(curr)
+                                }
+                                
+
+                                return acc
+                            }, [])
+
+                            const newRecipients = newrecipients.reduce((acc:PersonRecipientWItems[], curr:PersonRecipientWItems) => {
+                                const recipientIdx = recipients.findIndex((dRec:PersonRecipientWItems) => dRec._id === curr._id )
+
+                                if(recipientIdx === -1){
+                                    acc.push(curr)
+                                }
+                                return acc
+                            }, [])
+
+                            const updatedRecipients = recipients.reduce((acc:PersonRecipientWItems[], curr:PersonRecipientWItems) => {
+                                const recIdx = newrecipients.findIndex((dNewRec:PersonRecipientWItems) => dNewRec._id === curr._id )
+
+                                if(recIdx > -1 || !curr._id){
+                                    acc.push(curr)
+                                }
+                                return acc
+                            }, [])
+
+                            updatedRecipients.push(...newRecipients)
+                            setRecipients(updatedRecipients)
+                        }
+                        
+                        setIsAddRecipient(false) 
+                    }}
+                    existingRecipients={existingRecipients}
+                />
+            }
         </div>
     )
 }
