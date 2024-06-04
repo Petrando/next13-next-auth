@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Button } from "@nextui-org/react"
-import { IRAB } from "@/types"
+import { Button, Card, CardHeader, CardBody, CardFooter, Divider, DateInput,
+    Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
+ } from "@nextui-org/react"
+import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
+import { IRAB, PersonRecipientWItems } from "@/types"
 
 export const RABList = () => {
     const [RABs, setRABs] = useState<IRAB[]>([])
@@ -51,6 +54,55 @@ export const RABList = () => {
                     <Button color="primary">Tambah RAB</Button>
                     </Link>
                 </div>
+            </div>
+            <div className="flex flex-wrap px-1 md:px-3">
+                {RABs.length > 0 && RABs.map((d:IRAB) => {
+                    console.log(d.date, typeof d.date)
+                    return(
+                        <Card key={d._id} className="h-60 basis-full md:basis-1/2 lg:basis-1/3">
+                            <CardHeader className="flex">
+                                <h3 className="text-lg font-semibold basis-4/5 text-center">
+                                    {d.title}
+                                </h3>
+                                <DateInput 
+                                    label={"Tanggal"} 
+                                    isReadOnly
+                                    value={parseDate('1980-01-21')}  
+                                    className="basis-1/5"
+                                />
+                            </CardHeader>
+                            <Divider />
+                            <CardBody>
+                            <Table aria-label="Tabel Penerima Bantuan">
+                                <TableHeader>
+                                    <TableColumn>NAMA</TableColumn>                                    
+                                    <TableColumn>NIK</TableColumn>                                    
+                                    <TableColumn>Barang</TableColumn>
+                                </TableHeader> 
+                                <TableBody>
+                                {
+                                    d.recipients.map((dPerson:PersonRecipientWItems)=>{
+                                        return (
+                                            <TableRow key={dPerson._id?dPerson._id:dPerson.ids.nik}>
+                                                <TableCell>{dPerson.name}</TableCell>
+                                                <TableCell>{dPerson.ids.nik}</TableCell>
+                                                <TableCell>{dPerson.items[0].name}</TableCell>
+                                            </TableRow>
+                                        )
+                                    })
+                                }
+                                </TableBody>
+                            </Table>
+                            </CardBody>
+                            <Divider />
+                            <CardFooter className="flex justify-end">
+                                <Button color="primary" size="sm">
+                                    Detil RAB
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    )
+                })}
             </div>
         </div>
     )

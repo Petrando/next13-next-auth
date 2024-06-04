@@ -44,7 +44,7 @@ export interface PersonRecipientWItems extends PersonRecipient{
 }
 
 export interface IRAB {
-    _id?:string;
+    _id:string;
     date: Date;
     title: string;
     recipients: PersonRecipientWItems[];
