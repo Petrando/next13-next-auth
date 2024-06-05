@@ -109,6 +109,7 @@ export const AddRAB = () => {
     ])
     const [isAddRecipient, setIsAddRecipient] = useState(false)
     const [recipientOption, setRecptOption] = useState<Set<string>>(new Set(["old"]))
+    const [ editRecipientItem, setEditRecipientItem ] = useState<PersonRecipientWItems | null>(null)
         
     const submitData = async () => {
         try{
@@ -253,19 +254,10 @@ export const AddRAB = () => {
                             updatedRecipients.push(...newrecipients)
                             setRecipients(updatedRecipients)
                         }
-                        else{
-                            const existingRecipientsNiks = existingRecipients.map((d:PersonRecipientWItems) => d.ids.nik)
-                            const newrecipientsNiks = newrecipients.map((d:PersonRecipientWItems) => d.ids.nik)
-
-                            const removedNiks = existingRecipientsNiks.reduce((acc:string[], curr:string)=>{
-                                if(!newrecipientsNiks.includes(curr)){
-                                    acc.push(curr)
-                                }
-                                
-
-                                return acc
-                            }, [])
-
+                        else{                            
+                            //Remove members of recipients from newrecipients to create newRecipients
+                            //since existingRecipients also member of recipients, 
+                            //this will cleanse newRecipients of existingRecipients members as well
                             const newRecipients = newrecipients.reduce((acc:PersonRecipientWItems[], curr:PersonRecipientWItems) => {
                                 const recipientIdx = recipients.findIndex((dRec:PersonRecipientWItems) => dRec._id === curr._id )
 
@@ -275,6 +267,8 @@ export const AddRAB = () => {
                                 return acc
                             }, [])
 
+                            //Remove members of newrecipients from recipients to create updatedRecipients
+                            //therefore, updatedRecipients contains updated existingRecipients
                             const updatedRecipients = recipients.reduce((acc:PersonRecipientWItems[], curr:PersonRecipientWItems) => {
                                 const recIdx = newrecipients.findIndex((dNewRec:PersonRecipientWItems) => dNewRec._id === curr._id )
 
@@ -283,6 +277,12 @@ export const AddRAB = () => {
                                 }
                                 return acc
                             }, [])
+
+                            updatedRecipients.forEach((d:PersonRecipientWItems, i:number) => {
+                                const existingRecipientIdx = newrecipients.findIndex((dnewrec:PersonRecipientWItems) => dnewrec._id === d._id)
+
+
+                            })
 
                             updatedRecipients.push(...newRecipients)
                             setRecipients(updatedRecipients)

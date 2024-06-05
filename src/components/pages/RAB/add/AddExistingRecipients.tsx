@@ -92,7 +92,6 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                             <TableColumn>NIK</TableColumn>
                             <TableColumn>No KK</TableColumn>
                             <TableColumn>Kontak</TableColumn>
-                            <TableColumn>Bantuan</TableColumn>
                         </TableHeader>                
                         <TableBody>
                             {
@@ -121,18 +120,6 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                                             <TableCell>{Array.isArray(d.contact) && d.contact.map((c:Contact, index:number) => (
                                                 <div key={index}>{c.type}: {c.address}</div>
                                             ))}</TableCell>
-                                            <TableCell>
-                                                {
-                                                    items.length === 0?
-                                                        <Button color="primary" size="sm"
-                                                            onClick={()=>{if(typeof d._id === "string"){setEditItemForId(d._id)}}}
-                                                        >
-                                                            + Barang
-                                                        </Button>:
-                                                            items[0].name
-                                                }
-                                                
-                                            </TableCell>
                                         </TableRow>
                                     )
                                 })
