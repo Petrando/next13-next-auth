@@ -31,11 +31,13 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
 
     useEffect(()=>{
         if(items.length > 0){
-            const {_id} = items[0]
+            const {_id, unit} = items[0]
             if(_id && _id !== ""){
                 setSelectedId(_id)
+                setSeletedUnitAmt(unit)                
             }else{
                 setNewItem(items[0])
+                setItemType("new")
             }
             
         }else{
@@ -73,7 +75,8 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
     }, [])
 
 
-    const baseSelectedItem = itemSelection[itemSelection.findIndex((d:Item) => d._id === selectedItemId)]
+    const baseSelectedItem = itemSelection.length>0?itemSelection[itemSelection.findIndex((d:Item) => d._id === selectedItemId)]:
+        items.length > 0?items[0]:_.cloneDeep(emptyOrderedItem)
     const selectedItem = selectedItemId === ""?_.cloneDeep(emptyOrderedItem):{...baseSelectedItem, unit:selectedUnitAmt}
 
     const currentItem = itemType === "new"?newItem:selectedItem
@@ -144,7 +147,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                             variant="bordered"
                             size="sm"
                             className="basis-4/5 md:basis-5/12" 
-                            value={price.toString()}
+                            value={price?price.toString():0}
                             isReadOnly={itemType === "existing"}
                             type="number"
                             onChange={(e)=>{

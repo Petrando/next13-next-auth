@@ -2,10 +2,12 @@ import React, { useEffect, useState, FC } from "react";
 import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,
-        Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Checkbox,  
+        Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Checkbox,
+            Card, CardHeader, CardBody, CardFooter,  
             Input, DatePicker, Divider } from "@nextui-org/react";
 import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
 import { EditItem } from "../shared/AddEditItem"
+import { EditButton, DeleteButton } from "@/components/shared/Buttons";
 import { PersonRecipientWItems, PersonRecipient, Contact, Item, OrderedItem } from "@/types";
 
 type TRecipientForm = {
@@ -60,8 +62,7 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
     }, [show])            
 
     const selectedNiks = selecteds.map((d:PersonRecipientWItems) => d.ids.nik)    
-    
-    console.log(editRecipientItem)
+        
     return (
         <>               
         <Modal 
@@ -130,7 +131,18 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                                                         onPress={()=>{setEditRecipientItem(d)}}>
                                                         + Barang
                                                     </Button>:
-                                                    d.items[0].name
+                                                    <Card>
+                                                        <CardHeader>
+                                                            <p className="text-sm">
+                                                                {d.items[0].name}
+                                                            </p>                                                        
+                                                        </CardHeader>
+                                                        <Divider />
+                                                        <CardFooter>
+                                                            <EditButton label="Ganti" onPress={()=>{setEditRecipientItem(d)}} />
+                                                            <DeleteButton onPress={()=>{}} />
+                                                        </CardFooter>
+                                                    </Card>
                                                 }
                                             </TableCell>
                                         </TableRow>
@@ -214,10 +226,8 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                     recipient={editRecipientItem}
                     show={editRecipientItem !== null}
                     hideForm={()=>{setEditRecipientItem(null)}}
-                    submit={(newItem:OrderedItem)=>{
-                        console.log(newItem)
-                        const {_id} = editRecipientItem
-                        console.log(_id)
+                    submit={(newItem:OrderedItem)=>{                        
+                        const {_id} = editRecipientItem                        
                         const selectedIdx = selecteds.findIndex((dRec:PersonRecipientWItems) => dRec._id === _id)
                         const updatedSelecteds = _.cloneDeep(selecteds)
                         updatedSelecteds[selectedIdx].items[0] = newItem
