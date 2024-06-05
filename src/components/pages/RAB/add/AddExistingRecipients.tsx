@@ -5,7 +5,8 @@ import {
         Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Checkbox,  
             Input, DatePicker, Divider } from "@nextui-org/react";
 import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
-import { PersonRecipientWItems, PersonRecipient, Contact, Item } from "@/types";
+import { EditItem } from "../shared/AddEditItem"
+import { PersonRecipientWItems, PersonRecipient, Contact, Item, OrderedItem } from "@/types";
 
 type TRecipientForm = {
     show: boolean;
@@ -17,7 +18,7 @@ type TRecipientForm = {
 export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit, existingRecipients }) => {
     const [ recipients, setRecipients ] = useState<PersonRecipient[]>([])    
     const [ selecteds, setSelecteds ] = useState<PersonRecipientWItems[]>([])
-    const [ editItemForId, setEditItemForId ] = useState("")
+    const [ editRecipientItem, setEditRecipientItem ] = useState<PersonRecipientWItems | null>(null)
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
     
     const getRecipients = async () => {
@@ -60,8 +61,9 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
 
     const selectedNiks = selecteds.map((d:PersonRecipientWItems) => d.ids.nik)    
     
+    console.log(editRecipientItem)
     return (
-        <>        
+        <>               
         <Modal 
             isOpen={isOpen} 
             onOpenChange={onOpenChange}
@@ -92,6 +94,7 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                             <TableColumn>NIK</TableColumn>
                             <TableColumn>No KK</TableColumn>
                             <TableColumn>Kontak</TableColumn>
+                            <TableColumn>Bantuan</TableColumn>
                         </TableHeader>                
                         <TableBody>
                             {
@@ -120,6 +123,16 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                                             <TableCell>{Array.isArray(d.contact) && d.contact.map((c:Contact, index:number) => (
                                                 <div key={index}>{c.type}: {c.address}</div>
                                             ))}</TableCell>
+                                            <TableCell>
+                                                {
+                                                    d.items.length === 0?
+                                                    <Button color="primary" size="sm" 
+                                                        onPress={()=>{setEditRecipientItem(d)}}>
+                                                        + Barang
+                                                    </Button>:
+                                                    d.items[0].name
+                                                }
+                                            </TableCell>
                                         </TableRow>
                                     )
                                 })
@@ -194,7 +207,26 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                 </>
             )}
             </ModalContent>
-        </Modal>
-        </>
+        </Modal> 
+        {
+            editRecipientItem !== null &&
+                <EditItem
+                    recipient={editRecipientItem}
+                    show={editRecipientItem !== null}
+                    hideForm={()=>{setEditRecipientItem(null)}}
+                    submit={(newItem:OrderedItem)=>{
+                        console.log(newItem)
+                        const {_id} = editRecipientItem
+                        console.log(_id)
+                        const selectedIdx = selecteds.findIndex((dRec:PersonRecipientWItems) => dRec._id === _id)
+                        const updatedSelecteds = _.cloneDeep(selecteds)
+                        updatedSelecteds[selectedIdx].items[0] = newItem
+                        setSelecteds(updatedSelecteds)
+                        setEditRecipientItem(null)
+
+                    }}
+                />
+        }
+        </>        
     );
 }

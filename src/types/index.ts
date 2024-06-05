@@ -32,6 +32,7 @@ export interface PersonRecipient {
 }
 
 export interface Item {
+    _id?:string;
     name: string;
     productName?: string;
     category: string;
@@ -39,8 +40,12 @@ export interface Item {
     price: number;
 }
 
+export interface OrderedItem extends Item {
+    unit: number;
+} 
+
 export interface PersonRecipientWItems extends PersonRecipient{
-    items: (Item & {unit:number})[];
+    items: OrderedItem[];
 }
 
 export interface IRAB {

@@ -255,35 +255,33 @@ export const AddRAB = () => {
                             setRecipients(updatedRecipients)
                         }
                         else{                            
-                            //Remove members of recipients from newrecipients to create newRecipients
-                            //since existingRecipients also member of recipients, 
-                            //this will cleanse newRecipients of existingRecipients members as well
+                            //cleanse newrecipients from existingRecipients
                             const newRecipients = newrecipients.reduce((acc:PersonRecipientWItems[], curr:PersonRecipientWItems) => {
-                                const recipientIdx = recipients.findIndex((dRec:PersonRecipientWItems) => dRec._id === curr._id )
+                                const recipientIdx = existingRecipients.findIndex((dRec:PersonRecipientWItems) => dRec._id === curr._id )
 
                                 if(recipientIdx === -1){
                                     acc.push(curr)
                                 }
                                 return acc
                             }, [])
-
-                            //Remove members of newrecipients from recipients to create updatedRecipients
-                            //therefore, updatedRecipients contains updated existingRecipients
+                            
                             const updatedRecipients = recipients.reduce((acc:PersonRecipientWItems[], curr:PersonRecipientWItems) => {
-                                const recIdx = newrecipients.findIndex((dNewRec:PersonRecipientWItems) => dNewRec._id === curr._id )
-
-                                if(recIdx > -1 || !curr._id){
+                                if(!curr._id){
                                     acc.push(curr)
                                 }
+
+                                const recIdx = newrecipients.findIndex((dNewRec:PersonRecipientWItems) => dNewRec._id === curr._id )
+                                if(recIdx > -1){
+                                    const newRecipient = newrecipients[recIdx]
+                                    const existingRecIdx = existingRecipients.findIndex((dExRec:PersonRecipientWItems) => dExRec.ids.nik === newRecipient.ids.nik)
+                                    if(existingRecIdx > -1){
+                                        acc.push(newRecipient)
+                                    }
+                                }
+                                                                
                                 return acc
                             }, [])
-
-                            updatedRecipients.forEach((d:PersonRecipientWItems, i:number) => {
-                                const existingRecipientIdx = newrecipients.findIndex((dnewrec:PersonRecipientWItems) => dnewrec._id === d._id)
-
-
-                            })
-
+                        
                             updatedRecipients.push(...newRecipients)
                             setRecipients(updatedRecipients)
                         }
