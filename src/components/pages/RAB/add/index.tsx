@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react"
+import _ from "lodash"
 import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,
     Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
         DatePicker, Input, RadioGroup, Radio
@@ -9,7 +10,9 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
 import { NewRecipientForm } from "./NewRecipient"
 import { AddExistingRecipients } from "./AddExistingRecipients"
 import { CogIcon } from "@/components/Icon"
-import { PersonRecipientWItems, PersonRecipient, Contact } from "@/types"
+import { TableItem } from "../shared/TableItemCard"
+import { EditItem } from "../shared/AddEditItem"
+import { PersonRecipientWItems, PersonRecipient, Contact, OrderedItem } from "@/types"
 
 export const AddRAB = () => {
     const [date, setDate] = useState(new Date())
@@ -190,11 +193,17 @@ export const AddRAB = () => {
                                     <TableCell>{Array.isArray(d.contact) && d.contact.map((c:Contact, index:number) => (
                                         <div key={index}>{c.type}: {c.address}</div>
                                     ))}</TableCell>
-                                    <TableCell>{d.items.length > 0?d.items[0].name:
-                                        <Button color="primary" size="sm">
-                                            + Barang
-                                        </Button>
-                                    }</TableCell>
+                                    <TableCell>
+                                        <TableItem 
+                                            item={d.items[0]}                                            
+                                            editPress={()=>{setEditRecipientItem(d)}}
+                                            deletePress={()=>{
+                                                const updatedRecipients = _.cloneDeep(recipients)
+                                                updatedRecipients[i].items = []
+                                                setRecipients(updatedRecipients)
+                                            }}
+                                        />    
+                                    </TableCell>
                                 </TableRow>
                             )
                         })
@@ -291,6 +300,23 @@ export const AddRAB = () => {
                     existingRecipients={existingRecipients}
                 />
             }
+            {
+            editRecipientItem !== null &&
+                <EditItem
+                    recipient={editRecipientItem}
+                    show={editRecipientItem !== null}
+                    hideForm={()=>{setEditRecipientItem(null)}}
+                    submit={(newItem:OrderedItem)=>{                        
+                        const {_id} = editRecipientItem                        
+                        const recipientIdx = recipients.findIndex((dRec:PersonRecipientWItems) => dRec._id === _id)
+                        const updatedSelecteds = _.cloneDeep(recipients)
+                        updatedSelecteds[recipientIdx].items[0] = newItem
+                        setRecipients(updatedSelecteds)
+                        setEditRecipientItem(null)
+
+                    }}
+                />
+        }
         </div>
     )
 }

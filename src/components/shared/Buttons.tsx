@@ -7,7 +7,7 @@ type IButton = {
     label?:string;
 }
 
-export const EditButton:FC<IButton> = ({onPress = () => {}, label = "Ubah"}) => {
+export const EditBtn:FC<IButton> = ({onPress = () => {}, label = "Ubah"}) => {
     return (
         <Button color="secondary" size="sm" onPress={onPress} isIconOnly>
             <EditIcon />            
@@ -15,7 +15,7 @@ export const EditButton:FC<IButton> = ({onPress = () => {}, label = "Ubah"}) => 
     )
 }
 
-export const DeleteButton:FC<IButton> = ({onPress = () => {}, label = "Hapus"}) => {
+export const DeleteBtn:FC<IButton> = ({onPress = () => {}, label = "Hapus"}) => {
     return (
         <Button color="danger" size="sm" onPress={onPress} isIconOnly>
             <DeleteIcon />            

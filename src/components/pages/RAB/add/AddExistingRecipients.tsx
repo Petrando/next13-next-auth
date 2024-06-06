@@ -7,7 +7,6 @@ import {
             Input, DatePicker, Divider } from "@nextui-org/react";
 import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
 import { EditItem } from "../shared/AddEditItem"
-import { EditButton, DeleteButton } from "@/components/shared/Buttons";
 import { TableItem } from "../shared/TableItemCard";
 import { PersonRecipientWItems, PersonRecipient, Contact, Item, OrderedItem } from "@/types";
 
@@ -127,8 +126,7 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                                             ))}</TableCell>
                                             <TableCell>
                                                 <TableItem 
-                                                    item={d.items[0]}
-                                                    startEdit={()=>{setEditRecipientItem(d)}}
+                                                    item={d.items[0]}                                                    
                                                     editPress={()=>{setEditRecipientItem(d)}}
                                                     deletePress={()=>{
                                                         const updatedSelecteds = _.cloneDeep(selecteds)

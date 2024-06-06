@@ -1,39 +1,50 @@
 import { FC } from "react"
 import { motion } from "framer-motion"
 import { Button, Card, CardHeader, CardBody, CardFooter, Divider } from "@nextui-org/react";
-import { EditButton, DeleteButton } from "@/components/shared/Buttons";
+import { EditBtn, DeleteBtn } from "@/components/shared/Buttons";
 import { OrderedItem } from "@/types";
 
 type ITableItem = {
-    item: OrderedItem | undefined;
-    startEdit: () => void;
+    item: OrderedItem | undefined;    
     editPress: () => void;
     deletePress: () => void;
 }
 
-export const TableItem:FC<ITableItem> = ({ item, startEdit, editPress, deletePress }) => {
+export const TableItem:FC<ITableItem> = ({ item, editPress, deletePress }) => {
     if(!item){
         return (
-            <Button color="primary" size="sm" 
-                onPress={startEdit}>
-                <span className="font-semibold">+</span> Barang
-            </Button>
+            <motion.span
+                initial={{y:-20, opacity:0}}
+                animate={{y:0, opacity: 1}}
+                transition={{duration:1}}
+            >
+                <Button color="primary" size="sm" 
+                    onPress={editPress}>
+                    <span className="font-semibold">+</span> Barang
+                </Button>
+            </motion.span>
         )
     }
 
     return (
-        <Card>
-            <CardHeader>
-                <p className="text-sm">
-                    {item.name}
-                </p>                                                        
-            </CardHeader>                        
-            <Divider />
-            <CardFooter>
-                <EditButton label="Ganti" onPress={editPress} />
-                <DeleteButton onPress={deletePress} />
-            </CardFooter>
-        </Card>
+        <motion.span
+            initial={{y:80, opacity: 0}}
+            animate={{y:0, opacity: 1}}
+            transition={{duration:1}}
+        >
+            <Card>
+                <CardHeader>
+                    <p className="text-sm">
+                        {item.name}
+                    </p>                                                        
+                </CardHeader>                        
+                <Divider />
+                <CardFooter>
+                    <EditBtn label="Ganti" onPress={editPress} />
+                    <DeleteBtn onPress={deletePress} />
+                </CardFooter>
+            </Card>
+        </motion.span>
     )
 }
 
