@@ -137,7 +137,10 @@ export const AddRAB = () => {
     
     const existingRecipients = recipients.filter((d:PersonRecipientWItems) => d._id)
     return (
-        <div className="flex flex-col w-screen">
+        <div className="flex flex-col w-screen px-1 md:px-2">
+            <h1 className="text-xl md:text-2xl font-bold text-left basis-full py-3 pl-2 md:pl-4">
+                Data RAB Baru
+            </h1>
             <div className="px-0 py-2 flex items-center flex-wrap">
                 <div className="w-fit p-1">
                     <DatePicker label="Tanggal" className="max-w-[284px]" />
@@ -214,7 +217,7 @@ export const AddRAB = () => {
             {
                 recipients.length === 0 &&
                 <div className="flex items-center justify-center">
-                    <p className="font-semibold italic">Belum ada penerima bantuan..</p>
+                    <p className="font-semibold italic text-gray-800 py-3">Belum ada penerima bantuan..</p>
                 </div>
             }
             <div className="flex items-center justify-end px-2 py-3">

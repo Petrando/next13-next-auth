@@ -147,7 +147,6 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                             size="sm"
                             className="basis-4/5 md:basis-5/12" 
                             value={price?price.toString():"0"}
-                            isReadOnly={itemType === "existing"}
                             type="number"
                             onChange={(e)=>{
                                 if(itemType === "new"){

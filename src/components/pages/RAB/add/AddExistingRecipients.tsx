@@ -3,6 +3,7 @@ import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,
         Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Checkbox,
+            Skeleton,
             Card, CardHeader, CardBody, CardFooter,  
             Input, DatePicker, Divider } from "@nextui-org/react";
 import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
@@ -22,12 +23,15 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
     const [ selecteds, setSelecteds ] = useState<PersonRecipientWItems[]>([])
     const [ editRecipientItem, setEditRecipientItem ] = useState<PersonRecipientWItems | null>(null)
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+    const [ fetchState, setFetchState ] = useState("loading")
     
     const getRecipients = async () => {
         const filter = {}
         const projection = {}
         const limit = 10
         const offset = 0
+
+        setFetchState("loading")
         try{
             const response = await fetch('/api/recipients/list', {
                 method: 'POST',
@@ -44,7 +48,7 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
             
         }
         finally{
-            
+            setFetchState("complete")
         } 
     }
 
@@ -81,28 +85,59 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                 <ModalBody>
                     <Table aria-label="Penerima Bantuan Terpilih"
                         topContent={
-                            <div className="w-full flex items-center justify-center">
-                                <h2 className={`text-lg font-semibold ${selecteds.length === 0 && "opacity-75"}`}>
-                                    {selecteds.length === 0?"Silahkan Pilih Penerima":"Penerima Terpilih"}
-                                </h2>
-                            </div>
+                            <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                <div className="w-full flex items-center justify-center">
+                                    <h2 className={`text-lg font-semibold ${selecteds.length === 0 && "opacity-75"}`}>
+                                        {selecteds.length === 0?"Silahkan Pilih Penerima":"Penerima Terpilih"}
+                                    </h2>
+                                </div>
+                            </Skeleton>
                         }
                     >
                         <TableHeader>
-                            <TableColumn>{''}</TableColumn>
-                            <TableColumn>NAMA</TableColumn>
-                            <TableColumn>ALAMAT</TableColumn>
-                            <TableColumn>NIK</TableColumn>
-                            <TableColumn>No KK</TableColumn>
-                            <TableColumn>Kontak</TableColumn>
-                            <TableColumn>Bantuan</TableColumn>
+                                                       
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}> 
+                                    {''}
+                                </Skeleton>
+                            </TableColumn>
+                            
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    NAMA
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    ALAMAT
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    NIK
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    No KK
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    Kontak
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    Bantuan
+                                </Skeleton>
+                            </TableColumn>
                         </TableHeader>                
                         <TableBody>
                             {
                                 selecteds.map((d:PersonRecipientWItems, i:number)=>{
                                     
-                                    const nikSelected = selectedNiks.findIndex((dNik:string)=> dNik === d.ids.nik) > -1
-                                    const {items} = d
+                                    const nikSelected = selectedNiks.findIndex((dNik:string)=> dNik === d.ids.nik) > -1                                    
                                     
                                     return (
                                         <TableRow key={d._id}>
@@ -144,18 +179,44 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                     </Table>
                     <Table aria-label="Pilih Penerima Bantuan"
                         topContent={
-                            <div className="w-full flex items-center justify-center">
-                                <h2 className="text-lg font-semibold">Pilihan Penerima Bantuan</h2>
-                            </div>
+                            <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                <div className="w-full flex items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Pilihan Penerima Bantuan</h2>
+                                </div>
+                            </Skeleton>
                         }
                     >
                         <TableHeader>
-                            <TableColumn>{''}</TableColumn>
-                            <TableColumn>NAMA</TableColumn>
-                            <TableColumn>ALAMAT</TableColumn>
-                            <TableColumn>NIK</TableColumn>
-                            <TableColumn>No KK</TableColumn>
-                            <TableColumn>Kontak</TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    {''}
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    NAMA
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    ALAMAT
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    NIK
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    No KK
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState === "complete"}>
+                                    Kontak
+                                </Skeleton>
+                            </TableColumn>
                         </TableHeader>                
                         <TableBody>
                             {
@@ -194,9 +255,16 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                             
                         </TableBody>
                     </Table>
+                    {
+                        fetchState === "complete" && recipients.length === 0 &&
+                        <h3 className="font-semibold italic text-gray-800 py-3">
+                            Daftar penerima bantuan masih kosong....
+                        </h3>
+                    }
                 </ModalBody>
                 <ModalFooter>
-                    <Button color={`primary`} 
+                    <Button color="primary" 
+                        isDisabled={fetchState!=="complete"}
                         onPress={()=>{submit(selecteds)}}
                     >
                         Tambahkan
