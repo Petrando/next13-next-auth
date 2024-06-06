@@ -8,6 +8,7 @@ import {
 import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
 import { EditItem } from "../shared/AddEditItem"
 import { EditButton, DeleteButton } from "@/components/shared/Buttons";
+import { TableItem } from "../shared/TableItemCard";
 import { PersonRecipientWItems, PersonRecipient, Contact, Item, OrderedItem } from "@/types";
 
 type TRecipientForm = {
@@ -125,25 +126,16 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                                                 <div key={index}>{c.type}: {c.address}</div>
                                             ))}</TableCell>
                                             <TableCell>
-                                                {
-                                                    d.items.length === 0?
-                                                    <Button color="primary" size="sm" 
-                                                        onPress={()=>{setEditRecipientItem(d)}}>
-                                                        + Barang
-                                                    </Button>:
-                                                    <Card>
-                                                        <CardHeader>
-                                                            <p className="text-sm">
-                                                                {d.items[0].name}
-                                                            </p>                                                        
-                                                        </CardHeader>
-                                                        <Divider />
-                                                        <CardFooter>
-                                                            <EditButton label="Ganti" onPress={()=>{setEditRecipientItem(d)}} />
-                                                            <DeleteButton onPress={()=>{}} />
-                                                        </CardFooter>
-                                                    </Card>
-                                                }
+                                                <TableItem 
+                                                    item={d.items[0]}
+                                                    startEdit={()=>{setEditRecipientItem(d)}}
+                                                    editPress={()=>{setEditRecipientItem(d)}}
+                                                    deletePress={()=>{
+                                                        const updatedSelecteds = _.cloneDeep(selecteds)
+                                                        updatedSelecteds[i].items = []
+                                                        setSelecteds(updatedSelecteds)
+                                                    }}
+                                                />
                                             </TableCell>
                                         </TableRow>
                                     )

@@ -74,7 +74,6 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
         getItems()
     }, [])
 
-
     const baseSelectedItem = itemSelection.length>0?itemSelection[itemSelection.findIndex((d:Item) => d._id === selectedItemId)]:
         items.length > 0?items[0]:_.cloneDeep(emptyOrderedItem)
     const selectedItem = selectedItemId === ""?_.cloneDeep(emptyOrderedItem):{...baseSelectedItem, unit:selectedUnitAmt}
@@ -147,7 +146,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                             variant="bordered"
                             size="sm"
                             className="basis-4/5 md:basis-5/12" 
-                            value={price?price.toString():0}
+                            value={price?price.toString():"0"}
                             isReadOnly={itemType === "existing"}
                             type="number"
                             onChange={(e)=>{
