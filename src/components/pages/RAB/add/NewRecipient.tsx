@@ -1,5 +1,5 @@
-import React, { useEffect, useState, FC } from "react";
-import _ from "lodash";
+import React, { useEffect, useState, FC, ChangeEvent } from "react";
+import _, { set } from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,  
         Input, DatePicker, Divider } from "@nextui-org/react";
@@ -14,10 +14,12 @@ type TRecipientForm = {
 }
 
 export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) => {
-    const [recipient, setRecipient] = useState(_.cloneDeep(emptyPerson))
+    const [ recipient, setRecipient ] = useState(_.cloneDeep(emptyPerson))
     const [ birthday, setBirthday ] = useState(todayDateString())
-    const [rt, setRt ] = useState("")
-    const [rw, setRw ] = useState("")
+    const [ rt, setRt ] = useState("")
+    const [ rw, setRw ] = useState("")
+
+    const [submitPressed, setSubmitPressed] = useState(false)
     
     const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();    
 
@@ -33,13 +35,36 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
         const newRecipient = {...recipient}
         newRecipient.address.rtRw = `${rt}/${rw}`
         setRecipient(newRecipient)
+        if(submitPressed){setSubmitPressed(false)}
     }, [rt, rw])
 
-    const {name, birthdata, ids, address, contact, items} = recipient
+    const { name, birthdata, ids, address, contact } = recipient
     const { birthplace } = birthdata    
     
-    const {nik, noKk} = ids
-    const {street, rtRw, kelurahan, kecamatan, kabupaten, postCode} = address    
+    const { nik, noKk } = ids
+    const { street, rtRw, kelurahan, kecamatan, kabupaten, postCode } = address
+    const { value } = contact[0]
+    
+    const changeState = (e:ChangeEvent<HTMLInputElement>) => {
+        const newRecipient:any = {...recipient}
+        const props = e.target.name.split(".")
+        if(props.length === 1){
+            newRecipient[props[0]] = e.target.value
+        }
+        if(props.length === 2){
+            newRecipient[props[0]][props[1]] = e.target.value
+        }
+        if(props.length === 3){                        
+            newRecipient[props[0]][parseInt(props[1])][props[2]] = e.target.value
+        }                
+        setRecipient(newRecipient)
+
+        if(submitPressed){setSubmitPressed(false)}
+    }
+
+    const requiredFilled = (name !== "" && nik !== "" && noKk !== "" && street !== "" && rt !== "" && rw !== "" && kelurahan !== ""
+        && kecamatan !== "" && kabupaten !== ""
+    )
 
     return (
         <>        
@@ -59,18 +84,30 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                     Data Penerima Bantuan Baru
                 </ModalHeader>
                 <ModalBody>
-                    <Input
-                        autoFocus                        
-                        label="Nama"                        
-                        variant="bordered"
-                        size="sm"
-                        value={name}
-                        onChange={(e)=>{
-                            const newRecipient = {...recipient}
-                            newRecipient.name = e.target.value
-                            setRecipient(newRecipient)
-                        }}
-                    />
+                    <div className="w-full flex flex-wrap">
+                        <Input
+                            autoFocus                        
+                            label="Nama"                        
+                            variant="bordered"
+                            size="sm"
+                            className="basis-full md:basis-3/5"
+                            value={name}
+                            onChange={changeState}
+                            name="name"
+                            isRequired
+                            isInvalid={submitPressed && name === ""}
+                            errorMessage="Nama masih kosong"
+                        />
+                        <Input                                                    
+                            label="No Hp"                        
+                            variant="bordered"
+                            size="sm"
+                            className="basis-full md:basis-2/5"
+                            value={value}
+                            onChange={changeState}
+                            name="contact.0.value"
+                        />
+                    </div>
                     <Divider />
                     <div className="w-full flex flex-col md:flex-row space-x-0 md:space-x-2">
                         <div className="basis-full md:basis-1/2">
@@ -84,11 +121,8 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                                 size="sm"
                                 className="mb-2 md:mb-0"
                                 value={birthplace}
-                                onChange={(e)=>{
-                                    const newRecipient = {...recipient}
-                                    newRecipient.birthdata.birthplace = e.target.value
-                                    setRecipient(newRecipient)
-                                }}
+                                onChange={changeState}
+                                name="birthdata.birthplace"
                             />
                         </div>
                         <Divider orientation="vertical" />
@@ -99,22 +133,22 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                                 size="sm"
                                 className="mb-2"
                                 value={nik}
-                                onChange={(e)=>{
-                                    const newRecipient = {...recipient}
-                                    newRecipient.ids.nik = e.target.value
-                                    setRecipient(newRecipient)
-                                }}
+                                onChange={changeState}
+                                name="ids.nik"
+                                isRequired
+                                isInvalid={submitPressed && nik === ""}
+                                errorMessage="Nomor KTP masih kosong"
                             />
                             <Input
                                 label="No. KK"                        
                                 variant="bordered"
                                 size="sm"
                                 value={noKk}
-                                onChange={(e)=>{
-                                    const newRecipient = {...recipient}
-                                    newRecipient.ids.noKk = e.target.value
-                                    setRecipient(newRecipient)
-                                }}
+                                onChange={changeState}
+                                name="ids.noKk"
+                                isRequired
+                                isInvalid={submitPressed && noKk === ""}
+                                errorMessage="Kartu Keluarga masih kosong"
                             />
                         </div>
                     </div>
@@ -127,11 +161,11 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                                 size="sm"
                                 className="basis-full md:basis-1/2"
                                 value={street}
-                                onChange={(e)=>{
-                                    const newRecipient = {...recipient}
-                                    newRecipient.address.street = e.target.value
-                                    setRecipient(newRecipient)
-                                }}
+                                onChange={changeState}
+                                name="address.street"
+                                isRequired
+                                isInvalid={submitPressed && street === ""}
+                                errorMessage="Nama jalan masih kosong"
                             />
                             <div className="basis-full md:basis-1/2 flex">
                                 <Input
@@ -143,6 +177,9 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                                     onChange={(e)=>{
                                         setRt(e.target.value)
                                     }}
+                                    isRequired
+                                    isInvalid={submitPressed && rt === ""}
+                                    errorMessage="RT masih kosong"
                                 />
                                 <Input
                                     label="RW"                        
@@ -153,6 +190,9 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                                     onChange={(e)=>{
                                         setRw(e.target.value)
                                     }}
+                                    isRequired
+                                    isInvalid={submitPressed && rw === ""}
+                                    errorMessage="Rw masih kosong"
                                 />
                                 <Input
                                     label="Kode Pos"                        
@@ -160,11 +200,8 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                                     size="sm"
                                     className="basis-3/5"
                                     value={postCode}                                    
-                                    onChange={(e)=>{
-                                        const newRecipient = {...recipient}
-                                        newRecipient.address.postCode = e.target.value
-                                        setRecipient(newRecipient)
-                                    }}
+                                    onChange={changeState}
+                                    name="address.postCode"
                                 />   
                             </div>
                         </div>
@@ -175,11 +212,11 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                                 size="sm"
                                 className="basis-full md:basis-1/3"
                                 value={kelurahan}                                
-                                onChange={(e)=>{
-                                    const newRecipient = {...recipient}
-                                    newRecipient.address.kelurahan = e.target.value
-                                    setRecipient(newRecipient)
-                                }}
+                                onChange={changeState}
+                                name="address.kelurahan"
+                                isRequired
+                                isInvalid={submitPressed && kelurahan === ""}
+                                errorMessage="Kelurahan masih kosong"
                             />
                             <Input
                                 label="Kecamatan"                        
@@ -187,11 +224,11 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                                 size="sm"
                                 className="basis-full md:basis-1/3"
                                 value={kecamatan}
-                                onChange={(e)=>{
-                                    const newRecipient = {...recipient}
-                                    newRecipient.address.kecamatan = e.target.value
-                                    setRecipient(newRecipient)
-                                }}
+                                onChange={changeState}
+                                name="address.kecamatan"
+                                isRequired
+                                isInvalid={submitPressed && kecamatan === ""}
+                                errorMessage="Kecamatan masih kosong"
                             />
                             <Input
                                 label="Kabupaten"                        
@@ -199,11 +236,11 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                                 size="sm"
                                 className="basis-full md:basis-1/3"
                                 value={kabupaten}
-                                onChange={(e)=>{
-                                    const newRecipient = {...recipient}
-                                    newRecipient.address.kabupaten = e.target.value
-                                    setRecipient(newRecipient)
-                                }}
+                                onChange={changeState}
+                                name="address.kabupaten"
+                                isRequired
+                                isInvalid={submitPressed && kabupaten === ""}
+                                errorMessage="Kabupaten masih kosong"
                             />
                         </div>
                     </div>
@@ -220,9 +257,14 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" onPress={()=>{
-                        const birthdate = new Date(birthday.year + "-" + birthday.month + "-" + birthday.day)
-                        recipient.birthdata.birthdate = birthdate
-                        submit(recipient)
+                        if(!requiredFilled){
+                            setSubmitPressed(true)
+                        }
+                        else{
+                            const birthdate = new Date(birthday.year + "-" + birthday.month + "-" + birthday.day)
+                            recipient.birthdata.birthdate = birthdate
+                            submit(recipient)
+                        }                        
                     }}>
                         Tambahkan
                     </Button>

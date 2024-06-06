@@ -157,7 +157,7 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                                             <TableCell>{d.ids.nik}</TableCell>
                                             <TableCell>{d.ids.noKk}</TableCell>
                                             <TableCell>{Array.isArray(d.contact) && d.contact.map((c:Contact, index:number) => (
-                                                <div key={index}>{c.type}: {c.address}</div>
+                                                <div key={index}>{c.type}: {c.value}</div>
                                             ))}</TableCell>
                                             <TableCell>
                                                 <TableItem 
@@ -246,7 +246,7 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                                             <TableCell>{d.ids.nik}</TableCell>
                                             <TableCell>{d.ids.noKk}</TableCell>
                                             <TableCell>{Array.isArray(d.contact) && d.contact.map((c:Contact, index:number) => (
-                                                <div key={index}>{c.type}: {c.address}</div>
+                                                <div key={index}>{c.type}: {c.value}</div>
                                             ))}</TableCell>
                                         </TableRow>
                                     )

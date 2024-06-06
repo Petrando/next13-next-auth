@@ -33,7 +33,7 @@ export const emptyPerson:PersonRecipientWItems = _.cloneDeep({
         kabupaten: '',
         postCode: ''
     },
-    contact: [{type:'cellphone', address:''}],
+    contact: [{type:'cellphone', value:''}],
     items: []
 })
 

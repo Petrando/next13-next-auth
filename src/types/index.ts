@@ -19,7 +19,7 @@ export type Address = {
 
 export type Contact = {
     type: string;
-    address: string;
+    value: string;
 }
 
 export interface PersonRecipient {
@@ -28,7 +28,7 @@ export interface PersonRecipient {
     birthdata: BirthdatePlace;
     ids: PersonIds;
     address: Address;
-    contact: Contact | Contact[];
+    contact: Contact[];
 }
 
 export interface Item {
