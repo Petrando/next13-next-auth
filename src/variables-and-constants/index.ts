@@ -34,6 +34,6 @@ export const emptyPerson:PersonRecipientWItems = _.cloneDeep({
         postCode: ''
     },
     contact: [{type:'cellphone', address:''}],
-    items: [_.cloneDeep(emptyOrderedItem)]
+    items: []
 })
 

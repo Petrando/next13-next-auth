@@ -3,7 +3,7 @@ import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,
         Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Checkbox,  
-            Input, DatePicker, Divider, RadioGroup, Radio } from "@nextui-org/react";
+            Input, DatePicker, Divider, RadioGroup, Radio, Skeleton } from "@nextui-org/react";
 import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
 import { emptyOrderedItem } from "@/variables-and-constants";
 import { Item, OrderedItem, PersonRecipientWItems } from "@/types";
@@ -25,6 +25,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
 
     const [ itemType, setItemType ] = useState("existing")
 
+    const [fetchState, setFetchState] = useState("loading")
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
     const {items} = recipient
@@ -51,6 +52,8 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
         const projection = {}
         const limit = 10
         const offset = 0
+
+        setFetchState("loading")
         try{
             const response = await fetch('/api/items/list', {
                 method: 'POST',
@@ -67,7 +70,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
             
         }
         finally{
-            
+            setFetchState("complete")
         } 
     }
     useEffect(()=>{
@@ -110,10 +113,10 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                     
                 </ModalHeader>
                 <ModalBody>
-                <div className="w-full">
-                    
-                    <div className="w-full flex flex-wrap mb-2">
+                <div className="w-full">                    
+                    <div className="w-full flex flex-wrap mb-2">                        
                         <Input
+                            isDisabled={itemType==="existing" && fetchState!=="complete"}
                             label="Nama Barang"                        
                             variant="bordered"
                             size="sm"
@@ -125,8 +128,9 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                                     setNewItem({...newItem, name:e.target.value})
                                 }
                             }}
-                        />
+                        />                                                
                         <Input
+                            isDisabled={itemType==="existing" && fetchState!=="complete"}
                             label="Jumlah"
                             variant="bordered"
                             size="sm"
@@ -140,8 +144,9 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                                     setSeletedUnitAmt(parseInt(e.target.value))
                                 }
                             }}    
-                        />
+                        />                                        
                         <Input
+                            isDisabled={itemType==="existing" && fetchState!=="complete"}
                             label="Harga"
                             variant="bordered"
                             size="sm"
@@ -154,10 +159,11 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                                 }
                             }}    
                         />
+                        
                     </div>
                     
                     {
-                        itemType === "existing" && itemSelection.length > 0 &&
+                        itemType === "existing" && 
                             <>
                             <Divider />
                             <Table aria-label="Pilihan Bantuan" className=" mt-2"
@@ -170,9 +176,21 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                                 }
                             >
                                 <TableHeader>
-                                    <TableColumn>{''}</TableColumn>
-                                    <TableColumn>Barang</TableColumn>                                
-                                    <TableColumn>Harga Per Unit</TableColumn>                            
+                                    <TableColumn>
+                                        <Skeleton className="rounded" isLoaded={ fetchState === "complete"}>
+                                            {''}
+                                        </Skeleton>
+                                    </TableColumn>
+                                    <TableColumn>
+                                        <Skeleton className="rounded" isLoaded={ fetchState === "complete"}>
+                                            Barang
+                                        </Skeleton>
+                                    </TableColumn>                                
+                                    <TableColumn>
+                                        <Skeleton className="rounded" isLoaded={ fetchState === "complete"}>
+                                            Harga Per Unit
+                                        </Skeleton>
+                                    </TableColumn>                            
                                 </TableHeader>                
                                 <TableBody>
                                     {itemSelection.map((d:Item, i:number)=>{
@@ -198,11 +216,17 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                             </Table>
                             </>
                     }
+                    {
+                        itemType === "existing" && fetchState === "complete" && itemSelection.length === 0 &&
+                        <p className="italic font-semibold text-gray-700 py-2">
+                            Barang masih kosong...
+                        </p>
+                    }
                 </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color={`${canSubmit?"primary":"default"}`} size="sm"
-                        disabled={!canSubmit}
+                    <Button color={`primary`} size="sm"
+                        isDisabled={!canSubmit}
                         onPress={()=>{submit(currentItem)}}
                     >
                         Tambahkan

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, FC } from "react";
-const _ = require("lodash")
+import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,  
-        Input, Link, DatePicker, Divider } from "@nextui-org/react";
-import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
-import { emptyPerson, emptyOrderedItem } from "@/variables-and-constants";
+        Input, DatePicker, Divider } from "@nextui-org/react";
+import { todayDateString } from "@/lib/functions";
+import { emptyPerson } from "@/variables-and-constants";
 import { PersonRecipientWItems } from "@/types";
 
 type TRecipientForm = {
@@ -15,6 +15,7 @@ type TRecipientForm = {
 
 export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) => {
     const [recipient, setRecipient] = useState(_.cloneDeep(emptyPerson))
+    const [ birthday, setBirthday ] = useState(todayDateString())
     const [rt, setRt ] = useState("")
     const [rw, setRw ] = useState("")
     
@@ -35,13 +36,10 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
     }, [rt, rw])
 
     const {name, birthdata, ids, address, contact, items} = recipient
-    const {birthdate, birthplace} = birthdata
-    const convertedBirthday = parseDate(birthdate.toISOString().split('T')[0])
+    const { birthplace } = birthdata    
     
     const {nik, noKk} = ids
-    const {street, rtRw, kelurahan, kecamatan, kabupaten, postCode} = address
-    
-    const {name:itemName, unit, price} = items[0]
+    const {street, rtRw, kelurahan, kecamatan, kabupaten, postCode} = address    
 
     return (
         <>        
@@ -57,14 +55,13 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
             <ModalContent>
             {(onClose) => (
                 <>
-                <ModalHeader className="flex flex-col gap-1">Data Penerima Bantuan</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">
+                    Data Penerima Bantuan Baru
+                </ModalHeader>
                 <ModalBody>
                     <Input
-                        autoFocus
-                        endContent={
-                            <></>
-                        }
-                        label="Nama Penerima"                        
+                        autoFocus                        
+                        label="Nama"                        
                         variant="bordered"
                         size="sm"
                         value={name}
@@ -78,12 +75,8 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                     <div className="w-full flex flex-col md:flex-row space-x-0 md:space-x-2">
                         <div className="basis-full md:basis-1/2">
                             <DatePicker label="Tanggal Lahir" className="max-w-[200px] md:max-w-[284px]" 
-                                value={convertedBirthday} 
-                                onChange={(date: CalendarDate) => {
-                                    const newRecipient = {...recipient}
-                                    newRecipient.birthdata.birthdate = new Date(date.year, date.month - 1, date.day)
-                                    setRecipient(newRecipient)
-                                  }}
+                                value={birthday} 
+                                onChange={setBirthday}
                             />
                             <Input                                
                                 label="Tempat Lahir"                        
@@ -214,47 +207,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                             />
                         </div>
                     </div>
-                    <Divider />
-                    <div className="w-full flex flex-wrap">
-                        <Input
-                            label="Nama Barang"                        
-                            variant="bordered"
-                            size="sm"
-                            className="basis-full md:basis-1/2"
-                            value={itemName}
-                            onChange={(e)=>{
-                                const newRecipient = {...recipient}
-                                newRecipient.items[0].name = e.target.value
-                                setRecipient(newRecipient)
-                            }}
-                        />
-                        <Input
-                            label="Jumlah"
-                            variant="bordered"
-                            size="sm"
-                            className="basis-1/5 md:basis-1/12" 
-                            value={unit.toString()}
-                            type="number"
-                            onChange={(e)=>{
-                                const newRecipient = {...recipient}
-                                newRecipient.items[0].unit = parseInt(e.target.value)
-                                setRecipient(newRecipient)
-                            }}    
-                        />
-                        <Input
-                            label="Harga"
-                            variant="bordered"
-                            size="sm"
-                            className="basis-4/5 md:basis-5/12" 
-                            value={price.toString()}
-                            type="number"
-                            onChange={(e)=>{
-                                const newRecipient = {...recipient}
-                                newRecipient.items[0].price = parseInt(e.target.value)
-                                setRecipient(newRecipient)
-                            }}    
-                        />
-                    </div>
+                    <Divider />                    
                     {/*    
                     <div className="flex h-5 items-center space-x-4 text-small">
                         <div>Blog</div>
@@ -266,7 +219,11 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                     */}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onPress={()=>{submit(recipient)}}>
+                    <Button color="primary" onPress={()=>{
+                        const birthdate = new Date(birthday.year + "-" + birthday.month + "-" + birthday.day)
+                        recipient.birthdata.birthdate = birthdate
+                        submit(recipient)
+                    }}>
                         Tambahkan
                     </Button>
                     <Button color="danger" variant="flat" onPress={()=>{hideForm()}}>

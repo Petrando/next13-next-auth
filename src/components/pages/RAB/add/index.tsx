@@ -12,10 +12,11 @@ import { AddExistingRecipients } from "./AddExistingRecipients"
 import { CogIcon } from "@/components/Icon"
 import { TableItem } from "../shared/TableItemCard"
 import { EditItem } from "../shared/AddEditItem"
+import { todayDateString } from "@/lib/functions";
 import { PersonRecipientWItems, PersonRecipient, Contact, OrderedItem } from "@/types"
 
 export const AddRAB = () => {
-    const [date, setDate] = useState(new Date())
+    const [date, setDate] = useState(todayDateString())
     const [title, setTitle] = useState('')
     const [category, setCategory] = useState('')
     const [recipients, setRecipients] = useState<PersonRecipientWItems[]>([
@@ -113,12 +114,18 @@ export const AddRAB = () => {
     const [isAddRecipient, setIsAddRecipient] = useState(false)
     const [recipientOption, setRecptOption] = useState<Set<string>>(new Set(["old"]))
     const [ editRecipientItem, setEditRecipientItem ] = useState<PersonRecipientWItems | null>(null)
+
+    const [fetchState, setFetchState] = useState("")
+    const [fetchError, setFetchError] = useState("")
         
     const submitData = async () => {
+        
+        const RABDate = new Date(date.year + "-" + date.month + "-" + date.day)
+        setFetchState("submitting")
         try{
             const response = await fetch('/api/RAB/add', {
                 method: 'POST',
-                body: JSON.stringify({ title, date, category, recipients }),
+                body: JSON.stringify({ title, date:RABDate, category, recipients }),
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -128,14 +135,15 @@ export const AddRAB = () => {
             console.log(data)
         }catch(err:any){
             console.log('fetch error : ', err)
-            
+            setFetchError("Error when submitting")
         }
         finally{
-            
+            setFetchState("done")
         } 
     }
     
-    const existingRecipients = recipients.filter((d:PersonRecipientWItems) => d._id)
+    const existingRecipients = recipients.filter((d:PersonRecipientWItems) => d._id)   
+
     return (
         <div className="flex flex-col w-screen px-1 md:px-2">
             <h1 className="text-xl md:text-2xl font-bold text-left basis-full py-3 pl-2 md:pl-4">
@@ -143,7 +151,11 @@ export const AddRAB = () => {
             </h1>
             <div className="px-0 py-2 flex items-center flex-wrap">
                 <div className="w-fit p-1">
-                    <DatePicker label="Tanggal" className="max-w-[284px]" />
+                    <DatePicker 
+                        label="Tanggal" className="max-w-[284px]" 
+                        value={date} 
+                        onChange={setDate}
+                    />
                 </div>
                 <div className="flex-auto p-1">
                     <Input size="lg" variant="underlined" fullWidth label="Judul RAB" value={title} onChange={e => setTitle(e.target.value)} />
