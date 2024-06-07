@@ -2,6 +2,7 @@ import { FC } from "react"
 import { motion } from "framer-motion"
 import { Button, Card, CardHeader, CardBody, CardFooter, Divider } from "@nextui-org/react";
 import { EditBtn, DeleteBtn } from "@/components/shared/Buttons";
+import { PlusIcon } from "@/components/Icon";
 import { OrderedItem } from "@/types";
 
 type ITableItem = {
@@ -19,8 +20,10 @@ export const TableItem:FC<ITableItem> = ({ item, editPress, deletePress }) => {
                 transition={{duration:1}}
             >
                 <Button color="primary" size="sm" 
-                    onPress={editPress}>
-                    <span className="font-semibold">+</span> Barang
+                    onPress={editPress}
+                    startContent={<PlusIcon  className="size-4"/>}
+                >
+                    Barang
                 </Button>
             </motion.span>
         )

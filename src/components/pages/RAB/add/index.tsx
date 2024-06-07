@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react"
 import _ from "lodash"
+import { useRouter } from "next/navigation"
 import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,
     Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
-        DatePicker, Input, RadioGroup, Radio,
+        DatePicker, Input, RadioGroup, Radio, Skeleton, 
             Link
  } from "@nextui-org/react"
 import { NewRecipientForm } from "./NewRecipient"
@@ -13,6 +14,8 @@ import { CogIcon } from "@/components/Icon"
 import { TableItem } from "../shared/TableItemCard"
 import { EditItem } from "../shared/AddEditItem"
 import { todayDateString } from "@/lib/functions";
+import { TableContact } from "../shared/TableContact"
+import { CellphoneIcon, DeleteIcon, AddDocumentIcon, PlusIcon, AddUserIcon } from "@/components/Icon"
 import { PersonRecipientWItems, PersonRecipient, Contact, OrderedItem } from "@/types"
 
 export const AddRAB = () => {
@@ -39,7 +42,7 @@ export const AddRAB = () => {
             },
             contact:[{type:'cellphone', address:''}],
             items:[]
-        }
+        },
         {
             "name": "Hj Nurlela",
             "birthdata": {
@@ -61,7 +64,7 @@ export const AddRAB = () => {
             "contact": [
                 {
                     "type": "cellphone",
-                    "address": ""
+                    "value": ""
                 }
             ],
             "items": [
@@ -96,7 +99,7 @@ export const AddRAB = () => {
             "contact": [
                 {
                     "type": "cellphone",
-                    "address": ""
+                    "value": ""
                 }
             ],
             "items": [
@@ -111,13 +114,15 @@ export const AddRAB = () => {
             ]
         }*/
     ])
-    const [isAddRecipient, setIsAddRecipient] = useState(false)
-    const [recipientOption, setRecptOption] = useState<Set<string>>(new Set(["old"]))
+    const [ isAddRecipient, setIsAddRecipient] = useState(false)
+    const [ recipientOption, setRecptOption] = useState<Set<string>>(new Set(["old"]))
     const [ editRecipientItem, setEditRecipientItem ] = useState<PersonRecipientWItems | null>(null)
 
     const [fetchState, setFetchState] = useState("")
     const [fetchError, setFetchError] = useState("")
-        
+    
+    const router = useRouter()
+
     const submitData = async () => {
         
         const RABDate = new Date(date.year + "-" + date.month + "-" + date.day)
@@ -133,6 +138,7 @@ export const AddRAB = () => {
           
             const data = await response.json();
             console.log(data)
+            router.push("/RAB")
         }catch(err:any){
             console.log('fetch error : ', err)
             setFetchError("Error when submiting")
@@ -141,6 +147,12 @@ export const AddRAB = () => {
             setFetchState("done")
         } 
     }
+
+    useEffect(()=>{
+        if(fetchError !== ""){
+            setFetchError("")
+        }
+    }, [isAddRecipient, fetchError])
     
     const existingRecipients = recipients.filter((d:PersonRecipientWItems) => d._id)
     
@@ -160,20 +172,25 @@ export const AddRAB = () => {
                     />
                 </div>
                 <div className="flex-auto p-1">
-                    <Input size="lg" variant="underlined" fullWidth label="Judul RAB" value={title} onChange={e => setTitle(e.target.value)} />
+                    <Input size="lg" variant="underlined" fullWidth label="Judul RAB" value={title} onChange={e => setTitle(e.target.value)} 
+                        isInvalid={fetchError === "Error when submiting"}
+                        errorMessage="Gagal Menambahkan RAB..."
+                    />
                 </div>
                 <div className="w-full md:w-fit flex justify-end items-center p-1">                    
                     <Button color="primary" onPress={()=>{if(!isAddRecipient){setIsAddRecipient(true)}}}
                         isDisabled={fetchState === "submiting"}
+                        startContent={<AddUserIcon />}
                     >
-                        + Penerima
+                        Penerima
                     </Button>
                     <Dropdown className="w-fit" >
                         <DropdownTrigger>
                             <Button 
-                                variant="bordered"                                 
+                                variant="bordered" 
+                                startContent={<CogIcon />}                                
                             >
-                            <CogIcon />
+                                Opsi
                             </Button>
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Static Actions"
@@ -199,29 +216,62 @@ export const AddRAB = () => {
                     <TableColumn>No KK</TableColumn>
                     <TableColumn>Kontak</TableColumn>
                     <TableColumn>Bantuan</TableColumn>
+                    <TableColumn>Hapus Penerima?</TableColumn>
                 </TableHeader>                
                 <TableBody>
                     {
-                        recipients.map((d:PersonRecipientWItems, i:number)=>{
+                        recipients.map((d:PersonRecipientWItems, i:number)=>{                            
                             return (
                                 <TableRow key={i.toString()}>
-                                    <TableCell>{d.name}</TableCell>
-                                    <TableCell>{d.address.street}, {d.address.rtRw}, {d.address.kelurahan}, {d.address.kecamatan}, {d.address.kabupaten}</TableCell>
-                                    <TableCell>{d.ids.nik}</TableCell>
-                                    <TableCell>{d.ids.noKk}</TableCell>
-                                    <TableCell>{Array.isArray(d.contact) && d.contact.map((c:Contact, index:number) => (
-                                        <div key={index}>{c.type}: {c.value}</div>
-                                    ))}</TableCell>
                                     <TableCell>
-                                        <TableItem 
-                                            item={d.items[0]}                                            
-                                            editPress={()=>{setEditRecipientItem(d)}}
-                                            deletePress={()=>{
-                                                const updatedRecipients = _.cloneDeep(recipients)
-                                                updatedRecipients[i].items = []
+                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
+                                            {d.name}
+                                        </Skeleton>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
+                                            {d.address.street}, {d.address.rtRw}, {d.address.kelurahan}, {d.address.kecamatan}, {d.address.kabupaten}
+                                        </Skeleton>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
+                                            {d.ids.nik}
+                                        </Skeleton>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
+                                            {d.ids.noKk}
+                                        </Skeleton>
+                                    </TableCell>
+                                    <TableCell className="flex items-center justify-center">
+                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
+                                            <TableContact contact={d.contact} />                                        
+                                        </Skeleton>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
+                                            <TableItem 
+                                                item={d.items[0]}                                            
+                                                editPress={()=>{setEditRecipientItem(d)}}
+                                                deletePress={()=>{
+                                                    const updatedRecipients = _.cloneDeep(recipients)
+                                                    updatedRecipients[i].items = []
+                                                    setRecipients(updatedRecipients)
+                                                }}
+                                            />
+                                        </Skeleton>    
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
+                                        <Button color="danger" startContent={<DeleteIcon className="size-5" />} size="sm"
+                                            onPress={()=>{
+                                                const updatedRecipients = recipients.filter((dRec:PersonRecipientWItems) => dRec.ids.nik !== d.ids.nik)
                                                 setRecipients(updatedRecipients)
                                             }}
-                                        />    
+                                        >
+                                            Hapus
+                                        </Button>
+                                        </Skeleton>
                                     </TableCell>
                                 </TableRow>
                             )
@@ -245,6 +295,7 @@ export const AddRAB = () => {
                 <Button size="lg" color={`primary`} 
                     isDisabled={!canSubmit}
                     onPress={submitData}
+                    endContent={<AddDocumentIcon />}
                 >
                     Tambahkan RAB
                 </Button>
@@ -323,22 +374,22 @@ export const AddRAB = () => {
                 />
             }
             {
-            editRecipientItem !== null &&
-                <EditItem
-                    recipient={editRecipientItem}
-                    show={editRecipientItem !== null}
-                    hideForm={()=>{setEditRecipientItem(null)}}
-                    submit={(newItem:OrderedItem)=>{                        
-                        const {_id} = editRecipientItem                        
-                        const recipientIdx = recipients.findIndex((dRec:PersonRecipientWItems) => dRec._id === _id)
-                        const updatedSelecteds = _.cloneDeep(recipients)
-                        updatedSelecteds[recipientIdx].items[0] = newItem
-                        setRecipients(updatedSelecteds)
-                        setEditRecipientItem(null)
+                editRecipientItem !== null &&
+                    <EditItem
+                        recipient={editRecipientItem}
+                        show={editRecipientItem !== null}
+                        hideForm={()=>{setEditRecipientItem(null)}}
+                        submit={(newItem:OrderedItem)=>{                        
+                            const {ids:{nik}} = editRecipientItem                        
+                            const recipientIdx = recipients.findIndex((dRec:PersonRecipientWItems) => dRec.ids.nik === nik)
+                            const updatedSelecteds = _.cloneDeep(recipients)
+                            updatedSelecteds[recipientIdx].items[0] = newItem
+                            setRecipients(updatedSelecteds)
+                            setEditRecipientItem(null)
 
-                    }}
-                />
-        }
+                        }}
+                    />
+            }
         </div>
     )
 }

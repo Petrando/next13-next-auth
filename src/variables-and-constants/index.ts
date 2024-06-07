@@ -5,8 +5,7 @@ export const cloner = (obj:any) => {
     return JSON.parse(JSON.stringify(obj))
 }
 
-export const emptyOrderedItem: OrderedItem  = _.cloneDeep({
-    _id:"",
+export const emptyOrderedItem: OrderedItem  = _.cloneDeep({    
     name: "",
     productName: "",
     category: "", 

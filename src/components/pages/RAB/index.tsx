@@ -65,75 +65,79 @@ export const RABList = () => {
             <div className="flex flex-wrap px-1 md:px-3">
                 {fetchState === "complete" ? (RABs.length > 0 && RABs.map((d:IRAB) => {                    
                     return(
-                        <Card key={d._id} className="h-60 basis-full md:basis-1/2 lg:basis-1/3">
+                        <div key={d._id} className="h-60 basis-full md:basis-1/2 lg:basis-1/3 flex p-1 md:p-2">
+                            <Card  className="basis-full">
+                                <CardHeader className="flex">
+                                    <h3 className="text-lg font-semibold basis-4/5 text-center">
+                                        {d.title}
+                                    </h3>
+                                    <DateInput 
+                                        label={"Tanggal"} 
+                                        isReadOnly
+                                        value={parseDate('1980-01-21')}  
+                                        className="basis-1/5"
+                                    />
+                                </CardHeader>
+                                <Divider />
+                                <CardBody>
+                                <Table aria-label="Tabel Penerima Bantuan">
+                                    <TableHeader>
+                                        <TableColumn>NAMA</TableColumn>                                    
+                                        <TableColumn>NIK</TableColumn>                                    
+                                        <TableColumn>Barang</TableColumn>
+                                    </TableHeader> 
+                                    <TableBody>
+                                    {
+                                        d.recipients.map((dPerson:PersonRecipientWItems)=>{
+                                            return (
+                                                <TableRow key={dPerson._id?dPerson._id:dPerson.ids.nik}>
+                                                    <TableCell>{dPerson.name}</TableCell>
+                                                    <TableCell>{dPerson.ids.nik}</TableCell>
+                                                    <TableCell>{dPerson.items[0].name}</TableCell>
+                                                </TableRow>
+                                            )
+                                        })
+                                    }
+                                    </TableBody>
+                                </Table>
+                                </CardBody>
+                                <Divider />
+                                <CardFooter className="flex justify-end">
+                                    <Button color="primary" size="sm">
+                                        Detil RAB
+                                    </Button>
+                                </CardFooter>
+                            </Card>
+                        </div>
+                    )
+                })): 
+                    <div className="h-60 basis-full md:basis-1/2 lg:basis-1/3 flex p-1 md:p-2">               
+                        <Card className="basis-full">
                             <CardHeader className="flex">
-                                <h3 className="text-lg font-semibold basis-4/5 text-center">
-                                    {d.title}
-                                </h3>
-                                <DateInput 
-                                    label={"Tanggal"} 
-                                    isReadOnly
-                                    value={parseDate('1980-01-21')}  
-                                    className="basis-1/5"
-                                />
+                                <Skeleton className="rounded" isLoaded={fetchState==="complete"}>
+                                    <h3 className="text-lg font-semibold basis-4/5 text-center">
+                                        Judul RAB yang akan dimuat
+                                    </h3>
+                                </Skeleton>
                             </CardHeader>
                             <Divider />
                             <CardBody>
-                            <Table aria-label="Tabel Penerima Bantuan">
-                                <TableHeader>
-                                    <TableColumn>NAMA</TableColumn>                                    
-                                    <TableColumn>NIK</TableColumn>                                    
-                                    <TableColumn>Barang</TableColumn>
-                                </TableHeader> 
-                                <TableBody>
-                                {
-                                    d.recipients.map((dPerson:PersonRecipientWItems)=>{
-                                        return (
-                                            <TableRow key={dPerson._id?dPerson._id:dPerson.ids.nik}>
-                                                <TableCell>{dPerson.name}</TableCell>
-                                                <TableCell>{dPerson.ids.nik}</TableCell>
-                                                <TableCell>{dPerson.items[0].name}</TableCell>
-                                            </TableRow>
-                                        )
-                                    })
-                                }
-                                </TableBody>
-                            </Table>
+                                <div className="w-full flex space-x-1 pt-10">
+                                    <Skeleton className="rounded-md h-8 basis-1/3" isLoaded={fetchState==="complete"} />   
+                                    <Skeleton className="rounded-md h-8 basis-1/3" isLoaded={fetchState==="complete"} />   
+                                    <Skeleton className="rounded-md h-8 basis-1/3" isLoaded={fetchState==="complete"} />   
+                                </div>                            
                             </CardBody>
                             <Divider />
                             <CardFooter className="flex justify-end">
-                                <Button color="primary" size="sm">
-                                    Detil RAB
-                                </Button>
+                                <Skeleton className="rounded-md" isLoaded={fetchState === "complete"}>
+                                    <Button size="sm">
+                                        Detil RAB
+                                    </Button>
+                                </Skeleton>
                             </CardFooter>
                         </Card>
-                    )
-                })):                
-                    <Card className="h-60 basis-full md:basis-1/2 lg:basis-1/3">
-                        <CardHeader className="flex">
-                            <Skeleton className="rounded" isLoaded={fetchState==="complete"}>
-                                <h3 className="text-lg font-semibold basis-4/5 text-center">
-                                    Judul RAB yang akan dimuat
-                                </h3>
-                            </Skeleton>
-                        </CardHeader>
-                        <Divider />
-                        <CardBody>
-                            <div className="w-full flex space-x-1 pt-10">
-                                <Skeleton className="rounded-md h-8 basis-1/3" isLoaded={fetchState==="complete"} />   
-                                <Skeleton className="rounded-md h-8 basis-1/3" isLoaded={fetchState==="complete"} />   
-                                <Skeleton className="rounded-md h-8 basis-1/3" isLoaded={fetchState==="complete"} />   
-                            </div>                            
-                        </CardBody>
-                        <Divider />
-                        <CardFooter className="flex justify-end">
-                            <Skeleton className="rounded-md" isLoaded={fetchState === "complete"}>
-                                <Button size="sm">
-                                    Detil RAB
-                                </Button>
-                            </Skeleton>
-                        </CardFooter>
-                    </Card>
+                    </div>
                 }
                
             </div>

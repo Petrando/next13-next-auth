@@ -6,6 +6,7 @@ import {
             Skeleton,
             Card, CardHeader, CardBody, CardFooter,  
             Input, DatePicker, Divider } from "@nextui-org/react";
+import { TableContact } from "../shared/TableContact";
 import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
 import { EditItem } from "../shared/AddEditItem"
 import { TableItem } from "../shared/TableItemCard";
@@ -156,9 +157,9 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                                             <TableCell>{d.address.street}, {d.address.rtRw}, {d.address.kelurahan}, {d.address.kecamatan}, {d.address.kabupaten}</TableCell>
                                             <TableCell>{d.ids.nik}</TableCell>
                                             <TableCell>{d.ids.noKk}</TableCell>
-                                            <TableCell>{Array.isArray(d.contact) && d.contact.map((c:Contact, index:number) => (
-                                                <div key={index}>{c.type}: {c.value}</div>
-                                            ))}</TableCell>
+                                            <TableCell>
+                                                <TableContact contact={d.contact} />
+                                            </TableCell>
                                             <TableCell>
                                                 <TableItem 
                                                     item={d.items[0]}                                                    
@@ -245,9 +246,9 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                                             <TableCell>{d.address.street}, {d.address.rtRw}, {d.address.kelurahan}, {d.address.kecamatan}, {d.address.kabupaten}</TableCell>
                                             <TableCell>{d.ids.nik}</TableCell>
                                             <TableCell>{d.ids.noKk}</TableCell>
-                                            <TableCell>{Array.isArray(d.contact) && d.contact.map((c:Contact, index:number) => (
-                                                <div key={index}>{c.type}: {c.value}</div>
-                                            ))}</TableCell>
+                                            <TableCell>
+                                                <TableContact contact={d.contact} />
+                                            </TableCell>
                                         </TableRow>
                                     )
                                 })

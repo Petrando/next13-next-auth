@@ -15,7 +15,7 @@ export async function POST(req:NextRequest) {
     const items = recipients.map((d:any)=>d.items).flat()
     const newItems = items.reduce((acc:any[], curr:any)=>{
         const newItemIdx = acc.findIndex((d:any)=>d.name === curr.name && d.productName === curr.productName && d.category === curr.category && d.subCategory === curr.subCategory)
-        if(newItemIdx === -1){
+        if(newItemIdx === -1 && !curr._id){
             acc.push(curr)
         }
         return acc

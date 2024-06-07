@@ -10,7 +10,7 @@ type IButton = {
 export const EditBtn:FC<IButton> = ({onPress = () => {}, label = "Ubah"}) => {
     return (
         <Button color="secondary" size="sm" onPress={onPress} isIconOnly>
-            <EditIcon />            
+            <EditIcon className="size-4" />            
         </Button>
     )
 }
@@ -18,7 +18,7 @@ export const EditBtn:FC<IButton> = ({onPress = () => {}, label = "Ubah"}) => {
 export const DeleteBtn:FC<IButton> = ({onPress = () => {}, label = "Hapus"}) => {
     return (
         <Button color="danger" size="sm" onPress={onPress} isIconOnly>
-            <DeleteIcon />            
+            <DeleteIcon className="size-4" />            
         </Button>
     )
 }

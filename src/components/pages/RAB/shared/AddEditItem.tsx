@@ -76,10 +76,10 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
     useEffect(()=>{
         getItems()
     }, [])
-
+    
     const baseSelectedItem = itemSelection.length>0?itemSelection[itemSelection.findIndex((d:Item) => d._id === selectedItemId)]:
         items.length > 0?items[0]:_.cloneDeep(emptyOrderedItem)
-    const selectedItem = selectedItemId === ""?_.cloneDeep(emptyOrderedItem):{...baseSelectedItem, unit:selectedUnitAmt}
+    const selectedItem = selectedItemId === ""?_.cloneDeep(emptyOrderedItem):{...baseSelectedItem, unit:selectedUnitAmt}    
 
     const currentItem = itemType === "new"?newItem:selectedItem
     const { name, unit, price } = currentItem || {name:"", unit:0, price:0}   
