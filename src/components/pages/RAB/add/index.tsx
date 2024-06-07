@@ -4,8 +4,8 @@ import { useState, useEffect } from "react"
 import _ from "lodash"
 import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,
     Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
-        DatePicker, Input, RadioGroup, Radio
-
+        DatePicker, Input, RadioGroup, Radio,
+            Link
  } from "@nextui-org/react"
 import { NewRecipientForm } from "./NewRecipient"
 import { AddExistingRecipients } from "./AddExistingRecipients"
@@ -121,7 +121,7 @@ export const AddRAB = () => {
     const submitData = async () => {
         
         const RABDate = new Date(date.year + "-" + date.month + "-" + date.day)
-        setFetchState("submitting")
+        setFetchState("submiting")
         try{
             const response = await fetch('/api/RAB/add', {
                 method: 'POST',
@@ -135,14 +135,16 @@ export const AddRAB = () => {
             console.log(data)
         }catch(err:any){
             console.log('fetch error : ', err)
-            setFetchError("Error when submitting")
+            setFetchError("Error when submiting")
         }
         finally{
             setFetchState("done")
         } 
     }
     
-    const existingRecipients = recipients.filter((d:PersonRecipientWItems) => d._id)   
+    const existingRecipients = recipients.filter((d:PersonRecipientWItems) => d._id)
+    
+    const canSubmit = title !== "" && recipients.length > 0 && recipients.map((d:PersonRecipientWItems) => d.items).every((d:OrderedItem[]) => d.length > 0)
 
     return (
         <div className="flex flex-col w-screen px-1 md:px-2">
@@ -161,7 +163,9 @@ export const AddRAB = () => {
                     <Input size="lg" variant="underlined" fullWidth label="Judul RAB" value={title} onChange={e => setTitle(e.target.value)} />
                 </div>
                 <div className="w-full md:w-fit flex justify-end items-center p-1">                    
-                    <Button color="primary" onPress={()=>{if(!isAddRecipient){setIsAddRecipient(true)}}}>
+                    <Button color="primary" onPress={()=>{if(!isAddRecipient){setIsAddRecipient(true)}}}
+                        isDisabled={fetchState === "submiting"}
+                    >
                         + Penerima
                     </Button>
                     <Dropdown className="w-fit" >
@@ -233,10 +237,13 @@ export const AddRAB = () => {
                 </div>
             }
             <div className="flex items-center justify-end px-2 py-3">
-                <Button size="lg" color={`${recipients.length > 0?"primary":"default"}`} 
-                    disabled={recipients.length === 0}
-                    disableRipple={recipients.length === 0}
-                    disableAnimation={recipients.length === 0}
+                <Link href="/RAB" isDisabled={fetchState === "submiting"} color="danger" underline="hover"
+                    className="mx-4"
+                >
+                    Kembali
+                </Link>
+                <Button size="lg" color={`primary`} 
+                    isDisabled={!canSubmit}
                     onPress={submitData}
                 >
                     Tambahkan RAB

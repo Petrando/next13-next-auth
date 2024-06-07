@@ -269,7 +269,7 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                     >
                         Tambahkan
                     </Button>
-                    <Button color="danger" variant="flat" onPress={()=>{hideForm()}}>
+                    <Button color="danger" onPress={()=>{hideForm()}}>
                         Batal
                     </Button>
                     
