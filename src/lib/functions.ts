@@ -1,7 +1,6 @@
 import { parseDate } from "@internationalized/date";
 
-export const todayDateString = () => {
-    const date = new Date()
+export const createDateString = (date:Date = new Date()) => {    
     const year = date.getFullYear()
     const month = date.getMonth() + 1
      

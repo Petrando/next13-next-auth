@@ -13,11 +13,13 @@ type TItemForm = {
     show: boolean;
     hideForm: ()=>void;    
     submit: (newItem:OrderedItem)=>void;
+    newItems: OrderedItem[];
 }
 
-export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {    
+export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newItems}) => {    
 
     const [ newItem, setNewItem] = useState<OrderedItem>(_.cloneDeep(emptyOrderedItem))
+    const [ newItemIdx, setNewItemIdx ] = useState(-1)
 
     const [ itemSelection, setSelection] = useState<Item[]>([])
     const [ selectedItemId, setSelectedId] = useState("")
@@ -29,6 +31,11 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
     const {items} = recipient
+
+    useEffect(()=>{
+        const newItem = _.cloneDeep(newItemIdx === -1?emptyOrderedItem:newItems[newItemIdx])
+        setNewItem(newItem)
+    }, [newItemIdx])
 
     useEffect(()=>{
         if(items.length > 0){
@@ -83,9 +90,10 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
 
     const currentItem = itemType === "new"?newItem:selectedItem
     const { name, unit, price } = currentItem || {name:"", unit:0, price:0}   
-    const canSubmit = name !== "" && unit > 0 && price > 0
-
+    
     const {name:recipientName} = recipient
+
+    const canSubmit = name !== "" && unit > 0 && price > 0
 
     return (
         <Modal 
@@ -116,7 +124,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                 <div className="w-full">                    
                     <div className="w-full flex flex-wrap mb-2">                        
                         <Input
-                            isDisabled={itemType==="existing" && fetchState!=="complete"}
+                            isDisabled={itemType==="existing" || (itemType === "new" && newItemIdx > -1)}
                             label="Nama Barang"                        
                             variant="bordered"
                             size="sm"
@@ -130,7 +138,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                             }}
                         />                                                
                         <Input
-                            isDisabled={itemType==="existing" && fetchState!=="complete"}
+                            isDisabled={itemType === "existing" && fetchState!=="complete"}
                             label="Jumlah"
                             variant="bordered"
                             size="sm"
@@ -146,7 +154,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                             }}    
                         />                                        
                         <Input
-                            isDisabled={itemType==="existing" && fetchState!=="complete"}
+                            isDisabled={(itemType==="existing" && fetchState!=="complete")}
                             label="Harga"
                             variant="bordered"
                             size="sm"
@@ -163,47 +171,61 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit}) => {
                     </div>
                     
                     {
-                        itemType === "existing" && 
+                        (itemType === "existing" || (itemType === "new" && newItems.length > 0)) && 
                             <>
                             <Divider />
                             <Table aria-label="Pilihan Bantuan" className=" mt-2"
                                 topContent={
                                     <div className="w-full flex items-center justify-center">
                                         <h2 className={`font-semibold`}>
-                                            Pilihan Bantuan
+                                            Pilihan Bantuan {`${itemType === "new" && "Baru"}`}
                                         </h2>
                                     </div>
                                 }
                             >
                                 <TableHeader>
                                     <TableColumn>
-                                        <Skeleton className="rounded" isLoaded={ fetchState === "complete"}>
+                                        <Skeleton className="rounded" isLoaded={ itemType === "new" || (itemType === "existing" && fetchState === "complete")}>
                                             {''}
                                         </Skeleton>
                                     </TableColumn>
                                     <TableColumn>
-                                        <Skeleton className="rounded" isLoaded={ fetchState === "complete"}>
+                                        <Skeleton className="rounded" isLoaded={ itemType === "new" || (itemType === "existing" && fetchState === "complete")}>
                                             Barang
                                         </Skeleton>
                                     </TableColumn>                                
                                     <TableColumn>
-                                        <Skeleton className="rounded" isLoaded={ fetchState === "complete"}>
+                                        <Skeleton className="rounded" isLoaded={ itemType === "new" || (itemType === "existing" && fetchState === "complete")}>
                                             Harga Per Unit
                                         </Skeleton>
                                     </TableColumn>                            
                                 </TableHeader>                
                                 <TableBody>
-                                    {itemSelection.map((d:Item, i:number)=>{
-                                        const selected = selectedItemId === d._id
+                                    {(itemType === "existing"?itemSelection:newItems)
+                                        .map((d:Item, i:number)=>{
+                                        const selected = itemType === "existing"?
+                                            selectedItemId === d._id:
+                                                newItemIdx === i
                                         return (
                                             <TableRow key={d._id?d._id:i}>
                                                 <TableCell>
                                                     <Checkbox 
                                                         isSelected={selected}
                                                         onValueChange={(e)=>{
-                                                            if(!selected){                                                            
-                                                                setSelectedId(d._id?d._id:"")
+                                                            if(itemType === "existing"){
+                                                                if(!selected){                                                            
+                                                                    setSelectedId(d._id?d._id:"")
+                                                                }else{
+                                                                    setSelectedId("")
+                                                                }
+                                                            }else{
+                                                                if(!selected){
+                                                                    setNewItemIdx(i)
+                                                                }else{
+                                                                    setNewItemIdx(-1)
+                                                                }
                                                             }
+                                                            
                                                         }}
                                                     />
                                                 </TableCell>

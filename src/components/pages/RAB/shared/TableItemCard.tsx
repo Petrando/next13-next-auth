@@ -15,8 +15,8 @@ export const TableItem:FC<ITableItem> = ({ item, editPress, deletePress }) => {
     if(!item){
         return (
             <motion.span
-                initial={{y:-20, opacity:0}}
-                animate={{y:0, opacity: 1}}
+                initial={{ opacity:0}}
+                animate={{ opacity: 1}}
                 transition={{duration:1}}
             >
                 <Button color="primary" size="sm" 
@@ -31,8 +31,8 @@ export const TableItem:FC<ITableItem> = ({ item, editPress, deletePress }) => {
 
     return (
         <motion.span
-            initial={{y:80, opacity: 0}}
-            animate={{y:0, opacity: 1}}
+            initial={{ opacity: 0}}
+            animate={{ opacity: 1}}
             transition={{duration:1}}
         >
             <Card>

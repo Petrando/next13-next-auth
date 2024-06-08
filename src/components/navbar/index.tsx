@@ -26,17 +26,17 @@ export function Navigation() {
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 <NavbarItem>
                     <Link color="foreground" href="#">
-                        Features
+                        Penerima
                     </Link>
                 </NavbarItem>
                 <NavbarItem isActive>
-                    <Link href="#" aria-current="page">
-                        Customers
+                    <Link href="/RAB" aria-current="page">
+                        RAB
                     </Link>
                 </NavbarItem>
                 <NavbarItem>
                     <Link color="foreground" href="#">
-                        Integrations
+                        Bantuan
                     </Link>
                 </NavbarItem>
             </NavbarContent>

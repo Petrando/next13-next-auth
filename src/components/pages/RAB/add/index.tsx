@@ -5,7 +5,7 @@ import _ from "lodash"
 import { useRouter } from "next/navigation"
 import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,
     Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
-        DatePicker, Input, RadioGroup, Radio, Skeleton, 
+        DatePicker, Input,  Skeleton, 
             Link
  } from "@nextui-org/react"
 import { NewRecipientForm } from "./NewRecipient"
@@ -13,13 +13,13 @@ import { AddExistingRecipients } from "./AddExistingRecipients"
 import { CogIcon } from "@/components/Icon"
 import { TableItem } from "../shared/TableItemCard"
 import { EditItem } from "../shared/AddEditItem"
-import { todayDateString } from "@/lib/functions";
+import { createDateString } from "@/lib/functions";
 import { TableContact } from "../shared/TableContact"
 import { CellphoneIcon, DeleteIcon, AddDocumentIcon, PlusIcon, AddUserIcon } from "@/components/Icon"
 import { PersonRecipientWItems, PersonRecipient, Contact, OrderedItem } from "@/types"
 
 export const AddRAB = () => {
-    const [date, setDate] = useState(todayDateString())
+    const [date, setDate] = useState(createDateString())
     const [title, setTitle] = useState('')
     const [category, setCategory] = useState('')
     const [recipients, setRecipients] = useState<PersonRecipientWItems[]>([
@@ -155,6 +155,8 @@ export const AddRAB = () => {
     }, [isAddRecipient, fetchError])
     
     const existingRecipients = recipients.filter((d:PersonRecipientWItems) => d._id)
+
+    const newItems = recipients.map((d:PersonRecipientWItems) => d.items).flat().filter((d:OrderedItem) => !d._id)
     
     const canSubmit = title !== "" && recipients.length > 0 && recipients.map((d:PersonRecipientWItems) => d.items).every((d:OrderedItem[]) => d.length > 0)
 
@@ -243,13 +245,13 @@ export const AddRAB = () => {
                                             {d.ids.noKk}
                                         </Skeleton>
                                     </TableCell>
-                                    <TableCell className="flex items-center justify-center">
+                                    <TableCell>
                                         <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
                                             <TableContact contact={d.contact} />                                        
                                         </Skeleton>
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
+                                        <Skeleton className="rounded pointer-events-none" isLoaded={fetchState!=="submiting"}>
                                             <TableItem 
                                                 item={d.items[0]}                                            
                                                 editPress={()=>{setEditRecipientItem(d)}}
@@ -371,6 +373,7 @@ export const AddRAB = () => {
                         setIsAddRecipient(false) 
                     }}
                     existingRecipients={existingRecipients}
+                    newItems={newItems}
                 />
             }
             {
@@ -386,8 +389,8 @@ export const AddRAB = () => {
                             updatedSelecteds[recipientIdx].items[0] = newItem
                             setRecipients(updatedSelecteds)
                             setEditRecipientItem(null)
-
                         }}
+                        newItems={newItems}
                     />
             }
         </div>

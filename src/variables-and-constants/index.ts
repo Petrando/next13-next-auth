@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { PersonRecipientWItems, Item, OrderedItem } from "@/types";
+import { PersonRecipientWItems, Item, OrderedItem, IRAB } from "@/types";
 
 export const cloner = (obj:any) => {
     return JSON.parse(JSON.stringify(obj))
@@ -34,5 +34,9 @@ export const emptyPerson:PersonRecipientWItems = _.cloneDeep({
     },
     contact: [{type:'cellphone', value:''}],
     items: []
+})
+
+export const emptyRAB:IRAB = _.cloneDeep({
+    _id:"", date:new Date(), category:"", title:"", recipients:[]
 })
 

@@ -12,7 +12,7 @@ export const TableContact:FC<ITableContact> = ({contact}) => {
         <>
         {
             (contact[0].type === "cellphone" && (contact[0].value && contact[0].value !== ""))?
-                <div className="basis-full flex items-center justify-center text-center">
+                <div className="flex items-center justify-center text-center">
                     <Button variant="light" startContent={<CellphoneIcon className="size-5"/>} size="sm">
                         {contact[0].value}
                     </Button>

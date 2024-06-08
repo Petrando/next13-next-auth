@@ -17,9 +17,10 @@ type TRecipientForm = {
     hideForm: ()=>void;
     existingRecipients: PersonRecipientWItems[];
     submit: (recipient:PersonRecipientWItems[])=>void;
+    newItems: OrderedItem[];    
 }
 
-export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit, existingRecipients }) => {
+export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit, existingRecipients, newItems }) => {
     const [ recipients, setRecipients ] = useState<PersonRecipient[]>([])    
     const [ selecteds, setSelecteds ] = useState<PersonRecipientWItems[]>([])
     const [ editRecipientItem, setEditRecipientItem ] = useState<PersonRecipientWItems | null>(null)
@@ -66,7 +67,18 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
         }
     }, [show])            
 
-    const selectedNiks = selecteds.map((d:PersonRecipientWItems) => d.ids.nik)    
+    const selectedNiks = selecteds.map((d:PersonRecipientWItems) => d.ids.nik)
+    
+    const newSelectedItems = selecteds.map((d:PersonRecipientWItems) => d.items).flat().filter((d:OrderedItem) => !d._id)
+
+    newSelectedItems.forEach((d: OrderedItem) => {
+        const itemIdx = newItems.findIndex((dNew: OrderedItem) => d.name === dNew.name && d.productName === dNew.productName
+            && d.category === dNew.category && d.subCategory === dNew.subCategory 
+        )
+        if(itemIdx === -1){
+            newItems.push(d)
+        }
+    })
         
     return (
         <>               
@@ -294,6 +306,7 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                         setEditRecipientItem(null)
 
                     }}
+                    newItems={newItems}
                 />
         }
         </>        

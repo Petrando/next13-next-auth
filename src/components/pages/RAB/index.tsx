@@ -6,7 +6,7 @@ import { Button, Card, CardHeader, CardBody, CardFooter, Divider, DateInput,
     Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,
         Skeleton
  } from "@nextui-org/react"
-import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
+import { createDateString } from "@/lib/functions";
 import { IRAB, PersonRecipientWItems } from "@/types"
 
 export const RABList = () => {
@@ -74,7 +74,7 @@ export const RABList = () => {
                                     <DateInput 
                                         label={"Tanggal"} 
                                         isReadOnly
-                                        value={parseDate('1980-01-21')}  
+                                        value={createDateString(new Date(d.date))}  
                                         className="basis-1/5"
                                     />
                                 </CardHeader>
@@ -103,9 +103,16 @@ export const RABList = () => {
                                 </CardBody>
                                 <Divider />
                                 <CardFooter className="flex justify-end">
+                                    <Link href={{
+                                        pathname:"/RAB/detail",
+                                        query:{
+                                            _id:d._id
+                                        }
+                                    }}>
                                     <Button color="primary" size="sm">
                                         Detil RAB
                                     </Button>
+                                    </Link>
                                 </CardFooter>
                             </Card>
                         </div>
