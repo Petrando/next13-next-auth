@@ -16,6 +16,31 @@ import { PrintIcon } from '@/components/Icon';
 import { createDateString } from '@/lib/functions';
 import { emptyRAB, emptyPerson } from '@/variables-and-constants';
 import { IRAB, PersonRecipientWItems, OrderedItem } from '@/types';
+import { Document, Packer, Paragraph, TextRun } from "docx";
+import { saveAs } from "file-saver";
+
+const doc = new Document({
+    sections: [
+        {
+            properties: {},
+            children: [
+                new Paragraph({
+                    children: [
+                        new TextRun("Hello World"),
+                        new TextRun({
+                            text: "Foo Bar",
+                            bold: true,
+                        }),
+                        new TextRun({
+                            text: "\tGithub is the best",
+                            bold: true,
+                        }),
+                    ],
+                }),
+            ],
+        },
+    ],
+});
 
 export const RABDetail = () => {
     const [RAB, setRAB] = useState<IRAB>(emptyRAB)
@@ -66,7 +91,19 @@ export const RABDetail = () => {
             return acc + curr.price
         }, 0)
 
-    const renderElement = recipients.length > 0?recipients.concat(emptyPerson):[]
+    const renderElement = recipients.length > 0?recipients.concat(emptyPerson):[]    
+
+    function saveDocumentToFile(doc:any, fileName:string) {
+        
+        const mimeType =
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+        Packer.toBlob(doc).then((blob:any) => {
+            const docblob = blob.slice(0, blob.size, mimeType);
+            saveAs(docblob, fileName);
+        });
+    }
+
+
 
     return (
         <div className="flex flex-col w-screen px-1 md:px-2">            
@@ -161,7 +198,9 @@ export const RABDetail = () => {
                                     </TableCell>
                                     <TableCell>
                                         <Button size='sm' color='primary' startContent={<PrintIcon className='size-4' />}
-                                            isDisabled
+                                            onPress={()=>{
+                                                saveDocumentToFile(doc, 'first.docx')
+                                            }}
                                         >
                                             BAST    
                                         </Button>                                        

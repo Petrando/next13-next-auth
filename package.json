@@ -12,6 +12,8 @@
     "@internationalized/date": "^3.5.4",
     "@nextui-org/react": "^2.4.1",
     "bcryptjs": "^2.4.3",
+    "docx": "^8.5.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^11.2.10",
     "lodash": "^4.17.21",
     "mongodb": "^6.6.2",
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-currency-format": "^1.0.4",
