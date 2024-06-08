@@ -1,17 +1,19 @@
 import { FC } from "react"
 import { motion } from "framer-motion"
 import { Button, Card, CardHeader, CardBody, CardFooter, Divider } from "@nextui-org/react";
+import CurrencyFormat from 'react-currency-format';
 import { EditBtn, DeleteBtn } from "@/components/shared/Buttons";
 import { PlusIcon } from "@/components/Icon";
 import { OrderedItem } from "@/types";
 
 type ITableItem = {
     item: OrderedItem | undefined;    
-    editPress: () => void;
-    deletePress: () => void;
+    editPress?: () => void;
+    deletePress?: () => void;
+    editable?: boolean;
 }
 
-export const TableItem:FC<ITableItem> = ({ item, editPress, deletePress }) => {
+export const TableItem:FC<ITableItem> = ({ item, editPress = ()=>{}, deletePress = ()=>{}, editable = true }) => {
     if(!item){
         return (
             <motion.span
@@ -40,12 +42,24 @@ export const TableItem:FC<ITableItem> = ({ item, editPress, deletePress }) => {
                     <p className="text-sm">
                         {item.name}
                     </p>                                                        
-                </CardHeader>                        
+                </CardHeader>
                 <Divider />
-                <CardFooter>
-                    <EditBtn label="Ganti" onPress={editPress} />
-                    <DeleteBtn onPress={deletePress} />
-                </CardFooter>
+                <CardBody>
+                    <CurrencyFormat value={item.price} thousandSeparator='.' decimalSeparator="," prefix="Rp. " 
+                        className="text-right w-fit"
+                    />    
+                </CardBody>
+                {
+                    editable &&
+                    <>
+                        <Divider />
+                        <CardFooter className="flex items-center justify-end">
+                            <EditBtn label="Ganti" onPress={editPress} />
+                            <DeleteBtn onPress={deletePress} />
+                        </CardFooter>
+                    </>
+                }                        
+                
             </Card>
         </motion.span>
     )

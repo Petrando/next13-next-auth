@@ -16,6 +16,10 @@ import { EditItem } from "../shared/AddEditItem"
 import { createDateString } from "@/lib/functions";
 import { TableContact } from "../shared/TableContact"
 import { CellphoneIcon, DeleteIcon, AddDocumentIcon, PlusIcon, AddUserIcon } from "@/components/Icon"
+import CurrencyFormat from "react-currency-format"
+import { TotalRow } from "../shared/TotalTableRow"
+import { TotalCard } from "../shared/TotalCard"
+import { emptyPerson } from "@/variables-and-constants"
 import { PersonRecipientWItems, PersonRecipient, Contact, OrderedItem } from "@/types"
 
 export const AddRAB = () => {
@@ -157,7 +161,15 @@ export const AddRAB = () => {
     const existingRecipients = recipients.filter((d:PersonRecipientWItems) => d._id)
 
     const newItems = recipients.map((d:PersonRecipientWItems) => d.items).flat().filter((d:OrderedItem) => !d._id)
-    
+    const totalPrice = recipients
+        .filter((d:PersonRecipientWItems) => d.items.length > 0)
+        .map((d:PersonRecipientWItems) => d.items).flat()
+        .reduce((acc:number, curr:OrderedItem) => {            
+            return acc + curr.price
+        }, 0)
+
+    const renderElement = recipients.length > 0?recipients.concat(emptyPerson):[]
+
     const canSubmit = title !== "" && recipients.length > 0 && recipients.map((d:PersonRecipientWItems) => d.items).every((d:OrderedItem[]) => d.length > 0)
 
     return (
@@ -220,41 +232,58 @@ export const AddRAB = () => {
                     <TableColumn>Bantuan</TableColumn>
                     <TableColumn>Hapus Penerima?</TableColumn>
                 </TableHeader>                
-                <TableBody>
+                <TableBody>                    
                     {
-                        recipients.map((d:PersonRecipientWItems, i:number)=>{                            
+                        renderElement.map((d:PersonRecipientWItems, i:number)=>{
+                            const {name, address, ids, contact, items} = d
+
+                            const isEmptyElement = name === "" && ids.nik === ""
+                            if(isEmptyElement){
+                                return <TableRow key={i.toString()}>
+                                <TableCell colSpan={0}>{''}</TableCell>
+                                <TableCell colSpan={0}>{''}</TableCell>
+                                <TableCell colSpan={0}>{''}</TableCell>
+                                <TableCell colSpan={0}>{''}</TableCell>
+                                <TableCell colSpan={0}>{''}</TableCell>
+                                <TableCell colSpan={6}>
+                                    <TotalCard total={totalPrice} />   
+                                </TableCell>
+                                <TableCell colSpan={1}>{''}</TableCell>
+                            </TableRow>
+                            }
+                            
                             return (
                                 <TableRow key={i.toString()}>
                                     <TableCell>
                                         <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
-                                            {d.name}
+                                            {name}
                                         </Skeleton>
                                     </TableCell>
                                     <TableCell>
                                         <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
-                                            {d.address.street}, {d.address.rtRw}, {d.address.kelurahan}, {d.address.kecamatan}, {d.address.kabupaten}
+                                            {address.street}, {address.rtRw}, {address.kelurahan}, {address.kecamatan}, {address.kabupaten}
                                         </Skeleton>
                                     </TableCell>
                                     <TableCell>
                                         <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
-                                            {d.ids.nik}
+                                            {ids.nik}
                                         </Skeleton>
                                     </TableCell>
                                     <TableCell>
                                         <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
-                                            {d.ids.noKk}
+                                            {ids.noKk}
                                         </Skeleton>
                                     </TableCell>
                                     <TableCell>
                                         <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
-                                            <TableContact contact={d.contact} />                                        
+                                            <TableContact contact={contact} />                                        
                                         </Skeleton>
                                     </TableCell>
                                     <TableCell>
                                         <Skeleton className="rounded pointer-events-none" isLoaded={fetchState!=="submiting"}>
                                             <TableItem 
-                                                item={d.items[0]}                                            
-                                                editPress={()=>{setEditRecipientItem(d)}}
+                                                item={items[0]}                                            
+                                                editPress={()=>{setEditRecipientItem(d as PersonRecipientWItems)}}
                                                 deletePress={()=>{
                                                     const updatedRecipients = _.cloneDeep(recipients)
                                                     updatedRecipients[i].items = []
@@ -267,7 +296,7 @@ export const AddRAB = () => {
                                         <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
                                         <Button color="danger" startContent={<DeleteIcon className="size-5" />} size="sm"
                                             onPress={()=>{
-                                                const updatedRecipients = recipients.filter((dRec:PersonRecipientWItems) => dRec.ids.nik !== d.ids.nik)
+                                                const updatedRecipients = recipients.filter((dRec:PersonRecipientWItems) => dRec.ids.nik !== ids.nik)
                                                 setRecipients(updatedRecipients)
                                             }}
                                         >
@@ -278,8 +307,7 @@ export const AddRAB = () => {
                                 </TableRow>
                             )
                         })
-                    }
-                    
+                    }                                            
                 </TableBody>
             </Table>
             {

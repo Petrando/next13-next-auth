@@ -3,8 +3,8 @@ import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,
         Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Checkbox,  
-            Input, DatePicker, Divider, RadioGroup, Radio, Skeleton } from "@nextui-org/react";
-import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
+            Input, Divider, RadioGroup, Radio, Skeleton } from "@nextui-org/react";
+import CurrencyFormat from "react-currency-format";
 import { emptyOrderedItem } from "@/variables-and-constants";
 import { Item, OrderedItem, PersonRecipientWItems } from "@/types";
 
@@ -178,7 +178,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
                                 topContent={
                                     <div className="w-full flex items-center justify-center">
                                         <h2 className={`font-semibold`}>
-                                            Pilihan Bantuan {`${itemType === "new" && "Baru"}`}
+                                            Pilihan Bantuan {`${itemType === "new"?"Baru":""}`}
                                         </h2>
                                     </div>
                                 }
@@ -230,7 +230,11 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
                                                     />
                                                 </TableCell>
                                                 <TableCell>{d.name}</TableCell>
-                                                <TableCell>{d.price}</TableCell>
+                                                <TableCell>
+                                                    <CurrencyFormat value={d.price} thousandSeparator="." decimalSeparator="," prefix="Rp. " 
+                                                        className="text-right w-fit"
+                                                    />
+                                                </TableCell>
                                             </TableRow>
                                         )
                                     })}

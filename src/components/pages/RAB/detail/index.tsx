@@ -9,10 +9,13 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
  } from "@nextui-org/react"
 import { TableItem } from '../shared/TableItemCard';
 import { TableContact } from '../shared/TableContact';
+import { TotalRow } from '../shared/TotalTableRow';
+import { TotalCard } from '../shared/TotalCard';
+import CurrencyFormat from 'react-currency-format';
 import { PrintIcon } from '@/components/Icon';
 import { createDateString } from '@/lib/functions';
-import { emptyRAB } from '@/variables-and-constants';
-import { IRAB, PersonRecipientWItems } from '@/types';
+import { emptyRAB, emptyPerson } from '@/variables-and-constants';
+import { IRAB, PersonRecipientWItems, OrderedItem } from '@/types';
 
 export const RABDetail = () => {
     const [RAB, setRAB] = useState<IRAB>(emptyRAB)
@@ -55,6 +58,15 @@ export const RABDetail = () => {
     }, [rabId])
 
     const { title, date, recipients } = RAB
+
+    const totalPrice = recipients
+        .filter((d:PersonRecipientWItems) => d.items.length > 0)
+        .map((d:PersonRecipientWItems) => d.items).flat()
+        .reduce((acc:number, curr:OrderedItem) => {            
+            return acc + curr.price
+        }, 0)
+
+    const renderElement = recipients.length > 0?recipients.concat(emptyPerson):[]
 
     return (
         <div className="flex flex-col w-screen px-1 md:px-2">            
@@ -112,7 +124,21 @@ export const RABDetail = () => {
                 </TableHeader>                
                 <TableBody>
                     {
-                        recipients.map((d:PersonRecipientWItems, i:number)=>{                            
+                        renderElement.map((d:PersonRecipientWItems, i:number)=>{
+                            const isEmptyElement = d.name === "" && d.ids.nik === ""
+                            if(isEmptyElement){
+                                return <TableRow key={i.toString()}>
+                                    <TableCell colSpan={0}>{''}</TableCell>
+                                    <TableCell colSpan={0}>{''}</TableCell>
+                                    <TableCell colSpan={0}>{''}</TableCell>
+                                    <TableCell colSpan={0}>{''}</TableCell>
+                                    <TableCell colSpan={0}>{''}</TableCell>
+                                    <TableCell colSpan={6}>
+                                        <TotalCard total={totalPrice} />   
+                                    </TableCell>
+                                    <TableCell colSpan={1}>{''}</TableCell>
+                                </TableRow>
+                            }                            
                             return (
                                 <TableRow key={i.toString()}>
                                     <TableCell>                                        
@@ -131,7 +157,7 @@ export const RABDetail = () => {
                                         <TableContact contact={d.contact} />                                                                                
                                     </TableCell>
                                     <TableCell>
-                                        {d.items[0].name}                                        
+                                        <TableItem item={d.items[0]} editable={false} />                                        
                                     </TableCell>
                                     <TableCell>
                                         <Button size='sm' color='primary' startContent={<PrintIcon className='size-4' />}
