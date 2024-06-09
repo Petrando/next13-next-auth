@@ -20,12 +20,12 @@ export const authOptions: AuthOptions = {
                 if (!credentials) {
                     throw new Error("Invalid credentials");
                 }
-                const { email, password } = credentials as { email: string, password: string };
+                const { name, email, password } = credentials as { name: string, email: string, password: string };
 
                 try {
                     const client = await clientPromise;
                     const db: Db = client.db("charity-org");
-                    const userDoc: WithId<Document> | null = await db.collection("users").findOne({ email });
+                    const userDoc: WithId<Document> | null = await db.collection("users").findOne({ name });
 
                     if (!userDoc) {
                         return null;

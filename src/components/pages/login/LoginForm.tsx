@@ -10,6 +10,7 @@ import { Button } from '@nextui-org/button';
 
 export const LoginForm = () => {
     
+    const [name, setName] = useState("")
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -21,6 +22,7 @@ export const LoginForm = () => {
 
         try {
             const res = await signIn("credentials", {
+                name,
                 email,
                 password,
                 redirect: false,
@@ -44,9 +46,9 @@ export const LoginForm = () => {
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                 <input
-                    onChange={(e) => {setEmail(e.target.value)}}
+                    onChange={(e) => {setName(e.target.value)}}
                     type="text"
-                    placeholder="Email"
+                    placeholder="name"
                 />
                 <input
                     onChange={(e) => {setPassword(e.target.value)}}

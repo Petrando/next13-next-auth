@@ -16,14 +16,90 @@ import { PrintIcon } from '@/components/Icon';
 import { createDateString } from '@/lib/functions';
 import { emptyRAB, emptyPerson } from '@/variables-and-constants';
 import { IRAB, PersonRecipientWItems, OrderedItem } from '@/types';
-import { Document, Packer, Paragraph, TextRun } from "docx";
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
 import { saveAs } from "file-saver";
 
 const doc = new Document({
+    styles: {
+        paragraphStyles: [
+            {
+                id: "myWonkyStyle",
+                name: "My Wonky Style",
+                basedOn: "Normal",
+                next: "Normal",
+                quickFormat: true,
+                run: {
+                    italics: true,
+                    color: "999999",
+                },
+                paragraph: {
+                    spacing: {
+                        line: 276,
+                    },
+                    indent: {
+                        left: 720,
+                    },
+                },
+            },
+            {
+                id: "Heading2",
+                name: "Heading 2",
+                basedOn: "Normal",
+                next: "Normal",
+                quickFormat: true,
+                run: {
+                    size: 26,
+                    color: "999999"
+                },
+                paragraph: {
+                    spacing: {
+                        before: 240,
+                        after: 120
+                    },
+                },
+            },
+        ]
+    },
     sections: [
         {
             properties: {},
             children: [
+                new Paragraph({
+                    text: "KEMENTERIAN SOSIAL REPUBLIK INDONESIA",
+                    heading: HeadingLevel.HEADING_1,
+                    alignment: AlignmentType.START,
+                    style: "FFFFFF"
+                }),
+                new Paragraph({
+                    text: "SENTRA “MULYA JAYA” DI JAKARTA",
+                    heading: HeadingLevel.HEADING_1,
+                    alignment: AlignmentType.START,
+                    style: "FFFFFF"
+                }),
+                new Paragraph({
+                    text: "JALAN TAT TWAM ASI NO. 47 KOMPLEK DEPSOS PASAR REBO",
+                    heading: HeadingLevel.HEADING_1,
+                    alignment: AlignmentType.START,
+                    style: "FFFFFF"
+                }),
+                new Paragraph({
+                    text: "JAKARTA TIMUR 13760",
+                    heading: HeadingLevel.HEADING_1,
+                    alignment: AlignmentType.START,
+                    style: "FFFFFF"
+                }),
+                new Paragraph({
+                    text: "TELEPON (021) 8400631    FAKSIMILE: (021) 8415717",
+                    heading: HeadingLevel.HEADING_1,
+                    alignment: AlignmentType.START,
+                    style: "FFFFFF"
+                }),
+                new Paragraph({
+                    text: "stylehttp//mulyajaya.depsos.go.id    E_MAIL: pskw_mulyajaya@depsos.go.id",
+                    heading: HeadingLevel.HEADING_1,
+                    alignment: AlignmentType.START,
+                    style: "FFFFFF"
+                }),
                 new Paragraph({
                     children: [
                         new TextRun("Hello World"),
@@ -202,7 +278,7 @@ export const RABDetail = () => {
                                                 saveDocumentToFile(doc, 'first.docx')
                                             }}
                                         >
-                                            BAST    
+                                            BAST <br/>(maintenance)   
                                         </Button>                                        
                                     </TableCell>                                    
                                 </TableRow>

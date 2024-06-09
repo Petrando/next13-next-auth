@@ -16,6 +16,12 @@ export async function POST(req:NextRequest) {
         if(user){
             throw `Email ${email} sudah terdaftar`
         }
+
+        const userWithName = await users.findOne({ name })
+        if(userWithName){
+            throw `Nama user ${user} sudah terdaftar.`
+        }
+        
         await users.insertOne({ name, email, password: hashedPassword });        
         await session.commitTransaction()
         
