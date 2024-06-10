@@ -244,7 +244,12 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                                                     onValueChange={(e)=>{
                                                         if(!nikSelected){
                                                             const newSelected = [...selecteds]
-                                                            const selected = {...d, items:[]}
+                                                            const selected = {
+                                                                ...d, 
+                                                                items:[], 
+                                                                completed :{
+                                                                    done: false, RABScreenshot: ''
+                                                            }}
                                                             newSelected.push(selected)
                                                             setSelecteds(newSelected)
                                                         }else{
