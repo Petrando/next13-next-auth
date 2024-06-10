@@ -17,6 +17,7 @@ export const TableItem:FC<ITableItem> = ({ item, editPress = ()=>{}, deletePress
     if(!item){
         return (
             <motion.span
+                className={`${item?"pointer-events-none":"pointer-events-auto"}`}
                 initial={{ opacity:0}}
                 animate={{ opacity: 1}}
                 transition={{duration:1}}
@@ -33,6 +34,7 @@ export const TableItem:FC<ITableItem> = ({ item, editPress = ()=>{}, deletePress
 
     return (
         <motion.span
+            className={`${!item?"pointer-events-none":"pointer-events-auto"}`}
             initial={{ opacity: 0}}
             animate={{ opacity: 1}}
             transition={{duration:1}}
