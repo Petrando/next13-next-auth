@@ -33,7 +33,10 @@ export const emptyPerson:PersonRecipientWItems = _.cloneDeep({
         postCode: ''
     },
     contact: [{type:'cellphone', value:''}],
-    items: []
+    items: [],
+    completed :{
+        done: false, RABScreenshot: ''
+    }
 })
 
 export const emptyRAB:IRAB = _.cloneDeep({

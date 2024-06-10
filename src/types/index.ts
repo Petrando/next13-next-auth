@@ -46,6 +46,10 @@ export interface OrderedItem extends Item {
 
 export interface PersonRecipientWItems extends PersonRecipient{
     items: OrderedItem[];
+    completed:{
+        done: boolean;
+        RABScreenshot: string;
+    }
 }
 
 export interface IRAB {
