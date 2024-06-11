@@ -536,6 +536,307 @@ const BASTdoc = new Document({
     ],
 });
 
+const attachmentDoc = new Document({
+    styles: {
+        default: {            
+            heading6: {
+                run: {
+                    size: 22,
+                    color: "000000",
+                    font: "Arial"
+                }
+            },
+        }
+    },    
+    sections: [
+        {
+                        
+            children: [
+                new Paragraph({
+                    text:"Lampiran :  Berita Acara Serah Terima Bantuan ATENSI", heading: HeadingLevel.HEADING_6,
+                    alignment: AlignmentType.LEFT
+                }),
+                new Paragraph({
+                    text:"Nomor	:	 591/BAST/4.11/5/2024", heading: HeadingLevel.HEADING_6,
+                    alignment: AlignmentType.LEFT
+                }),
+                new Paragraph(""),                                 
+                new TableDocx({
+                    columnWidths: [4505, 4505],
+                    rows: [
+                        new TableRowDocx({
+                            height:{
+                                value: 500,
+                                rule: "exact"
+                            },
+                            children: [
+                                new TableCellDocx({
+                                    width: {
+                                        size: 10,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                        new Paragraph({
+                                            children:[
+                                                new TextRun({
+                                                    text:"No", bold: true
+                                                })
+                                            ],
+                                            heading: HeadingLevel.HEADING_6,
+                                            alignment: AlignmentType.CENTER
+                                        })
+                                    ],                                        
+                                }),
+                                new TableCellDocx({
+                                    width: {
+                                        size: 60,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                        new Paragraph({
+                                            children:[
+                                                new TextRun({
+                                                    text:"Nama Barang", bold: true
+                                                })
+                                            ],
+                                            heading: HeadingLevel.HEADING_6,
+                                            alignment: AlignmentType.CENTER
+                                        })
+                                    ],
+                                }),
+                                new TableCellDocx({
+                                    width: {
+                                        size: 15,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                        new Paragraph({
+                                            children:[
+                                                new TextRun({
+                                                    text:"Volume", bold: true,                                                     
+                                                })
+                                            ],
+                                            heading: HeadingLevel.HEADING_6,
+                                            alignment: AlignmentType.CENTER
+                                        })
+                                    ],
+                                }),
+                                new TableCellDocx({
+                                    width: {
+                                        size: 15,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                        new Paragraph({
+                                            children:[
+                                                new TextRun({
+                                                    text:"Satuan", bold: true,                                                     
+                                                })
+                                            ],
+                                            heading: HeadingLevel.HEADING_6,
+                                            alignment: AlignmentType.CENTER
+                                        })
+                                    ],
+                                })
+                            ],                                                
+                        }),
+                        new TableRowDocx({
+                            height:{
+                                value: 500,
+                                rule: "exact"
+                            },
+                            children: [
+                                new TableCellDocx({
+                                    width: {
+                                        size: 10,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                        new Paragraph({
+                                            children:[
+                                                new TextRun({
+                                                    text:"1", bold: true
+                                                })
+                                            ],
+                                            heading: HeadingLevel.HEADING_6,
+                                            alignment: AlignmentType.CENTER
+                                        })
+                                    ],                                        
+                                }),
+                                new TableCellDocx({
+                                    width: {
+                                        size: 60,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                        new Paragraph({
+                                            children:[
+                                                new TextRun({
+                                                    text:"Kursi Roda Standar", 
+                                                })
+                                            ],
+                                            heading: HeadingLevel.HEADING_6,
+                                            alignment: AlignmentType.CENTER
+                                        })
+                                    ],
+                                }),
+                                new TableCellDocx({
+                                    width: {
+                                        size: 15,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                        new Paragraph({
+                                            children:[
+                                                new TextRun({
+                                                    text:"1"
+                                                })
+                                            ],
+                                            heading: HeadingLevel.HEADING_6,
+                                            alignment: AlignmentType.CENTER
+                                        })
+                                    ],
+                                }),
+                                new TableCellDocx({
+                                    width: {
+                                        size: 15,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                        new Paragraph({
+                                            children:[
+                                                new TextRun({
+                                                    text:"Unit"
+                                                })
+                                            ],
+                                            heading: HeadingLevel.HEADING_6,
+                                            alignment: AlignmentType.CENTER
+                                        })
+                                    ],
+                                })
+                            ],                                                
+                        }),                                                        
+                    ],
+                    width:{
+                        size: 100, type: WidthType.PERCENTAGE
+                    }                        
+                }),
+                new Paragraph(""),
+                new TableDocx({
+                    columnWidths: [4505, 4505],
+                    borders: TableBorders.NONE,
+                    rows: [
+                        new TableRowDocx({                            
+                            children: [                                
+                                new TableCellDocx({
+                                    width: {
+                                        size: 70,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                    ],
+                                }),
+                                new TableCellDocx({
+                                    width: {
+                                        size: 30,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                        new Paragraph({
+                                            children:[
+                                                new TextRun({text:"Jakarta, 3 Mei 2024"})
+                                            ], heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER})
+                                    ],
+                                }),
+                                
+                            ],                                                
+                        }),
+                        new TableRowDocx({
+                            children: [new TableCellDocx({children:[]})]
+                        }),
+                        new TableRowDocx({                            
+                            children: [                                
+                                new TableCellDocx({
+                                    width: {
+                                        size: 70,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                    ],
+                                }),
+                                new TableCellDocx({
+                                    width: {
+                                        size: 30,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                        new Paragraph({
+                                            children:[
+                                                new TextRun({text:"Yang Menerima"})
+                                            ], heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER})
+                                    ],
+                                }),
+                                
+                            ],                                                
+                        }),
+                        new TableRowDocx({
+                            children: [new TableCellDocx({children:[]})]
+                        }),
+                        new TableRowDocx({
+                            children: [new TableCellDocx({children:[]})]
+                        }),
+                        new TableRowDocx({
+                            children: [new TableCellDocx({children:[]})]
+                        }),
+                        new TableRowDocx({                            
+                            children: [                                
+                                new TableCellDocx({
+                                    width: {
+                                        size: 70,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                    ],
+                                }),
+                                new TableCellDocx({
+                                    width: {
+                                        size: 30,
+                                        type: WidthType.PERCENTAGE,
+                                    },
+                                    verticalAlign: "center",
+                                    children: [
+                                        new Paragraph({
+                                            children:[
+                                                new TextRun({text:"Dodi Rusdi"})
+                                            ], heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER})
+                                    ],
+                                }),
+                                
+                            ],                                                
+                        }),                                                      
+                    ],
+                    width:{
+                        size: 100, type: WidthType.PERCENTAGE
+                    }                        
+                })                               
+            ],
+        },
+    ],
+});
+
 export const RABDetail = () => {
     const [RAB, setRAB] = useState<IRAB>(emptyRAB)
     const [fetchState, setFetchState] = useState("loading")
@@ -691,7 +992,7 @@ export const RABDetail = () => {
                                     <TableCell>
                                         <Button size='sm' color='primary' startContent={<PrintIcon className='size-4' />}
                                             onPress={()=>{
-                                                saveDocumentToFile(BASTdoc, 'first.docx')
+                                                saveDocumentToFile(attachmentDoc, 'attachment.docx')
                                             }}
                                         >
                                             BAST <br/>(maintenance)   
