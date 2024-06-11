@@ -26,98 +26,7 @@ export const AddRAB = () => {
     const [date, setDate] = useState(createDateString())
     const [title, setTitle] = useState('')
     const [category, setCategory] = useState('')
-    const [recipients, setRecipients] = useState<PersonRecipientWItems[]>([
-        /*{
-            name: 'SUWARNO',
-            birthdata:{
-                birthplace: 'Jakarta',
-                birthdate: new Date('27 July 1957')
-            },
-            ids:{
-                nik:'3171031206570005',
-                noKk:'3171031401097655'
-            },
-            address:{
-                street:'Jl. Kemayoran Gempol',
-                rtRw:'12/6',
-                kelurahan: 'Kebon Kosong',
-                kecamatan: 'Kemayoran',
-                kabupaten: 'Jakarta Pusat'
-            },
-            contact:[{type:'cellphone', address:''}],
-            items:[]
-        },
-        {
-            "name": "Hj Nurlela",
-            "birthdata": {
-                "birthplace": "Jambi",
-                "birthdate": new Date("1967-08-03T16:00:00.000Z")
-            },
-            "ids": {
-                "nik": "3171025508670004",
-                "noKk": "3171020310190004"
-            },
-            "address": {
-                "street": "Jl. Budi Rahayu III No. 16",
-                "rtRw": "11/9",
-                "kelurahan": "Mangga Dua Selatan",
-                "kecamatan": "Sawah Besar",
-                "kabupaten": "Jakarta Pusat",
-                "postCode": ""
-            },
-            "contact": [
-                {
-                    "type": "cellphone",
-                    "value": ""
-                }
-            ],
-            "items": [
-                {
-                    "name": "Kursi Roda",
-                    "productName": "",
-                    "category": "",
-                    "subCategory": "",
-                    "price": 17000000,
-                    "unit": 1
-                }
-            ]
-        },
-        {
-            "name": "Aryani",
-            "birthdata": {
-                "birthplace": "Jakarta",
-                "birthdate": new Date("1963-11-12T16:00:00.000Z")
-            },
-            "ids": {
-                "nik": "3171035711630001",
-                "noKk": "3171031301090125"
-            },
-            "address": {
-                "street": "Jl. Bungur Besar XVI",
-                "rtRw": "1/1",
-                "kelurahan": "Kemayoran",
-                "kecamatan": "Kemayoran",
-                "kabupaten": "Jakarta Pusat",
-                "postCode": ""
-            },
-            "contact": [
-                {
-                    "type": "cellphone",
-                    "value": ""
-                }
-            ],
-            "items": [
-                {
-                    "name": "Kursi Roda",
-                    "productName": "",
-                    "category": "",
-                    "subCategory": "",
-                    "price": 1700000,
-                    "unit": 1
-                }
-            ]
-        }*/
-    ])
+    const [recipients, setRecipients] = useState<PersonRecipientWItems[]>(sampleRecipients)
     const [ isAddRecipient, setIsAddRecipient] = useState(false)
     const [ recipientOption, setRecptOption] = useState<Set<string>>(new Set(["old"]))
     const [ editRecipientItem, setEditRecipientItem ] = useState<PersonRecipientWItems | null>(null)
@@ -161,6 +70,16 @@ export const AddRAB = () => {
     const existingRecipients = recipients.filter((d:PersonRecipientWItems) => d._id)
 
     const newItems = recipients.map((d:PersonRecipientWItems) => d.items).flat().filter((d:OrderedItem) => !d._id)
+        .reduce((acc:OrderedItem[], curr:OrderedItem) => {//prevent duplicate items            
+            const itemIdx = acc.findIndex((dAcc:OrderedItem) =>  dAcc.name === curr.name &&
+                dAcc.productName === curr.productName && dAcc.category === curr.category &&
+                dAcc.subCategory === curr.subCategory
+            )
+            if(itemIdx === -1){
+                acc.push(curr)
+            }
+            return acc
+        }, [])
     const totalPrice = recipients
         .filter((d:PersonRecipientWItems) => d.items.length > 0)
         .map((d:PersonRecipientWItems) => d.items).flat()
@@ -254,46 +173,33 @@ export const AddRAB = () => {
                             
                             return (
                                 <TableRow key={i.toString()}>
-                                    <TableCell>
-                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
-                                            {name}
-                                        </Skeleton>
+                                    <TableCell>                                        
+                                        {name}                                        
+                                    </TableCell>
+                                    <TableCell>                                        
+                                        {address.street}, {address.rtRw}, {address.kelurahan}, {address.kecamatan}, {address.kabupaten}                                        
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
-                                            {address.street}, {address.rtRw}, {address.kelurahan}, {address.kecamatan}, {address.kabupaten}
-                                        </Skeleton>
+                                        {ids.nik}                                        
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
-                                            {ids.nik}
-                                        </Skeleton>
+                                        {ids.noKk}
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
-                                            {ids.noKk}
-                                        </Skeleton>
+                                        <TableContact contact={contact} /> 
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
-                                            <TableContact contact={contact} />                                        
-                                        </Skeleton>
+                                        <TableItem 
+                                            item={items[0]}                                            
+                                            editPress={()=>{setEditRecipientItem(d as PersonRecipientWItems)}}
+                                            deletePress={()=>{
+                                                const updatedRecipients = _.cloneDeep(recipients)
+                                                updatedRecipients[i].items = []
+                                                setRecipients(updatedRecipients)
+                                            }}
+                                        />    
                                     </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="rounded pointer-events-none" isLoaded={fetchState!=="submiting"}>
-                                            <TableItem 
-                                                item={items[0]}                                            
-                                                editPress={()=>{setEditRecipientItem(d as PersonRecipientWItems)}}
-                                                deletePress={()=>{
-                                                    const updatedRecipients = _.cloneDeep(recipients)
-                                                    updatedRecipients[i].items = []
-                                                    setRecipients(updatedRecipients)
-                                                }}
-                                            />
-                                        </Skeleton>    
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton className="rounded" isLoaded={fetchState!=="submiting"}>
+                                    <TableCell>                                        
                                         <Button color="danger" startContent={<DeleteIcon className="size-5" />} size="sm"
                                             onPress={()=>{
                                                 const updatedRecipients = recipients.filter((dRec:PersonRecipientWItems) => dRec.ids.nik !== ids.nik)
@@ -302,7 +208,6 @@ export const AddRAB = () => {
                                         >
                                             Hapus
                                         </Button>
-                                        </Skeleton>
                                     </TableCell>
                                 </TableRow>
                             )
@@ -424,3 +329,105 @@ export const AddRAB = () => {
         </div>
     )
 }
+
+const sampleRecipients:PersonRecipientWItems[] = [
+    {
+        name: 'SUWARNO',
+        birthdata:{
+            birthplace: 'Jakarta',
+            birthdate: new Date('27 July 1957')
+        },
+        ids:{
+            nik:'3171031206570005',
+            noKk:'3171031401097655'
+        },
+        address:{
+            street:'Jl. Kemayoran Gempol',
+            rtRw:'12/6',
+            kelurahan: 'Kebon Kosong',
+            kecamatan: 'Kemayoran',
+            kabupaten: 'Jakarta Pusat'
+        },
+        contact:[{type:'cellphone', value:''}],
+        items:[],
+        completed:{
+            done: false, RABScreenshot: ""
+        }
+    },
+    {
+        name: "Hj Nurlela",
+        birthdata: {
+            birthplace: "Jambi",
+            birthdate: new Date("1967-08-03T16:00:00.000Z")
+        },
+        ids: {
+            nik: "3171025508670004",
+            noKk: "3171020310190004"
+        },
+        address: {
+            street: "Jl. Budi Rahayu III No. 16",
+            rtRw: "11/9",
+            kelurahan: "Mangga Dua Selatan",
+            kecamatan: "Sawah Besar",
+            kabupaten: "Jakarta Pusat",
+            postCode: ""
+        },
+        contact: [
+            {
+                type: "cellphone",
+                value: ""
+            }
+        ],
+        items: [
+            {
+                name: "Kursi Roda",
+                productName: "",
+                category: "",
+                subCategory: "",
+                price: 17000000,
+                unit: 1
+            }
+        ],
+        completed:{
+            done:false, RABScreenshot: ""
+        }
+    },
+    {
+        name: "Aryani",
+        birthdata: {
+            birthplace: "Jakarta",
+            birthdate: new Date("1963-11-12T16:00:00.000Z")
+        },
+        ids: {
+            nik: "3171035711630001",
+            noKk: "3171031301090125"
+        },
+        address: {
+            street: "Jl. Bungur Besar XVI",
+            rtRw: "1/1",
+            kelurahan: "Kemayoran",
+            kecamatan: "Kemayoran",
+            kabupaten: "Jakarta Pusat",
+            postCode: ""
+        },
+        contact: [
+            {
+                type: "cellphone",
+                value: ""
+            }
+        ],
+        items: [
+            {
+                name: "Kursi Roda",
+                productName: "",
+                category: "",
+                subCategory: "",
+                price: 1700000,
+                unit: 1
+            }
+        ],
+        completed:{
+            done: false, RABScreenshot: ""
+        }
+    }
+]

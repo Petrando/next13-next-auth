@@ -91,8 +91,8 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                                 nominalInWords === ""?undefined:nominalInWords
                             )
 
-                            saveDocumentToFile(BASTdoc, "bast.docx")
-                            saveDocumentToFile(attachmentDoc, "attachBAST.docx")
+                            saveDocumentToFile(BASTdoc, `bast-${recipient.name}.docx`)
+                            saveDocumentToFile(attachmentDoc, `lampiran-bast-${recipient.name}.docx`)
                         }}
                     >
                         Cetak
