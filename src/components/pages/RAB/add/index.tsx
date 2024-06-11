@@ -26,7 +26,7 @@ export const AddRAB = () => {
     const [date, setDate] = useState(createDateString())
     const [title, setTitle] = useState('')
     const [category, setCategory] = useState('')
-    const [recipients, setRecipients] = useState<PersonRecipientWItems[]>(sampleRecipients)
+    const [recipients, setRecipients] = useState<PersonRecipientWItems[]>([])
     const [ isAddRecipient, setIsAddRecipient] = useState(false)
     const [ recipientOption, setRecptOption] = useState<Set<string>>(new Set(["old"]))
     const [ editRecipientItem, setEditRecipientItem ] = useState<PersonRecipientWItems | null>(null)
