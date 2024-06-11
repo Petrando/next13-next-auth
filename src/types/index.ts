@@ -59,3 +59,10 @@ export interface IRAB {
     recipients: PersonRecipientWItems[];
     category: string;
 }
+
+export interface IOfficer {
+    name: string;
+    NIP: string;
+    rank: string;
+    address: Address;
+}
