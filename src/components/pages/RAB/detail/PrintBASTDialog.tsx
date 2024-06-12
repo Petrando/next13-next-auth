@@ -93,7 +93,8 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                             label="Nilai Nominal"
                             variant="bordered"
                             size="sm"
-                            className="basis-full md:basis-1/2" 
+                            className="basis-full md:basis-1/2"
+                            placeholder="Contoh: tiga ratus dua puluh lima ribu rupiah" 
                             description={"Tuliskan nilai nominal dari angka total dibawah"}
                             value={nominalInWords}
                             onChange={(e)=>{setNominalWords(e.target.value)}}
