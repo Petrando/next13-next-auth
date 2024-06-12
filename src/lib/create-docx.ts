@@ -70,7 +70,7 @@ export const createBASTDocs = (
                 },
                 heading5: {
                     run: {
-                        size: 22,
+                        size: 21,
                         color: "000000",
                         font: "Arial"
                     },
@@ -80,7 +80,7 @@ export const createBASTDocs = (
                 },
                 heading6: {
                     run: {
-                        size: 22,
+                        size: 21,
                         color: "000000",
                         font: "Arial"
                     }
@@ -160,18 +160,16 @@ export const createBASTDocs = (
                                 break: 1
                             })
                         ],                            
-                        heading: HeadingLevel.HEADING_1,                                
-                    }),
-                    new Paragraph({text:"",
+                        heading: HeadingLevel.HEADING_1, 
                         border: {
-                            top: {
+                            bottom: {
                                 color: "000000",
-                                space: 3,
+                                space: 2,
                                 style: "double",
-                                size: 10,
+                                size: 8,
                             },
-                        }
-                    }),
+                        }                               
+                    }),                    
                     new Paragraph({
                         children:[
                             new TextRun({
