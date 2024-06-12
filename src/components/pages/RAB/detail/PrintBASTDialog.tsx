@@ -10,6 +10,7 @@ import { PrintIcon } from "@/components/Icon";
 import { createBASTDocs } from "@/lib/create-docx";
 import { emptyOrderedItem } from "@/variables-and-constants";
 import { Item, OrderedItem, PersonRecipientWItems } from "@/types";
+import { Document, Footer, Header, ImageRun,  Paragraph } from "docx";
 
 type TItemForm = {
     recipient: PersonRecipientWItems,
@@ -20,9 +21,34 @@ type TItemForm = {
 export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {    
     const [ bastNo, setBastNo ] = useState("")
     const [ nominalInWords, setNominalWords ] = useState("")
+    const [ picData, setPicData ] = useState("")
 
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
+    const getBASTLogo = async () => {                
+        try{
+            const response = await fetch('/api/read-file', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+          
+            const data = await response.json();                        
+            const picData = data.data                        
+            
+            setPicData(picData)
+        }catch(err:any){
+            console.log('fetch error : ', err)
+            
+        }
+        finally{
+        } 
+    }
+
+    useEffect(()=>{
+        getBASTLogo()
+    }, [])
     function saveDocumentToFile(doc:any, fileName:string) {        
         const mimeType =
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -83,16 +109,19 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                 <ModalFooter>
                     <Button color={`primary`} size="sm"                        
                         startContent={<PrintIcon />}
+                        isDisabled={picData === ""}
                         onPress={()=>{
                             const { BASTdoc, attachmentDoc } = createBASTDocs(
                                 bastNo === ""?undefined:bastNo,
                                 recipient,
                                 undefined,
-                                nominalInWords === ""?undefined:nominalInWords
+                                nominalInWords === ""?undefined:nominalInWords,
+                                "Dodi Rusdi",
+                                picData
                             )
 
                             saveDocumentToFile(BASTdoc, `bast-${recipient.name}.docx`)
-                            saveDocumentToFile(attachmentDoc, `lampiran-bast-${recipient.name}.docx`)
+                            saveDocumentToFile(attachmentDoc, `lampiran-bast-${recipient.name}.docx`)                                                        
                         }}
                     >
                         Cetak

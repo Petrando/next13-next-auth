@@ -6,7 +6,7 @@ import { RABDetail } from "@/components/pages/RAB/detail";
 const RABDetailPage = async () => {
     const session = await getServerSession(authOptions);
 
-    if(!session){ redirect("/") }
+    if(!session){ redirect("/") }    
     
     return (
         <RABDetail />

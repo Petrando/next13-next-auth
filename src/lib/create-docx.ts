@@ -1,10 +1,17 @@
 import { Document, Packer, Paragraph, TextRun, Table as TableDocx, TableBorders, TableCell as TableCellDocx, 
-    TableRow as TableRowDocx, Header, Footer, HeadingLevel, WidthType, 
+    TableRow as TableRowDocx, ImageRun, Header, Footer, HeadingLevel, WidthType, 
     ShadingType,
     UnderlineType,
     AlignmentType,
     LevelFormat,
-    convertInchesToTwip} from "docx";
+    convertInchesToTwip,
+    convertMillimetersToTwip,
+    HorizontalPositionRelativeFrom,
+    VerticalPositionRelativeFrom,
+    TextWrappingType,
+    TextWrappingSide,
+    VerticalPositionAlign,
+    HorizontalPositionAlign} from "docx";
 import { displayIDR } from "./functions";
 import { defaultOfficer } from "@/variables-and-constants";
 import { PersonRecipientWItems, IOfficer } from "@/types";
@@ -14,7 +21,8 @@ export const createBASTDocs = (
     recipient: PersonRecipientWItems, 
     officer: IOfficer = defaultOfficer, 
     nominalInWords: string = "(Nilai Barang Dalam Rupiah)", 
-    receptor: string = "Dodi Rusdi"
+    receptor: string = "Dodi Rusdi",
+    picData: string
 ) => {
     
     const {name, ids:{nik}, address:{street, rtRw, kabupaten, kecamatan, kelurahan},
@@ -28,7 +36,7 @@ export const createBASTDocs = (
         officerAddress
 
     const officerAddr = officerStreet + ", "  + officerKel + "-" + officerKec + "-" + officerKab
-
+    
     const BASTdoc = new Document({
         styles: {
             default: {
@@ -102,53 +110,68 @@ export const createBASTDocs = (
             ]
         },
         sections: [
-            {
-                headers: {
-                    default: new Header({
-                        children: [
-                            new Paragraph({
-                                children:[
-                                    new TextRun({
-                                        text:"KEMENTRIAN SOSIAL REPUBLIK INDONESIA",
-                                        break: 1,
-                                        color:"000000"
-                                    }),
-                                    new TextRun({
-                                        text: `SENTRA "MULYA JAYA" DI JAKARTA`,
-                                        break: 1
-                                    }),
-                                    new TextRun({
-                                        text: `JALAN TAT TWAM ASI NO. 47 KOMPLEKS DEPO PASAR REBO`,
-                                        break: 1
-                                    }),
-                                    new TextRun({
-                                        text: `JAKARTA TIMUR 13760`,
-                                        break: 1
-                                    }),
-                                    new TextRun({
-                                        text: `TELEPON (021) 8400631    FAKSIMILE: (021) 8415717`,
-                                        break: 1
-                                    }),
-                                    new TextRun({
-                                        text: `http://mulyajaya.depsos.go.id/  EMAIL: pskw_mulyajaya@depsos.go.id`,
-                                        break: 1
-                                    })
-                                ],                            
-                                heading: HeadingLevel.HEADING_1,
-                                border: {
-                                    bottom: {
-                                        color: "000000",
-                                        space: 3,
-                                        style: "double",
-                                        size: 10,
+            {                            
+                children: [                                        
+                    new Paragraph({
+                        children:[
+                            new ImageRun({
+                                data: picData,
+                                transformation: {
+                                    width: 70,
+                                    height: 80
+                                },
+                                floating: {
+                                    horizontalPosition: {
+                                        relative: HorizontalPositionRelativeFrom.COLUMN,
+                                        align: HorizontalPositionAlign.LEFT
                                     },
-                                }
+                                    verticalPosition: {
+                                        relative: VerticalPositionRelativeFrom.PARAGRAPH,
+                                        align: VerticalPositionAlign.CENTER
+                                    },
+                                    wrap: {
+                                        type: TextWrappingType.SQUARE,
+                                        side: TextWrappingSide.BOTH_SIDES,
+                                    },
+                                },
+                            }),                                    
+                            new TextRun({
+                                text:"KEMENTRIAN SOSIAL REPUBLIK INDONESIA",                                
+                                color:"000000"
+                            }),
+                            new TextRun({
+                                text: `SENTRA "MULYA JAYA" DI JAKARTA`,
+                                break: 1
+                            }),
+                            new TextRun({
+                                text: `JALAN TAT TWAM ASI NO. 47 KOMPLEKS DEPO PASAR REBO`,
+                                break: 1
+                            }),
+                            new TextRun({
+                                text: `JAKARTA TIMUR 13760`,
+                                break: 1
+                            }),
+                            new TextRun({
+                                text: `TELEPON (021) 8400631    FAKSIMILE: (021) 8415717`,
+                                break: 1
+                            }),
+                            new TextRun({
+                                text: `http://mulyajaya.depsos.go.id/  EMAIL: pskw_mulyajaya@depsos.go.id`,
+                                break: 1
                             })
-                        ]
+                        ],                            
+                        heading: HeadingLevel.HEADING_1,                                
                     }),
-                },            
-                children: [
-                    new Paragraph(""),
+                    new Paragraph({text:"",
+                        border: {
+                            top: {
+                                color: "000000",
+                                space: 3,
+                                style: "double",
+                                size: 10,
+                            },
+                        }
+                    }),
                     new Paragraph({
                         children:[
                             new TextRun({
@@ -588,9 +611,9 @@ export const createBASTDocs = (
                         ], 
                         heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER
                     }),
-                    new Paragraph({text:"", heading: HeadingLevel.HEADING_6}),
-                    new Paragraph({text:"", heading: HeadingLevel.HEADING_6}),
-                    new Paragraph({text:"", heading: HeadingLevel.HEADING_6}),
+                    new Paragraph({text:""}),
+                    new Paragraph({text:""}),
+                    new Paragraph({text:""}),
                     new Paragraph({children:[new TextRun({text:"......................"})], heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER}),
                     new Paragraph({children:[new TextRun({text:"NIP......................"})], heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER})
                 ],
