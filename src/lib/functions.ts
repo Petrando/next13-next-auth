@@ -9,3 +9,7 @@ export const createDateString = (date:Date = new Date()) => {
 
     return parseDate(dateString)
 }
+
+export const displayIDR = (value:number) => {
+    return new Intl.NumberFormat("id", {style:"currency", currency: "IDR"}).format(value)
+}

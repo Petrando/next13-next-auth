@@ -5,6 +5,7 @@ import { Document, Packer, Paragraph, TextRun, Table as TableDocx, TableBorders,
     AlignmentType,
     LevelFormat,
     convertInchesToTwip} from "docx";
+import { displayIDR } from "./functions";
 import { defaultOfficer } from "@/variables-and-constants";
 import { PersonRecipientWItems, IOfficer } from "@/types";
 
@@ -263,7 +264,7 @@ export const createBASTDocs = (
                             }),
                             new TextRun(" Senilai "),
                             new TextRun({
-                                text:price + ",- " + nominalInWords, bold: true
+                                text:displayIDR(price) + ",- " + nominalInWords, bold: true
                             }),
                             new TextRun({
                                 text: " sebagaimana yang terlampir kepada PIHAK KEDUA dan PIHAK KEDUA telah menerima barang tersebut dari PIHAK PERTAMA.",                            
@@ -283,15 +284,74 @@ export const createBASTDocs = (
                     ,
                     
                     }),
-                    new Paragraph({text:"", heading: HeadingLevel.HEADING_6}),                    
-                    new Paragraph({
-                        text: "Dikeluarkan di   : Jakarta",
-                        heading: HeadingLevel.HEADING_5
-                    }),
-                    new Paragraph({
-                        text: "Pada tanggal    :  3 Mei 2024",
-                        heading: HeadingLevel.HEADING_5
-                    }),
+                    new Paragraph({text:"", heading: HeadingLevel.HEADING_6}),
+                    new TableDocx({
+                        borders: TableBorders.NONE,
+                        columnWidths: [4505, 4505],
+                        rows: [
+                            new TableRowDocx({
+                                children: [
+                                    new TableCellDocx({
+                                        width: {
+                                            size: 60,
+                                            type: WidthType.PERCENTAGE,
+                                        },
+                                        children: [
+                                            
+                                        ],                                        
+                                    }),
+                                    new TableCellDocx({
+                                        width: {
+                                            size: 40,
+                                            type: WidthType.PERCENTAGE,
+                                        },
+                                        children: [
+                                            new Paragraph({
+                                                children:[
+                                                    new TextRun({
+                                                        text: "Dikeluarkan di      : Jakarta"
+                                                    })
+                                                ],
+                                                heading: HeadingLevel.HEADING_6,
+                                                alignment: AlignmentType.CENTER
+                                            })
+                                        ],
+                                    }),
+                                ],                                                
+                            }),
+                            new TableRowDocx({
+                                children: [
+                                    new TableCellDocx({
+                                        width: {
+                                            size: 60,
+                                            type: WidthType.PERCENTAGE,
+                                        },
+                                        children: [],
+                                    }),
+                                    new TableCellDocx({
+                                        width: {
+                                            size: 40,
+                                            type: WidthType.PERCENTAGE,
+                                        },
+                                        children: [
+                                            new Paragraph({
+                                                children:[
+                                                    new TextRun({
+                                                        text:"Pada tanggal    :  3 Mei 2024", 
+                                                    })
+                                                ],
+                                                heading: HeadingLevel.HEADING_6,
+                                                alignment: AlignmentType.CENTER
+                                            })
+                                        ],
+                                    }),
+                                ],
+                            }),                                                        
+                        ],
+                        width:{
+                            size: 100, type: WidthType.PERCENTAGE
+                        }                        
+                    }),                                        
                     new Paragraph({text:"", heading: HeadingLevel.HEADING_6}),
                     new Paragraph({text:"", heading: HeadingLevel.HEADING_6}),
                     new TableDocx({
