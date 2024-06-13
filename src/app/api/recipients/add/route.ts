@@ -3,16 +3,16 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function POST(req:NextRequest) {
     const { name, birthplaceAndDate, address, ids, contacts } = await req.json();
-    const { nik, nokk } = ids
+    const { nik } = ids
     const client = await clientPromise;
 
     const session = client.startSession();
     try {        
         const recipients = client.db("charity-org").collection("recipients");
-        const user = await recipients.find({ $or:[{nik}, {nokk}] })
+        const user = recipients.find({ "ids.nik":nik })
         
         if(user){
-            throw `Nik ${nik} atau nomor KK ${nokk} sudah terdaftar`
+            throw `Nik ${nik} sudah terdaftar`
         }
         await recipients.insertOne({ name, birthplaceAndDate, address, ids, contacts });        
         await session.commitTransaction()
@@ -21,7 +21,7 @@ export async function POST(req:NextRequest) {
     } catch (error) {
         await session.abortTransaction()        
         return NextResponse.json(
-            { message: error === `Nik ${nik} atau nomor KK ${nokk} sudah terdaftar`?error:"Kesalahan sewaktu mendaftar penerima bantuan." },
+            { message: error === `Nik ${nik} sudah terdaftar`?error:"Kesalahan sewaktu mendaftar penerima bantuan." },
             { status: 500 }
         );
     }finally {

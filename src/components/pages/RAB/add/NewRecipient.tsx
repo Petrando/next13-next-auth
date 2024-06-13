@@ -19,6 +19,8 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
     const [ rt, setRt ] = useState("")
     const [ rw, setRw ] = useState("")
 
+    const [ fetchState, setFetchState ] = useState("")
+    const [ nikExist, setNikExist ] = useState({exist:false, checked:false})
     const [submitPressed, setSubmitPressed] = useState(false)
     
     const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();    
@@ -37,6 +39,35 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
         setRecipient(newRecipient)
         if(submitPressed){setSubmitPressed(false)}
     }, [rt, rw])
+
+    const checkNIK = async () => {                            
+        setFetchState("checking NIK")
+        try{
+            const response = await fetch('/api/recipients/check-nik-exist', {
+                method: 'POST',
+                body: JSON.stringify({ nik:recipient.ids.nik }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const { message } = await response.json();
+            if(response.ok){                
+                setNikExist({checked: true, exist: false})                
+            }else{
+                if(message === `Nik ${recipient.ids.nik} sudah terdaftar`){
+                    setNikExist({ checked: true, exist: true})
+                }
+            }            
+            
+        }catch(err:any){
+            console.log('fetch error : ')
+            console.log(err)         
+            
+        }
+        finally{            
+            setFetchState("")
+        }         
+    }
 
     const { name, birthdata, ids, address, contact } = recipient
     const { birthplace } = birthdata    
@@ -65,7 +96,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
     const requiredFilled = (name !== "" && nik !== "" && noKk !== "" && street !== "" && rt !== "" && rw !== "" && kelurahan !== ""
         && kecamatan !== "" && kabupaten !== ""
     )
-
+    
     return (
         <>        
         <Modal 
@@ -133,11 +164,17 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                                 size="sm"
                                 className="mb-2"
                                 value={nik}
-                                onChange={changeState}
+                                onChange={(e)=>{
+                                    changeState(e)
+                                    if(nikExist.checked){
+                                        setNikExist({exist:false, checked: false})
+                                    }
+                                }}
                                 name="ids.nik"
                                 isRequired
-                                isInvalid={submitPressed && nik === ""}
-                                errorMessage="Nomor KTP masih kosong"
+                                isInvalid={(submitPressed && nik === "") || nikExist.exist }
+                                errorMessage={`${nikExist.exist?"NIK sudah terdaftar":"Nomor KTP masih kosong"}`}
+                                onBlur={()=>{checkNIK()}}
                             />
                             <Input
                                 label="No. KK"                        
@@ -147,7 +184,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                                 onChange={changeState}
                                 name="ids.noKk"
                                 isRequired
-                                isInvalid={submitPressed && noKk === ""}
+                                isInvalid={ submitPressed && noKk === ""}
                                 errorMessage="Kartu Keluarga masih kosong"
                             />
                         </div>
@@ -257,15 +294,22 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" onPress={()=>{
-                        if(!requiredFilled){
-                            setSubmitPressed(true)
-                        }
-                        else{
-                            const birthdate = new Date(birthday.year + "-" + birthday.month + "-" + birthday.day)
-                            recipient.birthdata.birthdate = birthdate
-                            submit(recipient)
-                        }                        
-                    }}>
+                            if(!nikExist.checked){
+                                checkNIK()
+                            }
+                            if(!requiredFilled){
+                                setSubmitPressed(true)
+                            }
+                            else{
+                                const birthdate = new Date(birthday.year + "-" + birthday.month + "-" + birthday.day)
+                                recipient.birthdata.birthdate = birthdate
+                                submit(recipient)
+                            }                        
+                        }}
+                        isDisabled={
+                            (nikExist.exist || !nikExist.checked) || 
+                                fetchState === "checking NIK"}
+                    >
                         Tambahkan
                     </Button>
                     <Button color="danger" onPress={()=>{hideForm()}}>
