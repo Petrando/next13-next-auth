@@ -231,7 +231,8 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
                                                 </TableCell>
                                                 <TableCell>{d.name}</TableCell>
                                                 <TableCell>
-                                                    <CurrencyFormat value={d.price} thousandSeparator="." decimalSeparator="," prefix="Rp. " 
+                                                    <CurrencyFormat value={d.price} prefix="Rp. " 
+                                                        thousandSeparator=","
                                                         className="text-right w-fit"
                                                     />
                                                 </TableCell>

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,
     Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
         DatePicker, Input,  Skeleton, 
-            Link
+            Link, Tabs, Tab, Card, CardHeader, CardBody, CardFooter
  } from "@nextui-org/react"
 import { NewRecipientForm } from "./NewRecipient"
 import { AddExistingRecipients } from "./AddExistingRecipients"
@@ -16,6 +16,7 @@ import { EditItem } from "../shared/AddEditItem"
 import { createDateString } from "@/lib/functions";
 import { TableContact } from "../shared/TableContact"
 import { CellphoneIcon, DeleteIcon, AddDocumentIcon, PlusIcon, AddUserIcon } from "@/components/Icon"
+import { ItemsTable } from "../shared/ItemsTable"
 import CurrencyFormat from "react-currency-format"
 import { TotalRow } from "../shared/TotalTableRow"
 import { TotalCard } from "../shared/TotalCard"
@@ -23,6 +24,8 @@ import { emptyPerson } from "@/variables-and-constants"
 import { PersonRecipientWItems, PersonRecipient, Contact, OrderedItem } from "@/types"
 
 export const AddRAB = () => {
+    const [ tab, setTab ] = useState("recipients");
+
     const [date, setDate] = useState(createDateString())
     const [title, setTitle] = useState('')
     const [category, setCategory] = useState('')
@@ -69,7 +72,8 @@ export const AddRAB = () => {
     
     const existingRecipients = recipients.filter((d:PersonRecipientWItems) => d._id)
 
-    const newItems = recipients.map((d:PersonRecipientWItems) => d.items).flat().filter((d:OrderedItem) => !d._id)
+    const items = recipients.map((d:PersonRecipientWItems) => d.items).flat()
+    const newItems = items.filter((d:OrderedItem) => !d._id)
         .reduce((acc:OrderedItem[], curr:OrderedItem) => {//prevent duplicate items            
             const itemIdx = acc.findIndex((dAcc:OrderedItem) =>  dAcc.name === curr.name &&
                 dAcc.productName === curr.productName && dAcc.category === curr.category &&
@@ -80,6 +84,7 @@ export const AddRAB = () => {
             }
             return acc
         }, [])
+        
     const totalPrice = recipients
         .filter((d:PersonRecipientWItems) => d.items.length > 0)
         .map((d:PersonRecipientWItems) => d.items).flat()
@@ -96,7 +101,7 @@ export const AddRAB = () => {
             <h1 className="text-xl md:text-2xl font-bold text-left basis-full py-3 pl-2 md:pl-4">
                 Data RAB Baru
             </h1>
-            <div className="px-0 py-2 flex items-center flex-wrap">
+            <div className="px-0 flex items-center flex-wrap">
                 <div className="w-fit p-1">
                     <DatePicker 
                         label="Tanggal" className="max-w-[284px]" 
@@ -141,86 +146,100 @@ export const AddRAB = () => {
                     </Dropdown>
                 </div>
             </div>
-            <Table aria-label="Tabel Penerima Bantuan">
-                <TableHeader>
-                    <TableColumn>NAMA</TableColumn>
-                    <TableColumn>ALAMAT</TableColumn>
-                    <TableColumn>NIK</TableColumn>
-                    <TableColumn>No KK</TableColumn>
-                    <TableColumn>Kontak</TableColumn>
-                    <TableColumn>Bantuan</TableColumn>
-                    <TableColumn>Hapus Penerima?</TableColumn>
-                </TableHeader>                
-                <TableBody>                    
-                    {
-                        renderElement.map((d:PersonRecipientWItems, i:number)=>{
-                            const {name, address, ids, contact, items} = d
+            <Tabs 
+                aria-label="Options"         
+                selectedKey={tab}
+                onSelectionChange={(e) =>{setTab(e as string)}}
+                disabledKeys={recipients.length === 0?["items"]:[]}
+            >
+                <Tab key="recipients" title="Penerima Bantuan">
+                    
+                    <Table aria-label="Tabel Penerima Bantuan">
+                        <TableHeader>
+                            <TableColumn>NAMA</TableColumn>
+                            <TableColumn>ALAMAT</TableColumn>
+                            <TableColumn>NIK</TableColumn>
+                            <TableColumn>No KK</TableColumn>
+                            <TableColumn>Kontak</TableColumn>
+                            <TableColumn>Bantuan</TableColumn>
+                            <TableColumn>Hapus Penerima?</TableColumn>
+                        </TableHeader>                
+                        <TableBody>                    
+                            {
+                                renderElement.map((d:PersonRecipientWItems, i:number)=>{
+                                    const {name, address, ids, contact, items} = d
 
-                            const isEmptyElement = name === "" && ids.nik === ""
-                            if(isEmptyElement){
-                                return <TableRow key={i.toString()}>
-                                <TableCell colSpan={0}>{''}</TableCell>
-                                <TableCell colSpan={0}>{''}</TableCell>
-                                <TableCell colSpan={0}>{''}</TableCell>
-                                <TableCell colSpan={0}>{''}</TableCell>
-                                <TableCell colSpan={0}>{''}</TableCell>
-                                <TableCell colSpan={6}>
-                                    <TotalCard total={totalPrice} />   
-                                </TableCell>
-                                <TableCell colSpan={1}>{''}</TableCell>
-                            </TableRow>
-                            }
-                            
-                            return (
-                                <TableRow key={i.toString()}>
-                                    <TableCell>                                        
-                                        {name}                                        
-                                    </TableCell>
-                                    <TableCell>                                        
-                                        {address.street}, {address.rtRw}, {address.kelurahan}, {address.kecamatan}, {address.kabupaten}                                        
-                                    </TableCell>
-                                    <TableCell>
-                                        {ids.nik}                                        
-                                    </TableCell>
-                                    <TableCell>
-                                        {ids.noKk}
-                                    </TableCell>
-                                    <TableCell>
-                                        <TableContact contact={contact} /> 
-                                    </TableCell>
-                                    <TableCell>
-                                        <TableItem 
-                                            item={items[0]}                                            
-                                            editPress={()=>{setEditRecipientItem(d as PersonRecipientWItems)}}
-                                            deletePress={()=>{
-                                                const updatedRecipients = _.cloneDeep(recipients)
-                                                updatedRecipients[i].items = []
-                                                setRecipients(updatedRecipients)
-                                            }}
-                                        />    
-                                    </TableCell>
-                                    <TableCell>                                        
-                                        <Button color="danger" startContent={<DeleteIcon className="size-5" />} size="sm"
-                                            onPress={()=>{
-                                                const updatedRecipients = recipients.filter((dRec:PersonRecipientWItems) => dRec.ids.nik !== ids.nik)
-                                                setRecipients(updatedRecipients)
-                                            }}
-                                        >
-                                            Hapus
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        })
-                    }                                            
-                </TableBody>
-            </Table>
-            {
-                recipients.length === 0 &&
-                <div className="flex items-center justify-center">
-                    <p className="font-semibold italic text-gray-800 py-3">Belum ada penerima bantuan..</p>
-                </div>
-            }
+                                    const isTotalRow = name === "" && ids.nik === ""
+                                    if(isTotalRow){
+                                        return <TableRow key={i.toString()}>
+                                            <TableCell colSpan={0}>{''}</TableCell>
+                                            <TableCell colSpan={0}>{''}</TableCell>
+                                            <TableCell colSpan={0}>{''}</TableCell>
+                                            <TableCell colSpan={0}>{''}</TableCell>
+                                            <TableCell colSpan={0}>{''}</TableCell>
+                                            <TableCell colSpan={6}>
+                                                <TotalCard total={totalPrice} />   
+                                            </TableCell>
+                                            <TableCell colSpan={1}>{''}</TableCell>
+                                        </TableRow>
+                                    }
+                                    
+                                    return (
+                                        <TableRow key={i.toString()}>
+                                            <TableCell>                                        
+                                                {name}                                        
+                                            </TableCell>
+                                            <TableCell>                                        
+                                                {address.street}, {address.rtRw}, {address.kelurahan}, {address.kecamatan}, {address.kabupaten}                                        
+                                            </TableCell>
+                                            <TableCell>
+                                                {ids.nik}                                        
+                                            </TableCell>
+                                            <TableCell>
+                                                {ids.noKk}
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableContact contact={contact} /> 
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableItem 
+                                                    item={items[0]}                                            
+                                                    editPress={()=>{setEditRecipientItem(d as PersonRecipientWItems)}}
+                                                    deletePress={()=>{
+                                                        const updatedRecipients = _.cloneDeep(recipients)
+                                                        updatedRecipients[i].items = []
+                                                        setRecipients(updatedRecipients)
+                                                    }}
+                                                />    
+                                            </TableCell>
+                                            <TableCell>                                        
+                                                <Button color="danger" startContent={<DeleteIcon className="size-5" />} size="sm"
+                                                    onPress={()=>{
+                                                        const updatedRecipients = recipients.filter((dRec:PersonRecipientWItems) => dRec.ids.nik !== ids.nik)
+                                                        setRecipients(updatedRecipients)
+                                                    }}
+                                                >
+                                                    Hapus
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            }                                            
+                        </TableBody>
+                    </Table>
+                    {
+                        recipients.length === 0 &&
+                        <div className="flex items-center justify-center">
+                            <p className="font-semibold italic text-gray-800 py-3">Belum ada penerima bantuan..</p>
+                        </div>
+                    }
+                </Tab>
+                <Tab key="items" title="Daftar Bantuan">
+                    <ItemsTable items={items} />
+                </Tab>
+            </Tabs>
+
             <div className="flex items-center justify-end px-2 py-3">
                 <Link href="/RAB" isDisabled={fetchState === "submiting"} color="danger" underline="hover"
                     className="mx-4"

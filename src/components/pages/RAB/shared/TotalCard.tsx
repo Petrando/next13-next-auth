@@ -16,7 +16,7 @@ export const TotalCard:FC<ITotalCard> = ({total}) => {
             </CardHeader>
             <Divider />
             <CardBody>
-                <CurrencyFormat value={total} thousandSeparator='.' decimalSeparator="," prefix="Rp. " 
+                <CurrencyFormat value={total} prefix="Rp. " thousandSeparator=","
                     className="text-right w-fit font-semibold"
                 />    
             </CardBody>                        

@@ -47,7 +47,7 @@ export const TableItem:FC<ITableItem> = ({ item, editPress = ()=>{}, deletePress
                 </CardHeader>
                 <Divider />
                 <CardBody>
-                    <CurrencyFormat value={item.price} thousandSeparator='.' decimalSeparator="," prefix="Rp. " 
+                    <CurrencyFormat value={item.price} prefix="Rp. " thousandSeparator="," 
                         className="text-right w-fit"
                     />    
                 </CardBody>
