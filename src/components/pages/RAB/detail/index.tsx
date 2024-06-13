@@ -2,16 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,
-    Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
-        DatePicker, Input,  Skeleton, 
+import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,    
+        DatePicker, Input,  Skeleton, Tabs, Tab,
             Link
  } from "@nextui-org/react"
+import { ItemsTable } from '../shared/ItemsTable';
 import { TableItem } from '../shared/TableItemCard';
 import { TableContact } from '../shared/TableContact';
 import { TotalRow } from '../shared/TotalTableRow';
 import { TotalCard } from '../shared/TotalCard';
-import CurrencyFormat from 'react-currency-format';
 import { PrintIcon } from '@/components/Icon';
 import { PrintBAST } from './PrintBASTDialog';
 import { createDateString } from '@/lib/functions';
@@ -20,6 +19,8 @@ import { IRAB, PersonRecipientWItems, OrderedItem } from '@/types';
 
 
 export const RABDetail = () => {
+    const [ tab, setTab ] = useState("recipients");
+
     const [RAB, setRAB] = useState<IRAB>(emptyRAB)
     const [fetchState, setFetchState] = useState("loading")
 
@@ -63,6 +64,8 @@ export const RABDetail = () => {
 
     const { title, date, recipients } = RAB
 
+    const items = recipients.map((d:PersonRecipientWItems) => d.items).flat()
+
     const totalPrice = recipients
         .filter((d:PersonRecipientWItems) => d.items.length > 0)
         .map((d:PersonRecipientWItems) => d.items).flat()
@@ -89,96 +92,108 @@ export const RABDetail = () => {
                     />
                 </div>
             </div>
-            <Table aria-label="Tabel Penerima Bantuan">
-                <TableHeader>
-                    <TableColumn>
-                        <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
-                            NAMA
-                        </Skeleton>
-                    </TableColumn>
-                    <TableColumn>
-                        <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
-                            ALAMAT
-                        </Skeleton>
-                    </TableColumn>
-                    <TableColumn>
-                        <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
-                            NIK
-                        </Skeleton>
-                    </TableColumn>
-                    <TableColumn>
-                        <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
-                            No KK
-                        </Skeleton>
-                    </TableColumn>
-                    <TableColumn>
-                        <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
-                            Kontak
-                        </Skeleton>
-                    </TableColumn>
-                    <TableColumn>
-                        <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
-                            Bantuan
-                        </Skeleton>
-                    </TableColumn>
-                    <TableColumn>
-                        <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
-                            BAST
-                        </Skeleton>
-                    </TableColumn>
-                </TableHeader>                
-                <TableBody>
-                    {
-                        renderElement.map((d:PersonRecipientWItems, i:number)=>{
-                            const isEmptyElement = d.name === "" && d.ids.nik === ""
-                            if(isEmptyElement){
-                                return <TableRow key={i.toString()}>
-                                    <TableCell colSpan={0}>{''}</TableCell>
-                                    <TableCell colSpan={0}>{''}</TableCell>
-                                    <TableCell colSpan={0}>{''}</TableCell>
-                                    <TableCell colSpan={0}>{''}</TableCell>
-                                    <TableCell colSpan={0}>{''}</TableCell>
-                                    <TableCell colSpan={6}>
-                                        <TotalCard total={totalPrice} />   
-                                    </TableCell>
-                                    <TableCell colSpan={1}>{''}</TableCell>
-                                </TableRow>
-                            }                            
-                            return (
-                                <TableRow key={i.toString()}>
-                                    <TableCell>                                        
-                                        {d.name}                                        
-                                    </TableCell>
-                                    <TableCell>                                        
-                                        {d.address.street}, {d.address.rtRw}, {d.address.kelurahan}, {d.address.kecamatan}, {d.address.kabupaten}                                        
-                                    </TableCell>
-                                    <TableCell>
-                                        {d.ids.nik}                                        
-                                    </TableCell>
-                                    <TableCell>
-                                        {d.ids.noKk}                                        
-                                    </TableCell>
-                                    <TableCell>
-                                        <TableContact contact={d.contact} />                                                                                
-                                    </TableCell>
-                                    <TableCell>
-                                        <TableItem item={d.items[0]} editable={false} />                                        
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button size='sm' color='primary' startContent={<PrintIcon className='size-4' />}
-                                            onPress={()=>{
-                                                setPrintingRecipient(d)
-                                            }}
-                                        >
-                                            BAST 
-                                        </Button>                                        
-                                    </TableCell>                                    
-                                </TableRow>
-                            )
-                        })
-                    }                    
-                </TableBody>
-            </Table>
+            <Tabs 
+                aria-label="Options"         
+                selectedKey={tab}
+                onSelectionChange={(e) =>{setTab(e as string)}}
+                disabledKeys={recipients.length === 0?["items"]:[]}
+            >
+                <Tab key="recipients" title="Penerima Bantuan">                                        
+                    <Table aria-label="Tabel Penerima Bantuan">
+                        <TableHeader>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
+                                    NAMA
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
+                                    ALAMAT
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
+                                    NIK
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
+                                    No KK
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
+                                    Kontak
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
+                                    Bantuan
+                                </Skeleton>
+                            </TableColumn>
+                            <TableColumn>
+                                <Skeleton className="rounded" isLoaded={fetchState!=="loading"}>
+                                    BAST
+                                </Skeleton>
+                            </TableColumn>
+                        </TableHeader>                
+                        <TableBody>
+                            {
+                                renderElement.map((d:PersonRecipientWItems, i:number)=>{
+                                    const isEmptyElement = d.name === "" && d.ids.nik === ""
+                                    if(isEmptyElement){
+                                        return <TableRow key={i.toString()}>
+                                            <TableCell colSpan={0}>{''}</TableCell>
+                                            <TableCell colSpan={0}>{''}</TableCell>
+                                            <TableCell colSpan={0}>{''}</TableCell>
+                                            <TableCell colSpan={0}>{''}</TableCell>
+                                            <TableCell colSpan={0}>{''}</TableCell>
+                                            <TableCell colSpan={6}>
+                                                <TotalCard total={totalPrice} />   
+                                            </TableCell>
+                                            <TableCell colSpan={1}>{''}</TableCell>
+                                        </TableRow>
+                                    }                            
+                                    return (
+                                        <TableRow key={i.toString()}>
+                                            <TableCell>                                        
+                                                {d.name}                                        
+                                            </TableCell>
+                                            <TableCell>                                        
+                                                {d.address.street}, {d.address.rtRw}, {d.address.kelurahan}, {d.address.kecamatan}, {d.address.kabupaten}                                        
+                                            </TableCell>
+                                            <TableCell>
+                                                {d.ids.nik}                                        
+                                            </TableCell>
+                                            <TableCell>
+                                                {d.ids.noKk}                                        
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableContact contact={d.contact} />                                                                                
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableItem item={d.items[0]} editable={false} />                                        
+                                            </TableCell>
+                                            <TableCell>
+                                                <Button size='sm' color='primary' startContent={<PrintIcon className='size-4' />}
+                                                    onPress={()=>{
+                                                        setPrintingRecipient(d)
+                                                    }}
+                                                >
+                                                    BAST 
+                                                </Button>                                        
+                                            </TableCell>                                    
+                                        </TableRow>
+                                    )
+                                })
+                            }                    
+                        </TableBody>
+                    </Table>
+                </Tab>
+                <Tab key="items" title="Daftar Bantuan">
+                    <ItemsTable items={items} />
+                </Tab>
+            </Tabs>
             <div className="flex items-center justify-end px-2 py-3">
                 <Link href="/RAB" isDisabled={fetchState === "loading"} color="primary" underline="hover"
                     className="mx-4"
