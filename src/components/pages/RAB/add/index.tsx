@@ -14,7 +14,7 @@ import { AddExistingRecipients } from "./AddExistingRecipients"
 import { CogIcon } from "@/components/Icon"
 import { TableItem } from "../shared/TableItemCard"
 import { EditItem } from "../shared/AddEditItem"
-import { createDateString } from "@/lib/functions";
+import { createDateString, isSameOrderedItem } from "@/lib/functions";
 import { TableContact } from "../shared/TableContact"
 import { DeleteIcon, AddDocumentIcon, AddUserIcon, EditIcon } from "@/components/Icon"
 import { ItemsTable } from "../shared/ItemsTable"
@@ -93,7 +93,8 @@ export const AddRAB = () => {
         .reduce((acc:number, curr:OrderedItem) => {            
             return acc + curr.price
         }, 0)
-
+    
+    const niks = recipients.map((d:PersonRecipientWItems) => d.ids.nik)
     const renderElement = recipients.length > 0?recipients.concat(emptyPerson):[]
 
     const canSubmit = title !== "" && recipients.length > 0 && recipients.map((d:PersonRecipientWItems) => d.items).every((d:OrderedItem[]) => d.length > 0)
@@ -276,6 +277,7 @@ export const AddRAB = () => {
                         setRecipients(newRecipients)
                         setIsAddRecipient(false) 
                     }}
+                    niks={niks}
                 />
             }
             {
@@ -290,9 +292,7 @@ export const AddRAB = () => {
                         const recipientIdx = newRecipients.findIndex((dRec:PersonRecipientWItems) => 
                             dRec.ids.nik === editedRecipient.ids.nik
                         )
-                        console.log(newRecipients)
-                        console.log(typeof editedRecipient.ids.nik)
-                        console.log(recipientIdx)
+                        
                         if(recipientIdx > -1){
                             newRecipients[recipientIdx] = recipient
                             setRecipients(newRecipients)
@@ -300,6 +300,7 @@ export const AddRAB = () => {
                         setEditedRecipient(null)
                     }}
                     editedRecipient={editedRecipient}
+                    niks={niks}
                 />
             }
             {
@@ -372,6 +373,16 @@ export const AddRAB = () => {
                             const recipientIdx = recipients.findIndex((dRec:PersonRecipientWItems) => dRec.ids.nik === nik)
                             const updatedSelecteds = _.cloneDeep(recipients)
                             updatedSelecteds[recipientIdx].items[0] = newItem
+
+                            updatedSelecteds.forEach((dSelected:PersonRecipientWItems, i: number) => {                                                        
+                                if(i !== recipientIdx &&
+                                    dSelected.items.length > 0 && 
+                                        isSameOrderedItem(dSelected.items[0], newItem)
+                                ){
+                                    dSelected.items[0].price = newItem.price
+                                }
+                            })
+
                             setRecipients(updatedSelecteds)
                             setEditRecipientItem(null)
                         }}

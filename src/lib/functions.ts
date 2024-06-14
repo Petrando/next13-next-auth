@@ -1,5 +1,5 @@
 import { parseDate } from "@internationalized/date";
-import { PersonRecipientWItems } from "@/types";
+import { OrderedItem, PersonRecipientWItems } from "@/types";
 
 export const createDateString = (date:Date = new Date()) => {    
     const year = date.getFullYear()
@@ -34,4 +34,13 @@ export const personDataChanged = (person1:PersonRecipientWItems, person2:PersonR
             kelurahan !== kelurahan2 || kecamatan !== kecamatan2    || kabupaten !== kabupaten2 || 
                 type !== type2 || value !== value2
     
+}
+
+export const isSameOrderedItem = (item1: OrderedItem, item2:OrderedItem) => {
+    const {_id, name, productName, category, subCategory } = item1
+    const {_id: _id2, name: name2, productName: productName2, 
+            category: category2, subCategory: subCategory2 } = item2
+
+    return _id === _id2 && name === name2 && productName === productName2 &&
+        category === category2 && subCategory === subCategory2
 }

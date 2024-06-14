@@ -22,18 +22,20 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
     const [ newItemIdx, setNewItemIdx ] = useState(-1)
 
     const [ itemSelection, setSelection] = useState<Item[]>([])
-    const [ selectedItemId, setSelectedId] = useState("")
+    const [ selectedItemId, setSelectedId] = useState("")    
     const [ selectedUnitAmt, setSeletedUnitAmt ]  = useState(0)
+
+    const [ itemPrice, setPrice ] = useState(0)
 
     const [ itemType, setItemType ] = useState("existing")
 
     const [fetchState, setFetchState] = useState("loading")
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-    const {items} = recipient
+    const { items } = recipient
 
     useEffect(()=>{
-        const newItem = _.cloneDeep(newItemIdx === -1?emptyOrderedItem:newItems[newItemIdx])
+        const newItem = _.cloneDeep(newItemIdx === -1?emptyOrderedItem:newItems[newItemIdx])        
         setNewItem(newItem)
     }, [newItemIdx])
 
@@ -83,17 +85,42 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
     useEffect(()=>{
         getItems()
     }, [])
+
+    useEffect(()=>{
+        if(itemType === "new"){
+            if(newItemIdx === -1){
+                setPrice(0)
+            }
+            else{
+                const {price} = newItems[newItemIdx]
+                if(itemPrice === 0){
+                    setPrice( price )
+                }                
+            }
+        }else{
+            if(selectedItemId === ""){
+                setPrice(0)
+            }else{
+                const selectedItemIdx = itemSelection.findIndex((d:Item) => d._id === selectedItemId)
+                
+                const { price } = itemSelection[selectedItemIdx]
+                setPrice(price)
+            }
+        }
+    }, [itemType, newItemIdx, selectedItemId])
     
-    const baseSelectedItem = itemSelection.length>0?itemSelection[itemSelection.findIndex((d:Item) => d._id === selectedItemId)]:
-        items.length > 0?items[0]:_.cloneDeep(emptyOrderedItem)
-    const selectedItem = selectedItemId === ""?_.cloneDeep(emptyOrderedItem):{...baseSelectedItem, unit:selectedUnitAmt}    
+    const baseSelectedItem = itemSelection.length > 0?
+        itemSelection[itemSelection.findIndex((d:Item) => d._id === selectedItemId)]:
+            items.length > 0?items[0]:_.cloneDeep(emptyOrderedItem)
+    const selectedItem = selectedItemId === ""?_.cloneDeep(emptyOrderedItem):
+        {...baseSelectedItem, unit:selectedUnitAmt}        
 
     const currentItem = itemType === "new"?newItem:selectedItem
-    const { name, unit, price } = currentItem || {name:"", unit:0, price:0}   
+    const { name, category, subCategory, unit, price } = currentItem || { name:"", unit:0, price:0 }   
     
-    const {name:recipientName} = recipient
+    const { name:recipientName } = recipient
 
-    const canSubmit = name !== "" && unit > 0 && price > 0
+    const canSubmit = name !== "" && unit > 0 && itemPrice > 0
 
     return (
         <Modal 
@@ -159,13 +186,9 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
                             variant="bordered"
                             size="sm"
                             className="basis-4/5 md:basis-5/12" 
-                            value={price?price.toString():"0"}
+                            value={itemPrice.toString()}
                             type="number"
-                            onChange={(e)=>{
-                                if(itemType === "new"){
-                                    setNewItem({...newItem, price:parseInt(e.target.value)})
-                                }
-                            }}    
+                            onChange={(e)=>{setPrice(parseInt(e.target.value))}}    
                         />
                         
                     </div>
@@ -246,7 +269,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
                     {
                         itemType === "existing" && fetchState === "complete" && itemSelection.length === 0 &&
                         <p className="italic font-semibold text-gray-700 py-2">
-                            Barang masih kosong...
+                            Daftar barang kosong...
                         </p>
                     }
                 </div>
@@ -254,7 +277,10 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
                 <ModalFooter>
                     <Button color={`primary`} size="sm"
                         isDisabled={!canSubmit}
-                        onPress={()=>{submit(currentItem)}}
+                        onPress={()=>{
+                            currentItem.price = itemPrice
+                            submit(currentItem);
+                        }}
                     >
                         Tambahkan
                     </Button>

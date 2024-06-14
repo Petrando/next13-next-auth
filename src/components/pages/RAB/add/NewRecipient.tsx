@@ -11,9 +11,10 @@ type TRecipientForm = {
     show: boolean;
     hideForm: ()=>void;
     submit: (recipient:PersonRecipientWItems)=>void;
+    niks: string[];
 }
 
-export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) => {
+export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, niks }) => {
     const [ recipient, setRecipient ] = useState(_.cloneDeep(emptyPerson))
     const [ birthday, setBirthday ] = useState(createDateString())
     const [ rt, setRt ] = useState("")
@@ -41,12 +42,16 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit }) =
     }, [rt, rw])
 
     const checkNIK = async () => {  
-                       
+        const { nik } = recipient.ids
+        if(niks.includes(nik)){
+            setNikExist({checked: true, exist: false})
+            return;
+        }     
         setFetchState("checking NIK")
         try{
             const response = await fetch('/api/recipients/check-nik-exist', {
                 method: 'POST',
-                body: JSON.stringify({ nik:recipient.ids.nik }),
+                body: JSON.stringify({ nik }),
                 headers: {
                     'Content-Type': 'application/json',
                 },

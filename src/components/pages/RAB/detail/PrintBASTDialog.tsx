@@ -75,7 +75,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
             {(onClose) => (
                 <>
                 <ModalHeader className="flex justify-between items-center">
-                    CETAK BAST                                                            
+                    CETAK BAST UNTUK {recipient.name}                                                           
                 </ModalHeader>
                 <ModalBody>
                 <div className="w-full">                    

@@ -7,9 +7,9 @@ import {
             Card, CardHeader, CardBody, CardFooter,  
             Input, DatePicker, Divider } from "@nextui-org/react";
 import { TableContact } from "../shared/TableContact";
-import { parseDate, toCalendarDate, CalendarDate } from "@internationalized/date";
 import { EditItem } from "../shared/AddEditItem"
 import { TableItem } from "../shared/TableItemCard";
+import { isSameOrderedItem } from "@/lib/functions";
 import { PersonRecipientWItems, PersonRecipient, Contact, Item, OrderedItem } from "@/types";
 
 type TRecipientForm = {
@@ -304,9 +304,18 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                     hideForm={()=>{setEditRecipientItem(null)}}
                     submit={(newItem:OrderedItem)=>{                        
                         const {_id} = editRecipientItem                        
-                        const selectedIdx = selecteds.findIndex((dRec:PersonRecipientWItems) => dRec._id === _id)
+                        const selectedIdx = selecteds.findIndex((dRec:PersonRecipientWItems) => dRec._id === _id)                        
                         const updatedSelecteds = _.cloneDeep(selecteds)
                         updatedSelecteds[selectedIdx].items[0] = newItem
+
+                        updatedSelecteds.forEach((dSelected:PersonRecipientWItems, i: number) => {                                                        
+                            if(i !== selectedIdx &&
+                                dSelected.items.length > 0 && 
+                                    isSameOrderedItem(dSelected.items[0], newItem) 
+                            ){
+                                dSelected.items[0].price = newItem.price
+                            }
+                        })
                         setSelecteds(updatedSelecteds)
                         setEditRecipientItem(null)
 
