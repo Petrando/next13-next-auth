@@ -76,7 +76,9 @@ type TotalItemRow = {
                                 <TableCell>{d.name}</TableCell>
                                 <TableCell>{d.totalUnit}</TableCell>
                                 <TableCell>
-                                    <CurrencyFormat value={d.price} prefix="Rp. " thousandSeparator="," />
+                                    <CurrencyFormat value={d.price} prefix="Rp. " thousandSeparator="," 
+                                        className="text-right"
+                                    />
                                 </TableCell>
                                 <TableCell>
                                     <CurrencyFormat value={d.price * d.totalUnit} thousandSeparator="," prefix="Rp. " 

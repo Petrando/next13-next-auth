@@ -5,23 +5,23 @@ import _ from "lodash"
 import { useRouter } from "next/navigation"
 import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,
     Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
-        DatePicker, Input,  Skeleton, 
-            Link, Tabs, Tab, Card, CardHeader, CardBody, CardFooter
+        DatePicker, Input, 
+            Link, Tabs, Tab, 
  } from "@nextui-org/react"
 import { NewRecipientForm } from "./NewRecipient"
+import { EditRecipientForm } from "./EditRecipient"
 import { AddExistingRecipients } from "./AddExistingRecipients"
 import { CogIcon } from "@/components/Icon"
 import { TableItem } from "../shared/TableItemCard"
 import { EditItem } from "../shared/AddEditItem"
 import { createDateString } from "@/lib/functions";
 import { TableContact } from "../shared/TableContact"
-import { CellphoneIcon, DeleteIcon, AddDocumentIcon, PlusIcon, AddUserIcon } from "@/components/Icon"
+import { DeleteIcon, AddDocumentIcon, AddUserIcon, EditIcon } from "@/components/Icon"
 import { ItemsTable } from "../shared/ItemsTable"
-import CurrencyFormat from "react-currency-format"
 import { TotalRow } from "../shared/TotalTableRow"
 import { TotalCard } from "../shared/TotalCard"
 import { emptyPerson } from "@/variables-and-constants"
-import { PersonRecipientWItems, PersonRecipient, Contact, OrderedItem } from "@/types"
+import { PersonRecipientWItems, OrderedItem } from "@/types"
 
 export const AddRAB = () => {
     const [ tab, setTab ] = useState("recipients");
@@ -31,6 +31,8 @@ export const AddRAB = () => {
     const [category, setCategory] = useState('')
     const [recipients, setRecipients] = useState<PersonRecipientWItems[]>([])
     const [ isAddRecipient, setIsAddRecipient] = useState(false)
+    const [ editedRecipient, setEditedRecipient ] = useState<PersonRecipientWItems | null>(null)
+
     const [ recipientOption, setRecptOption] = useState<Set<string>>(new Set(["old"]))
     const [ editRecipientItem, setEditRecipientItem ] = useState<PersonRecipientWItems | null>(null)
 
@@ -162,7 +164,7 @@ export const AddRAB = () => {
                             <TableColumn>No KK</TableColumn>
                             <TableColumn>Kontak</TableColumn>
                             <TableColumn>Bantuan</TableColumn>
-                            <TableColumn>Hapus Penerima?</TableColumn>
+                            <TableColumn>Ubah/Hapus</TableColumn>
                         </TableHeader>                
                         <TableBody>                    
                             {
@@ -212,8 +214,15 @@ export const AddRAB = () => {
                                                     }}
                                                 />    
                                             </TableCell>
-                                            <TableCell>                                        
-                                                <Button color="danger" startContent={<DeleteIcon className="size-5" />} size="sm"
+                                            <TableCell className="flex items-center">
+                                                <Button color="warning" startContent={<EditIcon className="size-4" />} size="sm"
+                                                    onPress={()=>{
+                                                        setEditedRecipient(d)
+                                                    }}
+                                                >
+                                                    Ubah
+                                                </Button>                                        
+                                                <Button color="danger" startContent={<DeleteIcon className="size-4" />} size="sm"
                                                     onPress={()=>{
                                                         const updatedRecipients = recipients.filter((dRec:PersonRecipientWItems) => dRec.ids.nik !== ids.nik)
                                                         setRecipients(updatedRecipients)
@@ -267,6 +276,30 @@ export const AddRAB = () => {
                         setRecipients(newRecipients)
                         setIsAddRecipient(false) 
                     }}
+                />
+            }
+            {
+                editedRecipient !== null &&
+                <EditRecipientForm 
+                    show={editedRecipient !== null} 
+                    hideForm={()=>{                    
+                        setEditedRecipient(null)                    
+                    }} 
+                    submit={(recipient:PersonRecipientWItems)=>{
+                        const newRecipients = _.cloneDeep(recipients)                    
+                        const recipientIdx = newRecipients.findIndex((dRec:PersonRecipientWItems) => 
+                            dRec.ids.nik === editedRecipient.ids.nik
+                        )
+                        console.log(newRecipients)
+                        console.log(typeof editedRecipient.ids.nik)
+                        console.log(recipientIdx)
+                        if(recipientIdx > -1){
+                            newRecipients[recipientIdx] = recipient
+                            setRecipients(newRecipients)
+                        }                        
+                        setEditedRecipient(null)
+                    }}
+                    editedRecipient={editedRecipient}
                 />
             }
             {

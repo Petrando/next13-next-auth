@@ -23,17 +23,18 @@ export function Navigation() {
                 {/*<AcmeLogo />*/}
                 <p className="font-bold text-inherit">Kreativitas Muda Nusantara</p>
             </NavbarBrand>
-            <NavbarContent className="hidden sm:flex gap-4" justify="center">
-                <NavbarItem>
-                    <Link color="foreground" href="#">
-                        Penerima
-                    </Link>
-                </NavbarItem>
+            <NavbarContent className="hidden sm:flex gap-4" justify="end">
                 <NavbarItem isActive>
                     <Link href="/RAB" aria-current="page">
                         RAB
                     </Link>
                 </NavbarItem>
+                <NavbarItem>
+                    <Link color="foreground" href="#">
+                        Penerima
+                    </Link>
+                </NavbarItem>
+                
                 <NavbarItem>
                     <Link color="foreground" href="#">
                         Bantuan
