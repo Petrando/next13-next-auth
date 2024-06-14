@@ -44,7 +44,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
     const checkNIK = async () => {  
         const { nik } = recipient.ids
         if(niks.includes(nik)){
-            setNikExist({checked: true, exist: false})
+            setNikExist({checked: true, exist: true})
             return;
         }     
         setFetchState("checking NIK")

@@ -53,10 +53,11 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
 
     useEffect(()=>{ initRecipient() }, [])
 
+    const niksToCheck = niks.filter((d:string) => d!==editedRecipient.ids.nik)
     const checkNIK = async () => {
         const { nik } = recipient.ids
-        if(niks.includes(nik)){
-            setNikExist({checked: true, exist: false})
+        if(niksToCheck.includes(nik)){
+            setNikExist({checked: true, exist: true})
             return
         }                            
         setFetchState("checking NIK")

@@ -103,8 +103,11 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
             }else{
                 const selectedItemIdx = itemSelection.findIndex((d:Item) => d._id === selectedItemId)
                 
-                const { price } = itemSelection[selectedItemIdx]
-                setPrice(price)
+                if(itemSelection[selectedItemIdx]){
+                    const { price } = itemSelection[selectedItemIdx]
+                    setPrice(price)
+                }
+                
             }
         }
     }, [itemType, newItemIdx, selectedItemId])
