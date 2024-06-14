@@ -245,7 +245,7 @@ export const AddRAB = () => {
                         </div>
                     }
                 </Tab>
-                <Tab key="items" title="Daftar Bantuan">
+                <Tab key="items" title="Rekapan">
                     <ItemsTable items={items} />
                 </Tab>
             </Tabs>

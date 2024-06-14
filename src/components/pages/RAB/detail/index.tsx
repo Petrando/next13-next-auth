@@ -190,7 +190,7 @@ export const RABDetail = () => {
                         </TableBody>
                     </Table>
                 </Tab>
-                <Tab key="items" title="Daftar Bantuan">
+                <Tab key="items" title="Rekapan">
                     <ItemsTable items={items} />
                 </Tab>
             </Tabs>
