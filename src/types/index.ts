@@ -14,6 +14,7 @@ export type Address = {
     kelurahan: string;
     kecamatan: string;    
     kabupaten: string;
+    propinsi: string;
     postCode?: string;
 }
 
@@ -60,9 +61,14 @@ export interface IRAB {
     category: string;
 }
 
-export interface IOfficer {
+export interface IOperator {
+    _id?: string;
     name: string;
     NIP: string;
-    rank: string;
+    rank: string;    
+}
+
+export interface ICentre  {
+    name: string;
     address: Address;
 }
