@@ -20,29 +20,14 @@ type TItemForm = {
     hideForm: ()=>void;        
 }
 
-export const animals = [
-    {key: "cat", label: "Cat"},
-    {key: "dog", label: "Dog"},
-    {key: "elephant", label: "Elephant"},
-    {key: "lion", label: "Lion"},
-    {key: "tiger", label: "Tiger"},
-    {key: "giraffe", label: "Giraffe"},
-    {key: "dolphin", label: "Dolphin"},
-    {key: "penguin", label: "Penguin"},
-    {key: "zebra", label: "Zebra"},
-    {key: "shark", label: "Shark"},
-    {key: "whale", label: "Whale"},
-    {key: "otter", label: "Otter"},
-    {key: "crocodile", label: "Crocodile"}
-  ];
-
 export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {    
     const [ bastNo, setBastNo ] = useState("")
     const [ nominalInWords, setNominalWords ] = useState("")
     const [ picData, setPicData ] = useState("")
     const [ operators, setOperators ] = useState<IOperator[]>([])
-    const [ decidingOperator, setDecidingOperator] = React.useState<string>("");
-    const [ fieldOperator, setFieldOperator] = React.useState<string>("");
+    const [ decidingOperatorNip, setDecidingOperator] = useState<string>("");
+    const [ fieldOperatorNip, setFieldOperator] = useState<string>("");
+    const [ actingRecipient, setActingRecipient ] = useState("")
     const [ date, setDate] = useState(createDateString())
     const [ centre, setCentre ] = useState(defaultCentre)
 
@@ -67,6 +52,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
             
             setPicData(logo)
             setOperators(operators)
+            setDecidingOperator(operators[0].NIP)
         }catch(err:any){
             console.log('fetch error : ', err)
             
@@ -90,16 +76,8 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
 
     const { items } = recipient
     const { price, unit } = items[0]
-    const nominal = price * unit
-
-    console.log(date, typeof date)
-    type dayType = 0 | 1 | 2 | 3 | 4| 5 | 6
-    type localMonth = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
-
-    const currentDate = new Date(date.year + "-" + date.month + "-" + date.day)
-    const dayNum = currentDate.getDay() as dayType 
-    const monthNum = currentDate.getMonth() + 1 as localMonth   
-    console.log(localizedMonths[monthNum])
+    const nominal = price * unit           
+    
     const { name, address: { street, kelurahan, kecamatan, kabupaten, postCode } } = centre
 
     const changeCentre = (e:ChangeEvent<HTMLInputElement>) => {
@@ -234,8 +212,8 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                             label="Pejabat Pembuat Komitmen"
                             variant="bordered"
                             placeholder="Pilih Pejabat"
-                            selectedKeys={[decidingOperator]}
-                            className="basis-full md:basis-1/2"
+                            selectedKeys={[decidingOperatorNip]}
+                            className="basis-full md:basis-1/3"
                             onChange={(e:ChangeEvent<HTMLSelectElement>)=>{setDecidingOperator(e.target.value)}}
                         >
                             {operators.map((operator) => (
@@ -248,8 +226,8 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                             label="Petugas yang Menyerahkan"
                             variant="bordered"
                             placeholder="Pilih Petugas"
-                            selectedKeys={[fieldOperator]}
-                            className="basis-full md:basis-1/2"
+                            selectedKeys={[fieldOperatorNip]}
+                            className="basis-full md:basis-1/3"
                             onChange={(e:ChangeEvent<HTMLSelectElement>)=>{
                                 setFieldOperator(e.target.value)
                             }}
@@ -260,6 +238,15 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                                 </SelectItem>
                                 ))}
                         </Select>
+                        <Input
+                            label="Yang Menerima"
+                            variant="bordered"
+                            size="sm"
+                            className="basis-full md:basis-1/3"
+                            placeholder="Contoh: Dodi Rusdi"                             
+                            value={actingRecipient}
+                            onChange={(e)=>{setActingRecipient(e.target.value)}}
+                        />
                         <Divider />
                         
                     </div>                    
@@ -271,12 +258,16 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                         startContent={<PrintIcon />}
                         isDisabled={picData === ""}
                         onPress={()=>{
+                            const decidingOperator = operators.find((dOp:IOperator) => dOp.NIP === decidingOperatorNip)
+                            const fieldOperator = operators.find((dOp:IOperator) => dOp.NIP === fieldOperatorNip)
                             const { BASTdoc, attachmentDoc } = createBASTDocs(
+                                date,
                                 bastNo === ""?undefined:bastNo,
                                 recipient,
-                                undefined,
+                                decidingOperator as IOperator, fieldOperator as IOperator | undefined,
+                                centre,
                                 nominalInWords === ""?undefined:nominalInWords,
-                                "Dodi Rusdi",
+                                actingRecipient,
                                 picData
                             )
 

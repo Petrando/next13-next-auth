@@ -13,17 +13,40 @@ import { Document, Packer, Paragraph, TextRun, Table as TableDocx, TableBorders,
     VerticalPositionAlign,
     HorizontalPositionAlign} from "docx";
 import { displayIDR } from "./functions";
-import { defaultOfficer } from "@/variables-and-constants";
-import { PersonRecipientWItems, IOfficer } from "@/types";
+import { defaultOfficer, emptyOperator, 
+    weekDays, localizedDates, localizedMonths, localizedYears } from "@/variables-and-constants";
+import { PersonRecipientWItems,  IOperator, ICentre } from "@/types";
+import { CalendarDate } from "@internationalized/date";
 
 export const createBASTDocs = (
+    date: CalendarDate,
     bastNo: string = "591/BAST/4.11/5/2024", 
     recipient: PersonRecipientWItems, 
-    officer: IOfficer = defaultOfficer, 
+    decidingOperator: IOperator,
+    fieldOperator: IOperator | undefined = undefined,
+    centre: ICentre, 
     nominalInWords: string = "(Nilai Barang Dalam Rupiah)", 
     receptor: string = "Dodi Rusdi",
     picData: string
 ) => {
+    type dayIndexes = 0 | 1 | 2 | 3 | 4| 5 | 6
+    type dateNums = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 
+        11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |
+            21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 
+                31
+    type monthIdxs = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+    type yearNums = 2023 | 2024 | 2025 | 2026 | 2027 | 2028    
+
+    const currentDate = new Date(date.year + "-" + date.month + "-" + date.day)
+    const todate = currentDate.getDate() as dateNums
+    const dayNum = currentDate.getDay() as dayIndexes
+    const monthNum = currentDate.getMonth() + 1 as monthIdxs
+    const year = currentDate.getFullYear() as yearNums
+
+    const hari = weekDays[dayNum]
+    const tanggal = localizedDates[todate]
+    const bulan = localizedMonths[monthNum]
+    const tahun = localizedYears[year]
     
     const {name, ids:{nik}, address:{street, rtRw, kabupaten, kecamatan, kelurahan},
         items
@@ -31,11 +54,16 @@ export const createBASTDocs = (
     const recipientAddress = street + ", " + kelurahan + "-" + kecamatan + "-" + kabupaten
     const {name: itemName, unit, price} = items[0]
 
-    const {name:officerName, NIP, rank, address:officerAddress} = officer
-    const {street:officerStreet, kabupaten:officerKab, kelurahan: officerKel, kecamatan: officerKec} = 
-        officerAddress
+    const { name:officerName, NIP, rank } = decidingOperator 
+    
+    const { name:fieldOperatorName, NIP: fieldOperatorNip, rank: fieldOperatorRank } = fieldOperator || emptyOperator
+    const noFieldOperator = fieldOperatorName === "" && fieldOperatorNip === ""    
 
-    const officerAddr = officerStreet + ", "  + officerKel + "-" + officerKec + "-" + officerKab
+    const { name: centreName, address } = centre
+    const {street:centreStreet, kabupaten:centreKab, kelurahan: centreKel, kecamatan: centreKec, postCode} = 
+        address
+
+    const centreAddress = centreStreet + ", "  + centreKel + "-" + centreKec + "-" + centreKab
     
     const BASTdoc = new Document({
         styles: {
@@ -140,17 +168,17 @@ export const createBASTDocs = (
                                 color:"000000"
                             }),
                             new TextRun({
-                                text: `SENTRA "MULYA JAYA" DI JAKARTA`,
+                                text: `SENTRA "${centreName.toUpperCase()}" DI JAKARTA`,
                                 break: 1
                             }),
                             new TextRun({
-                                text: `JALAN TAT TWAM ASI NO. 47 KOMPLEKS DEPO PASAR REBO`,
+                                text: `${(centreAddress + " " +  postCode).toUpperCase()}`,
                                 break: 1
                             }),
-                            new TextRun({
+                            /*new TextRun({
                                 text: `JAKARTA TIMUR 13760`,
                                 break: 1
-                            }),
+                            }),*/
                             new TextRun({
                                 text: `TELEPON (021) 8400631    FAKSIMILE: (021) 8415717`,
                                 break: 1
@@ -187,7 +215,7 @@ export const createBASTDocs = (
                     }),
                     new Paragraph(""),
                     new Paragraph({
-                        text: "Pada Hari Jumat Tanggal Tiga Bulan Mei Tahun Dua Ribu Dua Puluh Empat, berdasarkan Surat Keputusan Kuasa Pengguna Anggaran Sentra Mulya Jaya di Jakarta Nomor : 2592/4.11/RH.00.01/4/2024 Tanggal 29 April 2024 tentang Penerima Bantuan  Asistensi Rehabilitasi Sosial (ATENSI) Alat Bantu Jakarta Tahun 2024.",
+                        text: `Pada Hari ${hari} Tanggal ${tanggal} Bulan ${bulan} Tahun ${tahun}, berdasarkan Surat Keputusan Kuasa Pengguna Anggaran Sentra Mulya Jaya di Jakarta Nomor : 2592/4.11/RH.00.01/4/2024 Tanggal 29 April 2024 tentang Penerima Bantuan  Asistensi Rehabilitasi Sosial (ATENSI) Alat Bantu Jakarta Tahun 2024.`,
                         heading: HeadingLevel.HEADING_6, alignment: AlignmentType.LEFT                    
                     
                     }),
@@ -207,7 +235,7 @@ export const createBASTDocs = (
                                 break: 1
                             }),
                             new TextRun({
-                                text: "Alamat		: " + officerAddr,                            
+                                text: "Alamat		: " + centreAddress,                            
                                 break: 1
                             })
                         ],
@@ -358,7 +386,7 @@ export const createBASTDocs = (
                                             new Paragraph({
                                                 children:[
                                                     new TextRun({
-                                                        text:"Pada tanggal    :  3 Mei 2024", 
+                                                        text:`Pada tanggal    :  ${todate} ${bulan} ${year}`, 
                                                     })
                                                 ],
                                                 heading: HeadingLevel.HEADING_6,
@@ -494,7 +522,7 @@ export const createBASTDocs = (
                                             new Paragraph({
                                                 children:[
                                                     new TextRun({
-                                                        text:"Sentra Mulya Jaya",
+                                                        text: `Sentra ${centreName}`,
                                                     })
                                                 ],
                                                 heading: HeadingLevel.HEADING_6,
@@ -609,11 +637,26 @@ export const createBASTDocs = (
                         ], 
                         heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER
                     }),
+                    new Paragraph({
+                        children:[
+                            new TextRun({ text: fieldOperatorRank})
+                        ], 
+                        heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER
+                    }),
+                    new Paragraph({
+                        children:[
+                            new TextRun({ text: noFieldOperator?"":`Sentra ${centreName}`})
+                        ], 
+                        heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER
+                    }),
                     new Paragraph({text:""}),
-                    new Paragraph({text:""}),
-                    new Paragraph({text:""}),
-                    new Paragraph({children:[new TextRun({text:"......................"})], heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER}),
-                    new Paragraph({children:[new TextRun({text:"NIP......................"})], heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER})
+                    new Paragraph({children:[
+                        new TextRun({ text: noFieldOperator?"......................":fieldOperatorName })], 
+                        heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER
+                    }),
+                    new Paragraph({children:[
+                        new TextRun({ text:"NIP."  + (noFieldOperator?".....................":fieldOperatorNip)})], 
+                        heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER})
                 ],
             },
         ],
@@ -837,7 +880,7 @@ export const createBASTDocs = (
                                         children: [
                                             new Paragraph({
                                                 children:[
-                                                    new TextRun({text:"Jakarta, 3 Mei 2024"})
+                                                    new TextRun({text:`Jakarta, ${todate} ${bulan} ${year}`})
                                                 ], heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER})
                                         ],
                                     }),
