@@ -75,8 +75,8 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
     }
 
     const { items } = recipient
-    const { price, unit } = items[0]
-    const nominal = price * unit           
+    const { price, unit, amount } = items[0]
+    const nominal = price * amount           
     
     const { name, address: { street, kelurahan, kecamatan, kabupaten, postCode } } = centre
 

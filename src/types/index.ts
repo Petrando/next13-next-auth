@@ -39,10 +39,11 @@ export interface Item {
     category: string;
     subCategory: string;
     price: number;
+    unit: string;
 }
 
 export interface OrderedItem extends Item {
-    unit: number;
+    amount: number;
 } 
 
 export interface PersonRecipientWItems extends PersonRecipient{

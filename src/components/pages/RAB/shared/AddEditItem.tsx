@@ -23,7 +23,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
 
     const [ itemSelection, setSelection] = useState<Item[]>([])
     const [ selectedItemId, setSelectedId] = useState("")    
-    const [ selectedUnitAmt, setSeletedUnitAmt ]  = useState(0)
+    const [ selectedAmount, setSelectedAmount ]  = useState(0)
 
     const [ itemPrice, setPrice ] = useState(0)
 
@@ -41,10 +41,10 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
 
     useEffect(()=>{
         if(items.length > 0){
-            const {_id, unit} = items[0]
+            const {_id, amount} = items[0]
             if(_id && _id !== ""){
                 setSelectedId(_id)
-                setSeletedUnitAmt(unit)                
+                setSelectedAmount(amount)                
             }else{
                 setNewItem(items[0])
                 setItemType("new")
@@ -116,14 +116,14 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
         itemSelection[itemSelection.findIndex((d:Item) => d._id === selectedItemId)]:
             items.length > 0?items[0]:_.cloneDeep(emptyOrderedItem)
     const selectedItem = selectedItemId === ""?_.cloneDeep(emptyOrderedItem):
-        {...baseSelectedItem, unit:selectedUnitAmt}        
+        {...baseSelectedItem, amount:selectedAmount}        
 
     const currentItem = itemType === "new"?newItem:selectedItem
-    const { name, category, subCategory, unit, price } = currentItem || { name:"", unit:0, price:0 }   
+    const { name, category, subCategory, amount, price } = currentItem || { name:"", amount:0, price:0 }   
     
     const { name:recipientName } = recipient
 
-    const canSubmit = name !== "" && unit > 0 && itemPrice > 0
+    const canSubmit = name !== "" && amount > 0 && itemPrice > 0
 
     return (
         <Modal 
@@ -173,13 +173,13 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
                             variant="bordered"
                             size="sm"
                             className="basis-1/5 md:basis-1/12" 
-                            value={unit.toString()}
+                            value={amount.toString()}
                             type="number"
                             onChange={(e)=>{
                                 if(itemType === "new"){
-                                    setNewItem({...newItem, unit:parseInt(e.target.value)})
+                                    setNewItem({...newItem, amount:parseInt(e.target.value)})
                                 }else{
-                                    setSeletedUnitAmt(parseInt(e.target.value))
+                                    setSelectedAmount(parseInt(e.target.value))
                                 }
                             }}    
                         />                                        

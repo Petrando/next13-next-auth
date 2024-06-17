@@ -11,7 +11,8 @@ export const emptyOrderedItem: OrderedItem  = _.cloneDeep({
     category: "", 
     subCategory: "",
     price: 0,
-    unit: 0
+    unit: "",
+    amount: 0
 })
 
 export const emptyPerson:PersonRecipientWItems = _.cloneDeep({
@@ -154,7 +155,8 @@ export const sampleRecipients:PersonRecipientWItems[] = [
                 category: "",
                 subCategory: "",
                 price: 17000000,
-                unit: 1
+                amount: 1,
+                unit: "unit"
             }
         ],
         completed:{
@@ -193,7 +195,8 @@ export const sampleRecipients:PersonRecipientWItems[] = [
                 category: "",
                 subCategory: "",
                 price: 1700000,
-                unit: 1
+                unit: "unit",
+                amount: 1
             }
         ],
         completed:{
