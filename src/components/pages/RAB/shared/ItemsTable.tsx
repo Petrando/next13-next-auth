@@ -28,8 +28,12 @@ type TotalItemRow = {
     const groupedItemsArray = Array.from(groupedItems, ([key, values]:[key:string, values:OrderedItem[]]) => {
         return {nama:key, anggota:values}
     })
+    
     const itemPrices = groupedItemsArray.reduce((acc:TotalItemRow[], curr:ItemArray) => {
-        const totalUnit = curr.anggota.length
+        const totalUnit = curr.anggota.reduce((ac: number, cur: OrderedItem) => {
+            ac+=cur.amount
+            return ac
+        }, 0)
         acc.push({name:curr.nama, price:curr.anggota[0].price, totalUnit})
         return acc
     }, [])

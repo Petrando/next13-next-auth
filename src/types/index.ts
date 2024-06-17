@@ -1,6 +1,6 @@
 export type BirthdatePlace = {
     birthplace: string;
-    birthdate: Date;
+    birthdate: Date | null;
 }
 
 export type PersonIds = {

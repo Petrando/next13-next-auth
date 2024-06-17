@@ -2,7 +2,8 @@ import React, { useEffect, useState, FC, ChangeEvent } from "react";
 import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,  
-        Input, DatePicker, Divider } from "@nextui-org/react";
+        Input, DatePicker, Divider, 
+        CalendarDate} from "@nextui-org/react";
 import { createDateString, personDataChanged } from "@/lib/functions";
 import { emptyPerson } from "@/variables-and-constants";
 import { PersonRecipientWItems } from "@/types";
@@ -17,7 +18,7 @@ type TRecipientForm = {
 
 export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, editedRecipient, niks }) => {
     const [ recipient, setRecipient ] = useState(_.cloneDeep(emptyPerson))
-    const [ birthday, setBirthday ] = useState(createDateString())
+    const [ birthday, setBirthday ] = useState<CalendarDate | null>(null)
     const [ rt, setRt ] = useState("")
     const [ rw, setRw ] = useState("")
 
@@ -44,7 +45,11 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
 
     const initRecipient = () => {        
         setRecipient(_.cloneDeep(editedRecipient))
-        setBirthday(createDateString(new Date(editedRecipient.birthdata.birthdate)))
+        const {birthdate} = editedRecipient.birthdata
+        if(birthdate !== null ){
+            setBirthday(createDateString(new Date(birthdate)))
+        }
+        
         const {rtRw} = editedRecipient.address
         const editedRtRw = rtRw.split("/")
         setRt(editedRtRw[0])
@@ -116,7 +121,8 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
         && kecamatan !== "" && kabupaten !== ""
     )
     
-    const birthdate = new Date(birthday.year + "-" + birthday.month + "-" + birthday.day)
+    const birthdate = birthday !== null?
+        new Date(birthday.year + "-" + birthday.month + "-" + birthday.day):null
     recipient.birthdata.birthdate = birthdate
 
     const dataChanged = personDataChanged(editedRecipient, recipient)

@@ -19,7 +19,8 @@ export const personDataChanged = (person1:PersonRecipientWItems, person2:PersonR
     const { _id, name, birthdata:{birthdate, birthplace},
         ids:{nik, noKk}, address:{kelurahan, kecamatan, kabupaten, street, rtRw}, contact} = person1
     const { type, value } = contact[0]
-    const birthtime = new Date(birthdate).getTime()
+    const birthtime = birthdate !== null?
+        new Date(birthdate).getTime():null
 
     const { _id: _id2, name: name2, birthdata:{birthdate:birthdate2, birthplace:birthplace2},
         ids:{ nik:nik2, noKk:noKk2 }, 
@@ -27,7 +28,8 @@ export const personDataChanged = (person1:PersonRecipientWItems, person2:PersonR
                 rtRw: rtRw2
             }, contact:contact2} = person2
     const {type:type2, value:value2 } = contact2[0]
-    const birthtime2 = new Date(birthdate2).getTime()    
+    const birthtime2 = birthdate2 !== null ? 
+        new Date(birthdate2).getTime():null    
 
     return _id !== _id2 || name !== name2 || birthtime !== birthtime2 || birthplace !== birthplace2 ||
          nik !== nik2 || noKk !== noKk2 || rtRw !== rtRw2 || street !== street2 || 

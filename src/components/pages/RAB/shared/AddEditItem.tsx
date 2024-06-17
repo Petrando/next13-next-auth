@@ -23,7 +23,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
 
     const [ itemSelection, setSelection] = useState<Item[]>([])
     const [ selectedItemId, setSelectedId] = useState("")    
-    const [ selectedAmount, setSelectedAmount ]  = useState(0)
+    const [ selectedAmount, setSelectedAmount ]  = useState(1)
 
     const [ itemPrice, setPrice ] = useState(0)
 
@@ -90,9 +90,11 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
         if(itemType === "new"){
             if(newItemIdx === -1){
                 setPrice(0)
+                setNewItem({...newItem, unit: "unit", amount: 1})
+
             }
             else{
-                const {price} = newItems[newItemIdx]
+                const { price } = newItems[newItemIdx]
                 if(itemPrice === 0){
                     setPrice( price )
                 }                
@@ -119,7 +121,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
         {...baseSelectedItem, amount:selectedAmount}        
 
     const currentItem = itemType === "new"?newItem:selectedItem
-    const { name, category, subCategory, amount, price } = currentItem || { name:"", amount:0, price:0 }   
+    const { name, category, subCategory, unit, amount, price } = currentItem || { name:"", amount:0, unit: "", price:0 }   
     
     const { name:recipientName } = recipient
 
@@ -154,13 +156,12 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
                 <div className="w-full">                    
                     <div className="w-full flex flex-wrap mb-2">                        
                         <Input
-                            isDisabled={itemType==="existing" || (itemType === "new" && newItemIdx > -1)}
+                            isReadOnly={itemType==="existing" || (itemType === "new" && newItemIdx > -1)}
                             label="Nama Barang"                        
                             variant="bordered"
                             size="sm"
                             className="basis-full md:basis-1/2"
                             value={name}
-                            isReadOnly={itemType==="existing"}
                             onChange={(e)=>{
                                 if(itemType === "new"){
                                     setNewItem({...newItem, name:e.target.value})
@@ -182,13 +183,26 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
                                     setSelectedAmount(parseInt(e.target.value))
                                 }
                             }}    
+                        />
+                        <Input                            
+                            isReadOnly={itemType==="existing"}
+                            label="Satuan"
+                            variant="bordered"
+                            size="sm"
+                            className="basis-2/5 md:basis-2/12" 
+                            value={unit}                            
+                            onChange={(e)=>{
+                                if(itemType === "new"){
+                                    setNewItem({...newItem, unit:e.target.value})
+                                }
+                            }}    
                         />                                        
                         <Input
                             isDisabled={(itemType==="existing" && fetchState!=="complete")}
-                            label="Harga"
+                            label="Harga per unit"
                             variant="bordered"
                             size="sm"
-                            className="basis-4/5 md:basis-5/12" 
+                            className="basis-2/5 md:basis-3/12" 
                             value={itemPrice.toString()}
                             type="number"
                             onChange={(e)=>{setPrice(parseInt(e.target.value))}}    

@@ -2,7 +2,8 @@ import React, { useEffect, useState, FC, ChangeEvent } from "react";
 import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,  
-        Input, DatePicker, Divider } from "@nextui-org/react";
+        Input, DatePicker, Divider, 
+        CalendarDate} from "@nextui-org/react";
 import { createDateString } from "@/lib/functions";
 import { emptyPerson } from "@/variables-and-constants";
 import { PersonRecipientWItems } from "@/types";
@@ -16,7 +17,7 @@ type TRecipientForm = {
 
 export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, niks }) => {
     const [ recipient, setRecipient ] = useState(_.cloneDeep(emptyPerson))
-    const [ birthday, setBirthday ] = useState(createDateString())
+    const [ birthday, setBirthday ] = useState<CalendarDate | null>(null)
     const [ rt, setRt ] = useState("")
     const [ rw, setRw ] = useState("")
 
@@ -308,7 +309,8 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
                                 setSubmitPressed(true)
                             }
                             else{
-                                const birthdate = new Date(birthday.year + "-" + birthday.month + "-" + birthday.day)
+                                const birthdate = birthday !== null?
+                                    new Date(birthday.year + "-" + birthday.month + "-" + birthday.day) : null
                                 recipient.birthdata.birthdate = birthdate
                                 submit(recipient)
                             }                        
