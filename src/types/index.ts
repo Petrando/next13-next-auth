@@ -23,6 +23,8 @@ export type Contact = {
     value: string;
 }
 
+type RecipientTypes = "person" | "charity-org"
+
 export interface PersonRecipient {
     _id?:string | null;
     name: string;
@@ -30,6 +32,7 @@ export interface PersonRecipient {
     ids: PersonIds;
     address: Address;
     contact: Contact[];
+    type: "person";    
 }
 
 export interface Item {
@@ -38,6 +41,7 @@ export interface Item {
     productName?: string;
     category: string;
     subCategory: string;
+    subSubCategory?: string;
     price: number;
     unit: string;
 }
@@ -54,13 +58,33 @@ export interface PersonRecipientWItems extends PersonRecipient{
     }
 }
 
-export interface IRAB {
+export interface IRABMultiPerson {
     _id:string;
     date: Date;
     title: string;
     recipients: PersonRecipientWItems[];
-    category: string;
+    category: "charity-multi-recipients";
 }
+
+export interface CharityOrgRecipient {
+    _id?: string;
+    name: string;
+    number: string;
+    address: Address;
+    contact: Contact[];
+    type: "charity-org";
+}
+
+export interface IRABCharityOrg { 
+    _id:string;
+    date: Date | null;
+    title: string;
+    recipient: CharityOrgRecipient;
+    items: OrderedItem[];
+    category: "charity-org";
+}
+
+export type RABTypes = "charity-multi-recipients" | "charity-org" | "enterpreneur-charity"
 
 export interface IOperator {
     _id?: string;

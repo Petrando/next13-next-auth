@@ -9,7 +9,7 @@ export async function POST(req:NextRequest) {
     const session = client.startSession();
     try {        
         const recipients = client.db("charity-org").collection("recipients");
-        const user = recipients.find({ "ids.nik":nik })
+        const user = recipients.find({ "ids.nik":nik, type: "person" })
         
         if(user){
             throw `Nik ${nik} sudah terdaftar`

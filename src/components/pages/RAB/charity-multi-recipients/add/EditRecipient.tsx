@@ -4,7 +4,7 @@ import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,  
         Input, DatePicker, Divider, 
         CalendarDate} from "@nextui-org/react";
-import { createDateString } from "@/lib/functions";
+import { createDateString, personDataChanged } from "@/lib/functions";
 import { emptyPerson } from "@/variables-and-constants";
 import { PersonRecipientWItems } from "@/types";
 
@@ -12,17 +12,18 @@ type TRecipientForm = {
     show: boolean;
     hideForm: ()=>void;
     submit: (recipient:PersonRecipientWItems)=>void;
+    editedRecipient: PersonRecipientWItems;
     niks: string[];
 }
 
-export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, niks }) => {
+export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, editedRecipient, niks }) => {
     const [ recipient, setRecipient ] = useState(_.cloneDeep(emptyPerson))
     const [ birthday, setBirthday ] = useState<CalendarDate | null>(null)
     const [ rt, setRt ] = useState("")
     const [ rw, setRw ] = useState("")
 
     const [ fetchState, setFetchState ] = useState("")
-    const [ nikExist, setNikExist ] = useState({exist:false, checked:false})
+    const [ nikExist, setNikExist ] = useState({exist:false, checked:true})
     const [submitPressed, setSubmitPressed] = useState(false)
     
     const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();    
@@ -42,15 +43,31 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
         if(submitPressed){setSubmitPressed(false)}
     }, [rt, rw])
 
-    const checkNIK = async () => {  
+    const initRecipient = () => {        
+        setRecipient(_.cloneDeep(editedRecipient))
+        const {birthdate} = editedRecipient.birthdata
+        if(birthdate !== null ){
+            setBirthday(createDateString(new Date(birthdate)))
+        }
+        
+        const {rtRw} = editedRecipient.address
+        const editedRtRw = rtRw.split("/")
+        setRt(editedRtRw[0])
+        setRw(editedRtRw[1])
+    }
+
+    useEffect(()=>{ initRecipient() }, [])
+
+    const niksToCheck = niks.filter((d:string) => d!==editedRecipient.ids.nik)
+    const checkNIK = async () => {
         const { nik } = recipient.ids
-        if(niks.includes(nik)){
+        if(niksToCheck.includes(nik)){
             setNikExist({checked: true, exist: true})
-            return;
-        }     
+            return
+        }                            
         setFetchState("checking NIK")
         try{
-            const response = await fetch('/api/recipients/check-nik-exist', {
+            const response = await fetch('/api/recipients/person-recipients/check-nik-exist', {
                 method: 'POST',
                 body: JSON.stringify({ nik }),
                 headers: {
@@ -58,7 +75,6 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
                 },
             });
             const { message } = await response.json();
-            
             if(response.ok){                
                 setNikExist({checked: true, exist: false})                
             }else{
@@ -105,6 +121,14 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
         && kecamatan !== "" && kabupaten !== ""
     )
     
+    const birthdate = birthday !== null?
+        new Date(birthday.year + "-" + birthday.month + "-" + birthday.day):null
+    recipient.birthdata.birthdate = birthdate
+
+    const dataChanged = personDataChanged(editedRecipient, recipient)
+    
+    const isNewRecipient = !editedRecipient._id || editedRecipient._id === ""
+    
     return (
         <>        
         <Modal 
@@ -120,7 +144,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
             {(onClose) => (
                 <>
                 <ModalHeader className="flex flex-col gap-1">
-                    Data Penerima Bantuan Baru
+                    Rubah Data Penerima
                 </ModalHeader>
                 <ModalBody>
                     <div className="w-full flex flex-wrap">
@@ -136,6 +160,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
                             isRequired
                             isInvalid={submitPressed && name === ""}
                             errorMessage="Nama masih kosong"
+                            isDisabled={!isNewRecipient}
                         />
                         <Input                                                    
                             label="No Hp"                        
@@ -174,15 +199,19 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
                                 value={nik}
                                 onChange={(e)=>{
                                     changeState(e)
-                                    if(nikExist.checked){
+                                    if(isNewRecipient && nikExist.checked){
                                         setNikExist({exist:false, checked: false})
                                     }
                                 }}
                                 name="ids.nik"
                                 isRequired
-                                isInvalid={(submitPressed && nik === "") || nikExist.exist }
-                                errorMessage={`${nikExist.exist?"NIK sudah terdaftar":"Nomor KTP masih kosong"}`}
-                                onBlur={()=>{checkNIK()}}                            
+                                isDisabled={!isNewRecipient}
+                                isInvalid={(submitPressed && nik === "") || (isNewRecipient && nikExist.exist) }
+                                errorMessage={`${isNewRecipient && nikExist.exist?"NIK sudah terdaftar":"Nomor KTP masih kosong"}`}
+                                onBlur={()=>{
+                                    if(isNewRecipient) 
+                                    {checkNIK()}
+                                }}
                             />
                             <Input
                                 label="No. KK"                        
@@ -192,6 +221,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
                                 onChange={changeState}
                                 name="ids.noKk"
                                 isRequired
+                                isDisabled={!isNewRecipient}
                                 isInvalid={ submitPressed && noKk === ""}
                                 errorMessage="Kartu Keluarga masih kosong"
                             />
@@ -219,9 +249,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
                                     size="sm"
                                     className="basis-1/5"
                                     value={rt}
-                                    onChange={(e)=>{
-                                        setRt(e.target.value)
-                                    }}
+                                    onChange={(e)=>{ setRt(e.target.value) }}
                                     isRequired
                                     isInvalid={submitPressed && rt === ""}
                                     errorMessage="RT masih kosong"
@@ -232,9 +260,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
                                     size="sm"
                                     className="basis-1/5"
                                     value={rw}
-                                    onChange={(e)=>{
-                                        setRw(e.target.value)
-                                    }}
+                                    onChange={(e)=>{ setRw(e.target.value) }}
                                     isRequired
                                     isInvalid={submitPressed && rw === ""}
                                     errorMessage="Rw masih kosong"
@@ -289,37 +315,38 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
                             />
                         </div>
                     </div>
-                    <Divider />                    
-                    {/*    
-                    <div className="flex h-5 items-center space-x-4 text-small">
-                        <div>Blog</div>
-                        <Divider orientation="vertical" />
-                        <div>Docs</div>
-                        <Divider orientation="vertical" />
-                        <div>Source</div>
-                    </div>
-                    */}
+                    <Divider />                                        
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" onPress={()=>{
-                            if(!nikExist.checked){
+                            if(isNewRecipient && !nikExist.checked){
                                 checkNIK()
                             }
                             if(!requiredFilled){
                                 setSubmitPressed(true)
                             }
                             else{
-                                const birthdate = birthday !== null?
-                                    new Date(birthday.year + "-" + birthday.month + "-" + birthday.day) : null
-                                recipient.birthdata.birthdate = birthdate
-                                submit(recipient)
+                                if(!dataChanged){
+                                    hideForm()
+                                }else{
+                                    
+                                    recipient.birthdata.birthdate = birthdate
+                                    submit(recipient)
+                                }                                
                             }                        
                         }}
                         isDisabled={
-                            (nikExist.exist || !nikExist.checked) || 
-                                fetchState === "checking NIK"}
+                            isNewRecipient && 
+                                ((nikExist.exist || !nikExist.checked) || 
+                                fetchState === "checking NIK")
+                            }
                     >
-                        Tambahkan
+                        Simpan
+                    </Button>
+                    <Button color="primary" onPress={()=>{initRecipient() }}
+                        isDisabled={!dataChanged}    
+                    >
+                        Reset
                     </Button>
                     <Button color="danger" onPress={()=>{hideForm()}}>
                         Batal

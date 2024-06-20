@@ -7,6 +7,7 @@ export async function POST(req:NextRequest) {
 
     const skip = offset * itemPerPage
     
+    filter.type = "person"
     try {        
         const recipients = client.db("charity-org").collection("recipients");
         const data = await recipients.find(filter, projection).skip(skip).limit(limit).toArray()

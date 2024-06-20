@@ -11,15 +11,15 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
 import { NewRecipientForm } from "./NewRecipient"
 import { EditRecipientForm } from "./EditRecipient"
 import { AddExistingRecipients } from "./AddExistingRecipients"
-import { CogIcon } from "@/components/Icon"
-import { TableItem } from "../shared/TableItemCard"
-import { EditItem } from "../shared/AddEditItem"
+import { NewOldDropDown } from "../../shared/NewOldDropdown"
+import { TableItem } from "../../shared/TableItemCard"
+import { EditItem } from "../../shared/AddEditItem"
+import { TableContact } from "../../shared/TableContact"
+import { DeleteIcon, AddDocumentIcon, AddUserIcon, EditIcon, CogIcon } from "@/components/Icon"
+import { ItemsTable } from "../../shared/ItemsTable"
+import { TotalRow } from "../../shared/TotalTableRow"
+import { TotalCard } from "../../shared/TotalCard"
 import { createDateString, isSameOrderedItem } from "@/lib/functions";
-import { TableContact } from "../shared/TableContact"
-import { DeleteIcon, AddDocumentIcon, AddUserIcon, EditIcon } from "@/components/Icon"
-import { ItemsTable } from "../shared/ItemsTable"
-import { TotalRow } from "../shared/TotalTableRow"
-import { TotalCard } from "../shared/TotalCard"
 import { emptyPerson } from "@/variables-and-constants"
 import { PersonRecipientWItems, OrderedItem } from "@/types"
 
@@ -28,7 +28,7 @@ export const AddRAB = () => {
 
     const [date, setDate] = useState(createDateString())
     const [title, setTitle] = useState('')
-    const [category, setCategory] = useState('')
+    
     const [recipients, setRecipients] = useState<PersonRecipientWItems[]>([])
     const [ isAddRecipient, setIsAddRecipient] = useState(false)
     const [ editedRecipient, setEditedRecipient ] = useState<PersonRecipientWItems | null>(null)
@@ -46,16 +46,17 @@ export const AddRAB = () => {
         const RABDate = new Date(date.year + "-" + date.month + "-" + date.day)
         setFetchState("submiting")
         try{
-            const response = await fetch('/api/RAB/add', {
+            const response = await fetch('/api/RAB/charity-multi-recipients/add', {
                 method: 'POST',
-                body: JSON.stringify({ title, date:RABDate, category, recipients }),
+                body: JSON.stringify({ 
+                    title, date:RABDate, category: 'charity-multi-recipients', recipients 
+                }),
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
           
-            const data = await response.json();
-            console.log(data)
+            const data = await response.json();            
             router.push("/RAB")
         }catch(err:any){
             console.log('fetch error : ', err)
@@ -125,28 +126,12 @@ export const AddRAB = () => {
                     >
                         Penerima
                     </Button>
-                    <Dropdown className="w-fit" >
-                        <DropdownTrigger>
-                            <Button 
-                                variant="bordered" 
-                                startContent={<CogIcon />}                                
-                            >
-                                Opsi
-                            </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu aria-label="Static Actions"
-                            disallowEmptySelection
-                            selectionMode="single"
-                            selectedKeys={recipientOption}
-                            onSelectionChange={(keys) => {
-                                setRecptOption(keys as Set<string>)
-                                setIsAddRecipient(false)
-                            }}
-                        >
-                            <DropdownItem key="new">Penerima Baru</DropdownItem>
-                            <DropdownItem key="old">Penerima Lama</DropdownItem>                            
-                        </DropdownMenu>
-                    </Dropdown>
+                    <NewOldDropDown recipientOption={recipientOption}
+                        onChange={(keys) => {
+                            setRecptOption(keys as Set<string>)
+                            setIsAddRecipient(false)
+                        }}
+                    />
                 </div>
             </div>
             <Tabs 
@@ -256,7 +241,7 @@ export const AddRAB = () => {
                 >
                     Kembali
                 </Link>
-                <Button size="lg" color={`primary`} 
+                <Button color={`primary`} 
                     isDisabled={!canSubmit}
                     onPress={submitData}
                     endContent={<AddDocumentIcon />}
@@ -387,6 +372,7 @@ export const AddRAB = () => {
                             setEditRecipientItem(null)
                         }}
                         newItems={newItems}
+                        RABType="charity-multi-recipients"
                     />
             }
         </div>

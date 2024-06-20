@@ -3,14 +3,12 @@ import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,
         Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Checkbox,
-            Skeleton,
-            Card, CardHeader, CardBody, CardFooter,  
-            Input, DatePicker, Divider } from "@nextui-org/react";
-import { TableContact } from "../shared/TableContact";
-import { EditItem } from "../shared/AddEditItem"
-import { TableItem } from "../shared/TableItemCard";
+            Skeleton } from "@nextui-org/react";
+import { TableContact } from "../../shared/TableContact";
+import { EditItem } from "../../shared/AddEditItem"
+import { TableItem } from "../../shared/TableItemCard";
 import { isSameOrderedItem } from "@/lib/functions";
-import { PersonRecipientWItems, PersonRecipient, Contact, Item, OrderedItem } from "@/types";
+import { PersonRecipientWItems, PersonRecipient, OrderedItem } from "@/types";
 
 type TRecipientForm = {
     show: boolean;
@@ -28,14 +26,14 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
     const [ fetchState, setFetchState ] = useState("loading")
     
     const getRecipients = async () => {
-        const filter = {}
+        const filter = {type:"person"}
         const projection = {}
         const limit = 10
         const offset = 0
 
         setFetchState("loading")
         try{
-            const response = await fetch('/api/recipients/list', {
+            const response = await fetch('/api/recipients/person-recipients/list', {
                 method: 'POST',
                 body: JSON.stringify({ filter, projection, limit, offset }),
                 headers: {
@@ -321,6 +319,7 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
 
                     }}
                     newItems={newItems}
+                    RABType="charity-multi-recipients"
                 />
         }
         </>        

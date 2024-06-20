@@ -6,7 +6,7 @@ import {
             Input, Divider, RadioGroup, Radio, Skeleton } from "@nextui-org/react";
 import CurrencyFormat from "react-currency-format";
 import { emptyOrderedItem } from "@/variables-and-constants";
-import { Item, OrderedItem, PersonRecipientWItems } from "@/types";
+import { Item, OrderedItem, PersonRecipientWItems, RABTypes } from "@/types";
 
 type TItemForm = {
     recipient: PersonRecipientWItems,
@@ -14,9 +14,10 @@ type TItemForm = {
     hideForm: ()=>void;    
     submit: (newItem:OrderedItem)=>void;
     newItems: OrderedItem[];
+    RABType: RABTypes;
 }
 
-export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newItems}) => {    
+export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newItems, RABType}) => {    
 
     const [ newItem, setNewItem] = useState<OrderedItem>(_.cloneDeep(emptyOrderedItem))
     const [ newItemIdx, setNewItemIdx ] = useState(-1)
@@ -57,7 +58,11 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
     }, [ items ])
 
     const getItems = async () => {
-        const filter = {}
+        const filter = RABType === "charity-multi-recipients"?
+            {
+                category: "Kesehatan", subCategory: "Perlengkapan Medis"
+            }:
+                {}
         const projection = {}
         const limit = 10
         const offset = 0
@@ -82,6 +87,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
             setFetchState("complete")
         } 
     }
+
     useEffect(()=>{
         getItems()
     }, [])

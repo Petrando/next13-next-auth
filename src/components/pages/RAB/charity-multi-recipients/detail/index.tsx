@@ -6,22 +6,22 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
         DatePicker, Input,  Skeleton, Tabs, Tab,
             Link
  } from "@nextui-org/react"
-import { ItemsTable } from '../shared/ItemsTable';
-import { TableItem } from '../shared/TableItemCard';
-import { TableContact } from '../shared/TableContact';
-import { TotalRow } from '../shared/TotalTableRow';
-import { TotalCard } from '../shared/TotalCard';
+import { ItemsTable } from '../../shared/ItemsTable';
+import { TableItem } from '../../shared/TableItemCard';
+import { TableContact } from '../../shared/TableContact';
+import { TotalRow } from '../../shared/TotalTableRow';
+import { TotalCard } from '../../shared/TotalCard';
 import { PrintIcon } from '@/components/Icon';
 import { PrintBAST } from './PrintBASTDialog';
 import { createDateString } from '@/lib/functions';
 import { emptyRAB, emptyPerson } from '@/variables-and-constants';
-import { IRAB, PersonRecipientWItems, OrderedItem } from '@/types';
+import { IRABMultiPerson, PersonRecipientWItems, OrderedItem } from '@/types';
 
 
 export const RABDetail = () => {
     const [ tab, setTab ] = useState("recipients");
 
-    const [RAB, setRAB] = useState<IRAB>(emptyRAB)
+    const [RAB, setRAB] = useState<IRABMultiPerson>(emptyRAB)
     const [fetchState, setFetchState] = useState("loading")
 
     const [ printingRecipient, setPrintingRecipient ] = useState(emptyPerson)

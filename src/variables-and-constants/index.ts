@@ -1,5 +1,6 @@
 import _ from "lodash";
-import { PersonRecipientWItems, Item, OrderedItem, IRAB, IOperator, ICentre } from "@/types";
+import { PersonRecipientWItems, CharityOrgRecipient, Item, OrderedItem, IRABMultiPerson, 
+    IRABCharityOrg, IOperator, ICentre, Address } from "@/types";
 
 export const cloner = (obj:any) => {
     return JSON.parse(JSON.stringify(obj))
@@ -13,6 +14,10 @@ export const emptyOrderedItem: OrderedItem  = _.cloneDeep({
     price: 0,
     unit: "",
     amount: 0
+})
+
+export const emptyAddress:Address = _.cloneDeep({
+    street: "", rtRw: "", kelurahan: "", kecamatan: "", kabupaten: "", propinsi: "", postCode: ""
 })
 
 export const emptyPerson:PersonRecipientWItems = _.cloneDeep({
@@ -38,11 +43,29 @@ export const emptyPerson:PersonRecipientWItems = _.cloneDeep({
     items: [],
     completed :{
         done: false, RABScreenshot: ''
-    }
+    },
+    type: "person"
 })
 
-export const emptyRAB:IRAB = _.cloneDeep({
-    _id:"", date:new Date(), category:"", title:"", recipients:[]
+export const emptyRAB:IRABMultiPerson = _.cloneDeep({
+    _id:"", date:new Date(), category:"charity-multi-recipients", title:"", recipients:[]
+})
+
+export const emptyCharityOrg:CharityOrgRecipient = _.cloneDeep({
+    name:"", number: "", address: emptyAddress, contact: [{type:'cellphone', value:''}], 
+    type: "charity-org"
+})
+
+export const emptyRABCharityOrg:IRABCharityOrg = _.cloneDeep({
+    _id: "", date: null, title: "",
+    recipient:{
+        name: "", number: "", contact:[], type: "charity-org",
+        address: {
+            street: "", rtRw: "", kelurahan: "", kecamatan: "", kabupaten: "", propinsi: "", postCode: ""
+        }
+    },
+    items: [],
+    category: "charity-org"
 })
 
 export const defaultOfficer:IOperator = _.cloneDeep({
@@ -121,7 +144,8 @@ export const sampleRecipients:PersonRecipientWItems[] = [
         items:[],
         completed:{
             done: false, RABScreenshot: ""
-        }
+        },
+        type: "person"
     },
     {
         name: "Hj Nurlela",
@@ -161,7 +185,8 @@ export const sampleRecipients:PersonRecipientWItems[] = [
         ],
         completed:{
             done:false, RABScreenshot: ""
-        }
+        },
+        type: "person"
     },
     {
         name: "Aryani",
@@ -201,6 +226,7 @@ export const sampleRecipients:PersonRecipientWItems[] = [
         ],
         completed:{
             done: false, RABScreenshot: ""
-        }
+        },
+        type: "person"
     }
 ]

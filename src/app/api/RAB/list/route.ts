@@ -7,15 +7,15 @@ export async function POST(req:NextRequest) {
     const client = await clientPromise;
     
     const skip = offset * itemPerPage
-    
-    
+        
     if(Object.keys(filter).includes("_id")){
         filter._id = new ObjectId(filter._id)
     }
+    
     try {        
         const RABs = client.db("charity-org").collection("RAB");
         const data = await RABs.find(filter, projection).skip(skip).limit(limit).toArray()
-                     
+            
         return NextResponse.json({ message: "Daftar RAB.", data }, { status: 201 });
     } catch (error) {
     
