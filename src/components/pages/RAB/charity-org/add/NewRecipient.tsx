@@ -100,9 +100,6 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
         && kecamatan !== "" && kabupaten !== ""
     ) 
     
-    console.log(recipient)
-    console.log(name)
-    
     return (
         <>        
         <Modal 
@@ -174,6 +171,8 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
                                             setRecipient({
                                                 ...recipient, 
                                                 address:{...recipient?.address, rtRw:newRtRw}})
+                                            
+                                            if(submitPressed){setSubmitPressed(false)}
                                         }                                        
                                     }}
                                     isRequired
@@ -193,6 +192,8 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
                                             setRecipient({
                                                 ...recipient, 
                                                 address:{...recipient?.address, rtRw:newRtRw}})
+
+                                            if(submitPressed){setSubmitPressed(false)}
                                         }  
                                     }}
                                     isRequired

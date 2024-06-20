@@ -17,9 +17,7 @@ type TRecipientForm = {
 
 export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, niks }) => {
     const [ recipient, setRecipient ] = useState(_.cloneDeep(emptyPerson))
-    const [ birthday, setBirthday ] = useState<CalendarDate | null>(null)
-    const [ rt, setRt ] = useState("")
-    const [ rw, setRw ] = useState("")
+    const [ birthday, setBirthday ] = useState<CalendarDate | null>(null)    
 
     const [ fetchState, setFetchState ] = useState("")
     const [ nikExist, setNikExist ] = useState({exist:false, checked:false})
@@ -33,14 +31,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
         }else{
             onClose()
         }
-    }, [show])
-    
-    useEffect(()=>{
-        const newRecipient = {...recipient}
-        newRecipient.address.rtRw = `${rt}/${rw}`
-        setRecipient(newRecipient)
-        if(submitPressed){setSubmitPressed(false)}
-    }, [rt, rw])
+    }, [show])        
 
     const checkNIK = async () => {  
         const { nik } = recipient.ids
@@ -100,6 +91,10 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
 
         if(submitPressed){setSubmitPressed(false)}
     }
+
+    const rtNRw = recipient.address.rtRw.includes("/")?recipient.address.rtRw.split("/"):""
+    const rt = rtRw === ""?"":rtNRw[0]    
+    const rw = rtNRw === ""?"":rtNRw[1] 
 
     const requiredFilled = (name !== "" && nik !== "" && noKk !== "" && street !== "" && rt !== "" && rw !== "" && kelurahan !== ""
         && kecamatan !== "" && kabupaten !== ""
@@ -220,7 +215,14 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
                                     className="basis-1/5"
                                     value={rt}
                                     onChange={(e)=>{
-                                        setRt(e.target.value)
+                                        const newRtRw = e.target.value + "/" + rw
+                                        
+                                        setRecipient({
+                                            ...recipient, 
+                                            address:{...recipient.address, rtRw:newRtRw}})
+                                        
+                                        if(submitPressed){setSubmitPressed(false)}
+                                         
                                     }}
                                     isRequired
                                     isInvalid={submitPressed && rt === ""}
@@ -233,7 +235,13 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
                                     className="basis-1/5"
                                     value={rw}
                                     onChange={(e)=>{
-                                        setRw(e.target.value)
+                                        const newRtRw = rt + "/" + e.target.value
+                                        
+                                        setRecipient({
+                                            ...recipient, 
+                                            address:{...recipient.address, rtRw:newRtRw}})
+                                        
+                                        if(submitPressed){setSubmitPressed(false)}
                                     }}
                                     isRequired
                                     isInvalid={submitPressed && rw === ""}

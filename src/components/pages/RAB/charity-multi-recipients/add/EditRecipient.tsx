@@ -18,9 +18,7 @@ type TRecipientForm = {
 
 export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, editedRecipient, niks }) => {
     const [ recipient, setRecipient ] = useState(_.cloneDeep(emptyPerson))
-    const [ birthday, setBirthday ] = useState<CalendarDate | null>(null)
-    const [ rt, setRt ] = useState("")
-    const [ rw, setRw ] = useState("")
+    const [ birthday, setBirthday ] = useState<CalendarDate | null>(null)    
 
     const [ fetchState, setFetchState ] = useState("")
     const [ nikExist, setNikExist ] = useState({exist:false, checked:true})
@@ -34,26 +32,14 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
         }else{
             onClose()
         }
-    }, [show])
-    
-    useEffect(()=>{
-        const newRecipient = {...recipient}
-        newRecipient.address.rtRw = `${rt}/${rw}`
-        setRecipient(newRecipient)
-        if(submitPressed){setSubmitPressed(false)}
-    }, [rt, rw])
+    }, [show])        
 
     const initRecipient = () => {        
         setRecipient(_.cloneDeep(editedRecipient))
         const {birthdate} = editedRecipient.birthdata
         if(birthdate !== null ){
             setBirthday(createDateString(new Date(birthdate)))
-        }
-        
-        const {rtRw} = editedRecipient.address
-        const editedRtRw = rtRw.split("/")
-        setRt(editedRtRw[0])
-        setRw(editedRtRw[1])
+        }                
     }
 
     useEffect(()=>{ initRecipient() }, [])
@@ -116,6 +102,10 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
 
         if(submitPressed){setSubmitPressed(false)}
     }
+
+    const rtNRw = recipient.address.rtRw.includes("/")?recipient.address.rtRw.split("/"):""
+    const rt = rtRw === ""?"":rtNRw[0]    
+    const rw = rtNRw === ""?"":rtNRw[1]
 
     const requiredFilled = (name !== "" && nik !== "" && noKk !== "" && street !== "" && rt !== "" && rw !== "" && kelurahan !== ""
         && kecamatan !== "" && kabupaten !== ""
@@ -249,7 +239,15 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
                                     size="sm"
                                     className="basis-1/5"
                                     value={rt}
-                                    onChange={(e)=>{ setRt(e.target.value) }}
+                                    onChange={(e)=>{ 
+                                        const newRtRw = e.target.value + "/" + rw
+                                        
+                                        setRecipient({
+                                            ...recipient, 
+                                            address:{...recipient.address, rtRw:newRtRw}})
+                                        
+                                        if(submitPressed){setSubmitPressed(false)}
+                                     }}
                                     isRequired
                                     isInvalid={submitPressed && rt === ""}
                                     errorMessage="RT masih kosong"
@@ -260,7 +258,15 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
                                     size="sm"
                                     className="basis-1/5"
                                     value={rw}
-                                    onChange={(e)=>{ setRw(e.target.value) }}
+                                    onChange={(e)=>{ 
+                                        const newRtRw = rt + "/" + e.target.value
+                                        
+                                        setRecipient({
+                                            ...recipient, 
+                                            address:{...recipient.address, rtRw:newRtRw}})
+                                        
+                                        if(submitPressed){setSubmitPressed(false)}
+                                     }}
                                     isRequired
                                     isInvalid={submitPressed && rw === ""}
                                     errorMessage="Rw masih kosong"
