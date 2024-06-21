@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { PersonRecipientWItems, CharityOrgRecipient, Item, OrderedItem, IRABMultiPerson, 
-    IRABCharityOrg, IOperator, ICentre, Address } from "@/types";
+    IRABCharityOrg, IOperator, ICentre, Address, category } from "@/types";
 
 export const cloner = (obj:any) => {
     return JSON.parse(JSON.stringify(obj))
@@ -48,7 +48,8 @@ export const emptyPerson:PersonRecipientWItems = _.cloneDeep({
 })
 
 export const emptyRAB:IRABMultiPerson = _.cloneDeep({
-    _id:"", date:new Date(), category:"charity-multi-recipients", title:"", recipients:[]
+    _id:"", date:new Date(), category:"charity-multi-recipients", title:"", recipients:[],
+    type: "charity-multi-recipients"
 })
 
 export const emptyCharityOrg:CharityOrgRecipient = _.cloneDeep({
@@ -58,12 +59,7 @@ export const emptyCharityOrg:CharityOrgRecipient = _.cloneDeep({
 
 export const emptyRABCharityOrg:IRABCharityOrg = _.cloneDeep({
     _id: "", date: null, title: "",
-    recipient:{
-        name: "", number: "", contact:[], type: "charity-org",
-        address: {
-            street: "", rtRw: "", kelurahan: "", kecamatan: "", kabupaten: "", propinsi: "", postCode: ""
-        }
-    },
+    recipient:_.cloneDeep(emptyCharityOrg),
     items: [],
     category: "charity-org"
 })
@@ -228,5 +224,33 @@ export const sampleRecipients:PersonRecipientWItems[] = [
             done: false, RABScreenshot: ""
         },
         type: "person"
+    }
+]
+
+export const categories:category[] = [
+    {
+        category: "Kesehatan",
+        subCategory: [
+            {
+                name: "Perlengkapan Medis",
+                subCategory:[
+                    {name: "Alat Penunjang Gerak"},
+                    {name: "Alat Bantu Pernafasan"}
+                ]
+            }
+        ]
+    },
+    {
+        category: "Makanan & Minuman",
+        subCategory: [
+            { name: "Beras"}, { name: "Makanan Jadi" }, { name: "Makanan Ringan"},
+            { name: "Minuman" }, { name: "Bumbu & Bahan Masakan"}
+        ]
+    },
+    {
+        category: "Rumah Tangga",
+        subCategory: [
+            { name: "Kamar Mandi" }, { name: "Kebersihan" }
+        ]
     }
 ]

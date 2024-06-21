@@ -8,6 +8,7 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
             Link, Tabs, Tab, CalendarDate 
  } from "@nextui-org/react"
 import { NewRecipientForm } from "./NewRecipient"
+import { ListedRecipientForm } from "./ListedRecipient"
 import { CogIcon } from "@/components/Icon"
 import { TableItem } from "../../shared/TableItemCard"
 import { EditItem } from "../../shared/AddEditItem"
@@ -73,6 +74,10 @@ export const AddRAB = () => {
         }
     }, [isChangingRecipient, fetchError])
     
+    const changeRecipient = (recipient:CharityOrgRecipient) => {
+        setRAB({...RAB, recipient: _.cloneDeep(recipient)})
+        setIsChangingRecipient(false)
+    }
     
     const newItems = items.filter((d:OrderedItem) => !d._id)
         .reduce((acc:OrderedItem[], curr:OrderedItem) => {//prevent duplicate items            
@@ -93,11 +98,7 @@ export const AddRAB = () => {
         
     const renderElement = items.length > 0?items.concat(emptyOrderedItem):[]
 
-    const canSubmit = false//title !== "" && recipient.length > 0 && recipient.map((d:CharityOrgRecipient) => d.items).every((d:OrderedItem[]) => d.length > 0)
-
-    useEffect(()=>{
-        console.log('RAB recipient : ', RAB.recipient)
-    }, [ RAB.recipient ])
+    const canSubmit = false//title !== "" && recipient.length > 0 && recipient.map((d:CharityOrgRecipient) => d.items).every((d:OrderedItem[]) => d.length > 0)   
 
     return (
         <div className="flex flex-col w-screen px-1 md:px-2">
@@ -256,11 +257,7 @@ export const AddRAB = () => {
                 <NewRecipientForm 
                     show={isChangingRecipient && recipientOption.has("new")}
                     hideForm={()=>{setIsChangingRecipient(false)}}
-                    submit={(recipient)=>{
-                        //console.log('submitted recipient : ', recipient)
-                        setRAB({...RAB, recipient: _.cloneDeep(recipient)})
-                        setIsChangingRecipient(false)
-                    }}
+                    submit={changeRecipient}
                     orgRecipient={
                             /*
                                 Only 2 conditions : 
@@ -269,6 +266,24 @@ export const AddRAB = () => {
                                 * or else, if RAB.recipient has no _id prop - meaning a new not listed recipient - just edit the current RAB recipient
                             */
                             typeof RAB.recipient._id !== "undefined"?_.cloneDeep(emptyCharityOrg):
+                                _.cloneDeep(RAB.recipient)
+                    }
+                />
+            }
+            { 
+                isChangingRecipient && recipientOption.has("old") &&
+                <ListedRecipientForm 
+                    show={isChangingRecipient && recipientOption.has("old")}
+                    hideForm={()=>{setIsChangingRecipient(false)}}
+                    submit={changeRecipient}
+                    orgRecipient={
+                            /*
+                                Only 2 conditions : 
+                                * if RAB.recipient has _id prop - meaning listed recipient - if "new" recipient then 
+                                  supply empty new recipient. Here user want to change from listed to not listed, new recipient
+                                * or else, if RAB.recipient has no _id prop - meaning a new not listed recipient - just edit the current RAB recipient
+                            */
+                            typeof RAB.recipient._id === "undefined"?_.cloneDeep(emptyCharityOrg):
                                 _.cloneDeep(RAB.recipient)
                     }
                 />

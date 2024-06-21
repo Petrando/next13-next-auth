@@ -14,9 +14,7 @@ type TRecipientForm = {
 }
 
 export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, orgRecipient }) => {
-    const [ recipient, setRecipient ] = useState<null | CharityOrgRecipient>(null)    
-    //const [ rt, setRt ] = useState("")
-    //const [ rw, setRw ] = useState("")
+    const [ recipient, setRecipient ] = useState<null | CharityOrgRecipient>(null)       
 
     const [ fetchState, setFetchState ] = useState("")
     const [ orgExist, setOrgExist ] = useState({exist:false, checked:false})

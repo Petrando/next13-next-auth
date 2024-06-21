@@ -43,7 +43,7 @@ export const RABList = () => {
     useEffect(()=>{
         getRABs()
     }, [])
-    
+
     return (
         <div className="h-screen flex flex-col ">
             <div className="flex items-center justify-end px-2 py-3">

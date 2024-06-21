@@ -97,3 +97,23 @@ export interface ICentre  {
     name: string;
     address: Address;
 }
+
+/*
+    item category type defenitions
+    starting from subSubCategory as option
+    all the way up to category which wrapped all the others
+*/
+export type option = {
+    name: string;
+}
+
+export type subCategory = {
+    name: string;
+    subCategory?: option[]; 
+}
+
+export type category = {
+    _id?: string;
+    category: string;
+    subCategory: subCategory[];
+}

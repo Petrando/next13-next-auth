@@ -5,8 +5,8 @@ import {
         Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Checkbox,  
             Input, Divider, RadioGroup, Radio, Skeleton } from "@nextui-org/react";
 import CurrencyFormat from "react-currency-format";
-import { emptyOrderedItem } from "@/variables-and-constants";
-import { Item, OrderedItem, PersonRecipientWItems, RABTypes } from "@/types";
+import { emptyOrderedItem, categories as currentCategories } from "@/variables-and-constants";
+import { Item, OrderedItem, PersonRecipientWItems, RABTypes, category } from "@/types";
 
 type TItemForm = {
     recipient: PersonRecipientWItems,
@@ -57,12 +57,25 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
         
     }, [ items ])
 
+    const categories = RABType === "charity-multi-recipients"?
+        [currentCategories[0]]:
+            RABType === "charity-org"?
+                [currentCategories[1], currentCategories[2]]:
+                    []
+                    
     const getItems = async () => {
         const filter = RABType === "charity-multi-recipients"?
             {
                 category: "Kesehatan", subCategory: "Perlengkapan Medis"
             }:
-                {}
+                RABType === "charity-org"?
+                {
+                    $or: [
+                        { category: "Makanan & Minuman" },
+                        { category: "Rumah Tangga" }
+                    ]
+                }:
+                    {}
         const projection = {}
         const limit = 10
         const offset = 0
@@ -80,8 +93,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
             const data = await response.json();
             setSelection(data.data)           
         }catch(err:any){
-            console.log('fetch error : ', err)
-            
+            console.log('fetch error : ', err)            
         }
         finally{
             setFetchState("complete")
