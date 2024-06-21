@@ -6,6 +6,7 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
         DatePicker, Input,  Skeleton, Tabs, Tab,
             Link
  } from "@nextui-org/react"
+import { AddRecipients } from './AddRecipients';
 import { ItemsTable } from '../../shared/ItemsTable';
 import { TableItem } from '../../shared/TableItemCard';
 import { TableContact } from '../../shared/TableContact';
@@ -96,9 +97,9 @@ export const RABDetail = () => {
                 aria-label="Options"         
                 selectedKey={tab}
                 onSelectionChange={(e) =>{setTab(e as string)}}
-                disabledKeys={recipients.length === 0?["items"]:[]}
+                disabledKeys={recipients.length === 0?["items", "new recipients"]:[]}
             >
-                <Tab key="recipients" title="Penerima Bantuan">                                        
+                <Tab key="recipients" title="Detil RAB">                                        
                     <Table aria-label="Tabel Penerima Bantuan">
                         <TableHeader>
                             <TableColumn>
@@ -192,6 +193,9 @@ export const RABDetail = () => {
                 </Tab>
                 <Tab key="items" title="Rekapan">
                     <ItemsTable items={items} />
+                </Tab>
+                <Tab key="new recipients" title="Tambah Penerima">
+                    <AddRecipients />
                 </Tab>
             </Tabs>
             <div className="flex items-center justify-end px-2 py-3">
