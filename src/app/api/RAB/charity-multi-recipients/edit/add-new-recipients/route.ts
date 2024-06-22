@@ -1,19 +1,21 @@
 import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 import { NextResponse, NextRequest } from "next/server";
+import { PersonRecipientWItems, OrderedItem } from "@/types";
 
-export async function POST(req:NextRequest) {
-    const { title, date, category, recipients } = await req.json();
+export async function PATCH(req:NextRequest) {
+    const { RABId, recipients } = await req.json();
     
     const client = await clientPromise
     
-    const newRecipients = recipients.filter((d:any) => !d._id).map((d:any)=>{
-        const {items, completed,...rest} = d
+    const newRecipients = recipients.filter((d:PersonRecipientWItems) => !d._id).map((d:PersonRecipientWItems)=>{
+        const {items, completed, ...rest} = d
 
         return {...rest}
     })      
 
-    const items = recipients.map((d:any)=>d.items).flat()
-    const newItems = items.reduce((acc:any[], curr:any)=>{
+    const items = recipients.map((d:PersonRecipientWItems)=>d.items).flat()
+    const newItems = items.reduce((acc:OrderedItem[], curr:OrderedItem)=>{
         const newItemIdx = acc.findIndex((d:any)=>
             d.name === curr.name && d.productName === curr.productName && d.category === curr.category && 
             d.subCategory === curr.subCategory && d.unit === curr.unit)
@@ -36,15 +38,8 @@ export async function POST(req:NextRequest) {
         //and update main data
         if(newRecipients.length > 0){
             const newRecipientsIds = await recipientsColl.insertMany(newRecipients)
-            /*{
-                acknowledged: true,
-                insertedCount: 2,
-                insertedIds: {
-                    '0': new ObjectId('66587d119608933e96031e1b'),
-                    '1': new ObjectId('66587d119608933e96031e1c')
-                }
-            }*/        
-            const {insertedIds} = newRecipientsIds
+                   
+            const { insertedIds } = newRecipientsIds
 
             for(let i = 0; i<newRecipients.length - 1; i++){
                 //newRecipients[i]._id = insertedIds[i]
@@ -74,15 +69,22 @@ export async function POST(req:NextRequest) {
             })
         })
         
-        //after dealing with new recipients and new items, just simply insert the new RAB data
-        await RABColl.insertOne({title, date, category, recipients})        
+        //after dealing with new recipients and new items, just simply insert the new RAB data        
+        await RABColl.updateOne(
+            {_id: new ObjectId(RABId)},
+            {
+                $addToSet:{
+                    recipients:{ $each: recipients}
+                }
+            }
+        )        
         await session.commitTransaction()                       
 
-        return NextResponse.json({ message: "RAB berhasil ditambahkan." }, { status: 201 });
+        return NextResponse.json({ message: "Penerima baru berhasil ditambahkan." }, { status: 201 });
     } catch (error) {
         await session.abortTransaction()
         return NextResponse.json(
-            { message: `Tidak berhasil menambahkan RAB ${title} tanggal ${date}` },
+            { message: `Tidak berhasil menambahkan penerima baru` },
             { status: 500 }
         );
     }finally {

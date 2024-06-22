@@ -15,10 +15,18 @@ type TRecipientForm = {
     hideForm: ()=>void;
     existingRecipients: PersonRecipientWItems[];
     submit: (recipient:PersonRecipientWItems[])=>void;
-    newItems: OrderedItem[];    
+    newItems: OrderedItem[];
+    /*
+        about this existingNiks prop below:
+        this component is called by 2 parent components at : 
+        a. by add a new RAB form, where there are no previous recipients
+        b. by RAB detail component, there are already existing recipients that should be considered
+    */
+   existingNiks?: string[];
 }
 
-export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit, existingRecipients, newItems }) => {
+export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit, existingRecipients, 
+    newItems, existingNiks = [] }) => {
     const [ recipients, setRecipients ] = useState<PersonRecipient[]>([])    
     const [ selecteds, setSelecteds ] = useState<PersonRecipientWItems[]>([])
     const [ editRecipientItem, setEditRecipientItem ] = useState<PersonRecipientWItems | null>(null)
@@ -26,7 +34,10 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
     const [ fetchState, setFetchState ] = useState("loading")
     
     const getRecipients = async () => {
-        const filter = {type:"person"}
+        const filter = existingNiks.length > 0?
+            {type:"person", "ids.nik": { $nin: existingNiks }}:
+                {type:"person"}
+        
         const projection = {}
         const limit = 10
         const offset = 0

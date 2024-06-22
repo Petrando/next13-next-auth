@@ -1,6 +1,6 @@
 import { useState, useEffect, FC, ReactNode } from "react"
 import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,     
-            Link, Tabs, Tab, 
+            Tabs, Tab, Skeleton
  } from "@nextui-org/react"
 import _ from "lodash"
 import { NewRecipientForm } from "./NewRecipient"
@@ -10,7 +10,7 @@ import { NewOldDropDown } from "../../shared/NewOldDropdown"
 import { TableItem } from "../../shared/TableItemCard"
 import { EditItem } from "../../shared/AddEditItem"
 import { TableContact } from "../../shared/TableContact"
-import { DeleteIcon, AddDocumentIcon, AddUserIcon, EditIcon, CogIcon } from "@/components/Icon"
+import { DeleteIcon, AddUserIcon, EditIcon } from "@/components/Icon"
 import { ItemsTable } from "../../shared/ItemsTable"
 import { TotalRow } from "../../shared/TotalTableRow"
 import { TotalCard } from "../../shared/TotalCard"
@@ -24,9 +24,18 @@ type IRecipientTable = {
     setRecipients: (recipients: PersonRecipientWItems[]) => void;
     fetchState: string;
     bottomComponent?: ReactNode;
+    /*
+        about existingNiks prop:
+        this component is called by 2 parent components at : 
+        a. by add a new RAB form, where there are no previous recipients
+        b. by RAB detail component, there are already existing recipients that should be considered
+    */
+   existingNiks?: string[];
 }
 
-export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, fetchState, bottomComponent = <></> }) => {    
+export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, fetchState, bottomComponent = <></>,
+    existingNiks
+ }) => {    
     const [ isAddRecipient, setIsAddRecipient] = useState(false)
     const [ editedRecipient, setEditedRecipient ] = useState<PersonRecipientWItems | null>(null)
 
@@ -40,7 +49,7 @@ export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, 
     } = processRecipients(recipients)
 
     const renderElement = recipients.length > 0?recipients.concat(emptyPerson):[]
-
+    
     return (
         <>
         <Tabs 
@@ -55,8 +64,8 @@ export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, 
                     topContent={
                         <div className="w-full flex justify-end items-center p-1">                    
                             <Button color="primary" onPress={()=>{if(!isAddRecipient){setIsAddRecipient(true)}}}
-                                isDisabled={fetchState === "submiting"}
-                                startContent={<AddUserIcon />}
+                                isDisabled={fetchState !== ""}
+                                startContent={<AddUserIcon />}                            
                             >
                                 Penerima
                             </Button>
@@ -100,20 +109,30 @@ export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, 
                                 
                                 return (
                                     <TableRow key={i.toString()}>
-                                        <TableCell>                                        
-                                            {name}                                        
+                                        <TableCell>
+                                            <Skeleton isLoaded={fetchState === ""}>
+                                            {name}                                 
+                                            </Skeleton>                                               
                                         </TableCell>
-                                        <TableCell>                                        
+                                        <TableCell>
+                                            <Skeleton isLoaded={fetchState === ""}>                                        
                                             {address.street}, {address.rtRw}, {address.kelurahan}, {address.kecamatan}, {address.kabupaten}                                        
+                                            </Skeleton> 
                                         </TableCell>
                                         <TableCell>
+                                            <Skeleton isLoaded={fetchState === ""}>
                                             {ids.nik}                                        
+                                            </Skeleton> 
                                         </TableCell>
                                         <TableCell>
+                                            <Skeleton isLoaded={fetchState === ""}>
                                             {ids.noKk}
+                                            </Skeleton> 
                                         </TableCell>
                                         <TableCell>
+                                            <Skeleton isLoaded={fetchState === ""}>
                                             <TableContact contact={contact} /> 
+                                            </Skeleton> 
                                         </TableCell>
                                         <TableCell>
                                             <TableItem 
@@ -124,6 +143,7 @@ export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, 
                                                     updatedRecipients[i].items = []
                                                     setRecipients(updatedRecipients)
                                                 }}
+                                                isDisabled={fetchState!==""}
                                             />    
                                         </TableCell>
                                         <TableCell className="flex items-center">
@@ -131,10 +151,12 @@ export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, 
                                                 onPress={()=>{
                                                     setEditedRecipient(d)
                                                 }}
+                                                isDisabled={fetchState!==""}
                                             >
                                                 Ubah
                                             </Button>                                        
                                             <Button color="danger" startContent={<DeleteIcon className="size-4" />} size="sm"
+                                                isDisabled={fetchState!==""}
                                                 onPress={()=>{
                                                     const updatedRecipients = recipients.filter((dRec:PersonRecipientWItems) => dRec.ids.nik !== ids.nik)
                                                     setRecipients(updatedRecipients)
@@ -249,6 +271,7 @@ export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, 
                 }}
                 existingRecipients={existingRecipients}
                 newItems={newItems}
+                existingNiks={existingNiks}
             />
         }
         {

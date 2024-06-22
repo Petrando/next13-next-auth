@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import { useState, FC, useEffect } from "react"
 import _ from "lodash"
 import { useRouter } from "next/navigation"
 import { DatePicker, Input, Link, Button } from "@nextui-org/react"
@@ -9,21 +9,37 @@ import { AddDocumentIcon, CheckIcon } from "@/components/Icon"
 import { createDateString } from "@/lib/functions";
 import { PersonRecipientWItems, OrderedItem } from "@/types"
 
-export const AddRecipients = () => {    
+type IAddRecipients = {
+    refresh: () => void;
+    id: string;
+    existingNiks: string[];
+}
+
+export const AddRecipients:FC<IAddRecipients> = ({refresh, id, existingNiks}) => {    
     
     const [ recipients, setRecipients ] = useState<PersonRecipientWItems[]>([])    
 
     const [ fetchState, setFetchState ] = useState("")
     const [ fetchError, setFetchError ] = useState("")
+
+    useEffect(()=>{
+        if(fetchState === "done"){
+            setTimeout(()=>{
+                setFetchState("")
+            }, 1000)
+            refresh()
+        }
+    }, [fetchState])
     
     const router = useRouter()
 
     const submitData = async () => {             
         setFetchState("submiting")
         try{
-            const response = await fetch('/api/RAB/charity-multi-recipients/add', {
-                method: 'POST',
-                body: JSON.stringify({ 
+            const response = await fetch('/api/RAB/charity-multi-recipients/edit/add-new-recipients', {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    RABId:id, 
                     recipients 
                 }),
                 headers: {
@@ -31,8 +47,9 @@ export const AddRecipients = () => {
                 },
             });
           
-            const data = await response.json();            
-            router.push("/RAB")
+            const data = await response.json();
+            console.log(data)            
+            setRecipients([])
         }catch(err:any){
             console.log('fetch error : ', err)
             setFetchError("Error when submiting")
@@ -57,18 +74,20 @@ export const AddRecipients = () => {
         )
     }
 
-    const canSubmit = recipients.length > 0 && recipients.map((d:PersonRecipientWItems) => d.items).every((d:OrderedItem[]) => d.length > 0)
+    const canSubmit = recipients.length > 0 && 
+        recipients.map((d:PersonRecipientWItems) => d.items).every((d:OrderedItem[]) => d.length > 0)
 
     return (
         <div className="w-full overflow-hidden">
             <h3 className="text-lg font-bold text-slate-800 text-left mr-4">
-                Tambahkan Penerima Baru    
+                {fetchState === "done"?"Berhasil Menambah Penerima":"Tambahkan Penerima Baru"}    
             </h3>            
             <RecipientTable
                 recipients={recipients}
                 setRecipients={setRecipients}
                 fetchState={fetchState}
                 bottomComponent={bottomComponent()}
+                existingNiks={existingNiks}
             />
         </div>
     )

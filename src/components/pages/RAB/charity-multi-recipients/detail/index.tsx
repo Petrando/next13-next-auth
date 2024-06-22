@@ -18,7 +18,6 @@ import { createDateString } from '@/lib/functions';
 import { emptyRAB, emptyPerson } from '@/variables-and-constants';
 import { IRABMultiPerson, PersonRecipientWItems, OrderedItem } from '@/types';
 
-
 export const RABDetail = () => {
     const [ tab, setTab ] = useState("recipients");
 
@@ -30,8 +29,10 @@ export const RABDetail = () => {
     const searchParams = useSearchParams()
     const rabId = searchParams.get("_id")
 
-    const getRAB = async (_id:string) => {
-        const filter = {_id}
+    const getRAB = async () => {
+        if(!rabId || rabId === ""){return}
+
+        const filter = {_id:rabId}
         const projection = {}
         const limit = 1
         const offset = 0
@@ -57,10 +58,8 @@ export const RABDetail = () => {
         } 
     }
     
-    useEffect(()=>{
-        if(rabId && rabId !== ""){
-            getRAB(rabId)
-        }
+    useEffect(()=>{        
+        getRAB()        
     }, [rabId])
 
     const { title, date, recipients } = RAB
@@ -74,6 +73,7 @@ export const RABDetail = () => {
             return acc + curr.price
         }, 0)
 
+    const niks = recipients.map((d:PersonRecipientWItems) => d.ids.nik)
     const renderElement = recipients.length > 0?recipients.concat(emptyPerson):[]    
     
     const { ids:{nik} } = printingRecipient
@@ -173,7 +173,7 @@ export const RABDetail = () => {
                                                 <TableContact contact={d.contact} />                                                                                
                                             </TableCell>
                                             <TableCell>
-                                                <TableItem item={d.items[0]} editable={false} />                                        
+                                                <TableItem item={d.items[0]} isDisabled={true} />                                        
                                             </TableCell>
                                             <TableCell>
                                                 <Button size='sm' color='primary' startContent={<PrintIcon className='size-4' />}
@@ -195,7 +195,13 @@ export const RABDetail = () => {
                     <ItemsTable items={items} />
                 </Tab>
                 <Tab key="new recipients" title="Tambah Penerima">
-                    <AddRecipients />
+                    <AddRecipients 
+                        refresh={()=>{                        
+                            getRAB()       
+                        }}
+                        id={rabId?rabId:""}
+                        existingNiks={niks}
+                    />
                 </Tab>
             </Tabs>
             <div className="flex items-center justify-end px-2 py-3">

@@ -195,7 +195,7 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
                                 }}
                                 name="ids.nik"
                                 isRequired
-                                isDisabled={!isNewRecipient}
+                                isReadOnly={!isNewRecipient}
                                 isInvalid={(submitPressed && nik === "") || (isNewRecipient && nikExist.exist) }
                                 errorMessage={`${isNewRecipient && nikExist.exist?"NIK sudah terdaftar":"Nomor KTP masih kosong"}`}
                                 onBlur={()=>{

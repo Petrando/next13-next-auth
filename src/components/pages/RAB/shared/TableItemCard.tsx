@@ -10,21 +10,22 @@ type ITableItem = {
     item: OrderedItem | undefined;    
     editPress?: () => void;
     deletePress?: () => void;
-    editable?: boolean;
+    isDisabled?: boolean;
 }
 
-export const TableItem:FC<ITableItem> = ({ item, editPress = ()=>{}, deletePress = ()=>{}, editable = true }) => {
+export const TableItem:FC<ITableItem> = ({ item, editPress = ()=>{}, deletePress = ()=>{}, isDisabled = false }) => {
     if(!item){
         return (
             <motion.span
                 className={`${item?"pointer-events-none":"pointer-events-auto"}`}
                 initial={{ opacity:0}}
                 animate={{ opacity: 1}}
-                transition={{duration:1}}
+                transition={{duration:1}}                
             >
                 <Button color="primary" size="sm" 
                     onPress={editPress}
                     startContent={<PlusIcon  className="size-4"/>}
+                    isDisabled
                 >
                     Barang
                 </Button>
@@ -52,12 +53,12 @@ export const TableItem:FC<ITableItem> = ({ item, editPress = ()=>{}, deletePress
                     />    
                 </CardBody>
                 {
-                    editable &&
+                    !isDisabled &&
                     <>
                         <Divider />
                         <CardFooter className="flex items-center justify-end">
-                            <EditBtn label="Ganti" onPress={editPress} />
-                            <DeleteBtn onPress={deletePress} />
+                            <EditBtn label="Ganti" onPress={editPress} isDisabled={isDisabled} />
+                            <DeleteBtn onPress={deletePress} isDisabled={isDisabled} />
                         </CardFooter>
                     </>
                 }                        

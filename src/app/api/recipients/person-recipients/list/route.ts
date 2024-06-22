@@ -10,7 +10,7 @@ export async function POST(req:NextRequest) {
     filter.type = "person"
     try {        
         const recipients = client.db("charity-org").collection("recipients");
-        const data = await recipients.find(filter, projection).skip(skip).limit(limit).toArray()
+        const data = await recipients.find(filter, projection)/*.skip(skip).limit(limit)*/.toArray()
                            
         return NextResponse.json({ message: "Daftar penerima bantuan.", data }, { status: 201 });
     } catch (error) {
