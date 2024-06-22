@@ -655,7 +655,7 @@ export const createBASTDocs = (
                         heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER
                     }),
                     new Paragraph({children:[
-                        new TextRun({ text:"NIP."  + (noFieldOperator?".....................":fieldOperatorNip)})], 
+                        new TextRun({ text:"NIP."  + (noFieldOperator?"":fieldOperatorNip)})], 
                         heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER})
                 ],
             },

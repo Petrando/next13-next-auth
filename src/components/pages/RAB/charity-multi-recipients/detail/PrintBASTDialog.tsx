@@ -142,6 +142,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                             value={name}
                             onChange={changeCentre}
                             name="name"
+                            isReadOnly
                         />
                         <Input                                                    
                             label="Kode Pos"                        
@@ -151,6 +152,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                             value={postCode}
                             onChange={changeCentre}
                             name="address.postCode"
+                            isReadOnly
                         />
                         <Input                                                    
                             label="Jalan"                        
@@ -160,6 +162,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                             value={street}
                             onChange={changeCentre}
                             name="address.street"
+                            isReadOnly
                         />
                         <Input                                                    
                             label="Kelurahan"                        
@@ -169,6 +172,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                             value={kelurahan}
                             onChange={changeCentre}
                             name="address.kelurahan"
+                            isReadOnly
                         />
                         <Input                                                    
                             label="Kecamatan"                        
@@ -178,6 +182,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                             value={kecamatan}
                             onChange={changeCentre}
                             name="address.kecamatan"
+                            isReadOnly
                         />
                         <Input                                                    
                             label="Kabupaten"                        
@@ -187,6 +192,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                             value={kabupaten}
                             onChange={changeCentre}
                             name="address.kabupaten"
+                            isReadOnly
                         />
                         <Divider className="my-2"/>
                         <Input
