@@ -9,17 +9,35 @@ import { emptyOrderedItem, categories as currentCategories } from "@/variables-a
 import { Item, OrderedItem, PersonRecipientWItems, RABTypes, category } from "@/types";
 
 type TItemForm = {
-    recipient: PersonRecipientWItems,
+    /*
+        recipientItems.recipientName is self explanatory
+        recipientItems.items are items that belongs to current recipient who's item is being edited.
+        recipient can have one or more items
+        itemIdx is the index of the recipient's item which is currently being edited
+    */
+    
+    recipientItems:{
+        recipientName: string;
+        items: OrderedItem[],
+        itemIdx: number
+    },
     show: boolean;
     hideForm: ()=>void;    
     submit: (newItem:OrderedItem)=>void;
+    /*
+        newItems are items without _id from the calling components
+        in other words : items that are not being listed yet
+    */
     newItems: OrderedItem[];
     RABType: RABTypes;
 }
 
-export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newItems, RABType}) => {    
+export const EditItem:FC<TItemForm> = ({recipientItems:{ recipientName, items, itemIdx }, show, 
+    hideForm, submit, newItems, RABType}) => {    
 
     const [ newItem, setNewItem] = useState<OrderedItem>(_.cloneDeep(emptyOrderedItem))
+    //there is 'newItems' prop in this component
+    //newItemIdx is for that prop
     const [ newItemIdx, setNewItemIdx ] = useState(-1)
 
     const [ itemSelection, setSelection] = useState<Item[]>([])
@@ -32,37 +50,7 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
 
     const [fetchState, setFetchState] = useState("loading")
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-
-    const { items } = recipient
-
-    useEffect(()=>{
-        const newItem = _.cloneDeep(newItemIdx === -1?emptyOrderedItem:newItems[newItemIdx])        
-        setNewItem(newItem)
-    }, [newItemIdx])
-
-    useEffect(()=>{
-        if(items.length > 0){
-            const {_id, amount} = items[0]
-            if(_id && _id !== ""){
-                setSelectedId(_id)
-                setSelectedAmount(amount)                
-            }else{
-                setNewItem(items[0])
-                setItemType("new")
-            }
-            
-        }else{
-            setNewItem(_.cloneDeep(emptyOrderedItem))
-        }
-        
-    }, [ items ])
-
-    const categories = RABType === "charity-multi-recipients"?
-        [currentCategories[0]]:
-            RABType === "charity-org"?
-                [currentCategories[1], currentCategories[2]]:
-                    []
-                    
+    
     const getItems = async () => {
         const filter = RABType === "charity-multi-recipients"?
             {
@@ -105,6 +93,34 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
     }, [])
 
     useEffect(()=>{
+        const newItem = _.cloneDeep(newItemIdx === -1?emptyOrderedItem:newItems[newItemIdx])        
+        setNewItem(newItem)
+    }, [newItemIdx])
+
+    useEffect(()=>{
+        if(items.length > 0){
+            const {_id, amount} = items[itemIdx]
+            if(_id && _id !== ""){
+                setSelectedId(_id)
+                setSelectedAmount(amount)                
+            }else{
+                setNewItem(items[itemIdx])
+                setItemType("new")
+            }
+            
+        }else{
+            setNewItem(_.cloneDeep(emptyOrderedItem))
+        }
+        
+    }, [ items, itemIdx ])
+
+    const categories = RABType === "charity-multi-recipients"?
+        [currentCategories[0]]:
+            RABType === "charity-org"?
+                [currentCategories[1], currentCategories[2]]:
+                    []
+                    
+    useEffect(()=>{
         if(itemType === "new"){
             if(newItemIdx === -1){
                 setPrice(0)
@@ -134,14 +150,12 @@ export const EditItem:FC<TItemForm> = ({recipient, show, hideForm, submit, newIt
     
     const baseSelectedItem = itemSelection.length > 0?
         itemSelection[itemSelection.findIndex((d:Item) => d._id === selectedItemId)]:
-            items.length > 0?items[0]:_.cloneDeep(emptyOrderedItem)
+            items.length > 0?items[itemIdx]:_.cloneDeep(emptyOrderedItem)
     const selectedItem = selectedItemId === ""?_.cloneDeep(emptyOrderedItem):
         {...baseSelectedItem, amount:selectedAmount}        
 
     const currentItem = itemType === "new"?newItem:selectedItem
-    const { name, category, subCategory, unit, amount, price } = currentItem || { name:"", amount:0, unit: "", price:0 }   
-    
-    const { name:recipientName } = recipient
+    const { name, category, subCategory, unit, amount, price } = currentItem || { name:"", amount:0, unit: "", price:0 }       
 
     const canSubmit = name !== "" && amount > 0 && itemPrice > 0
 
