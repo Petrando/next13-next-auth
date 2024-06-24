@@ -308,12 +308,18 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
         {
             editRecipientItem !== null &&
                 <EditItem
-                    recipient={editRecipientItem}
+                    recipientItems={
+                        {
+                            recipientName: editRecipientItem.name,
+                            items: editRecipientItem.items,
+                            itemIdx: 0
+                        }
+                    }
                     show={editRecipientItem !== null}
                     hideForm={()=>{setEditRecipientItem(null)}}
                     submit={(newItem:OrderedItem)=>{                        
-                        const {_id} = editRecipientItem                        
-                        const selectedIdx = selecteds.findIndex((dRec:PersonRecipientWItems) => dRec._id === _id)                        
+                        const {ids:{nik}} = editRecipientItem                        
+                        const selectedIdx = selecteds.findIndex((dRec:PersonRecipientWItems) => dRec.ids.nik === nik)                        
                         const updatedSelecteds = _.cloneDeep(selecteds)
                         updatedSelecteds[selectedIdx].items[0] = newItem
 

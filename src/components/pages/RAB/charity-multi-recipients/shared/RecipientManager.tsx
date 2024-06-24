@@ -277,7 +277,13 @@ export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, 
         {
             editRecipientItem !== null &&
                 <EditItem
-                    recipient={editRecipientItem}
+                    recipientItems={
+                        {
+                            recipientName: editRecipientItem.name,
+                            items: editRecipientItem.items,
+                            itemIdx: 0
+                        }
+                    }
                     show={editRecipientItem !== null}
                     hideForm={()=>{setEditRecipientItem(null)}}
                     submit={(newItem:OrderedItem)=>{                        

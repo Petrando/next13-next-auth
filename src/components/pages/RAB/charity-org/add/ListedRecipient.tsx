@@ -23,18 +23,20 @@ export const ListedRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit,
         
     const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();    
     
-    const recipientIdx = recipients.findIndex((dRec:CharityOrgRecipient) => {
-        const {street, rtRw, kelurahan, kecamatan, kabupaten, propinsi, postCode} = dRec.address
-        return(
-            dRec.name === orgRecipient.name && dRec.number === orgRecipient.number &&
-            street === orgRecipient.address.street && rtRw === orgRecipient.address.rtRw &&
-            kelurahan === orgRecipient.address.kelurahan &&
-            kecamatan === orgRecipient.address.kecamatan &&
-            kabupaten === orgRecipient.address.kabupaten &&
-            propinsi === orgRecipient.address.propinsi &&
-            postCode === orgRecipient.address.postCode
-        
-    )})
+    const recipientIdx = recipients.length > 0 ?
+        recipients.findIndex((dRec:CharityOrgRecipient) => {
+            const {street, rtRw, kelurahan, kecamatan, kabupaten, propinsi, postCode} = dRec.address
+            return(
+                dRec.name === orgRecipient.name && dRec.number === orgRecipient.number &&
+                street === orgRecipient.address.street && rtRw === orgRecipient.address.rtRw &&
+                kelurahan === orgRecipient.address.kelurahan &&
+                kecamatan === orgRecipient.address.kecamatan &&
+                kabupaten === orgRecipient.address.kabupaten &&
+                propinsi === orgRecipient.address.propinsi &&
+                postCode === orgRecipient.address.postCode
+            
+        )}):
+            -1
 
     const getRecipients = async () => {
         const filter = {
