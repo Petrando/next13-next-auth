@@ -24,8 +24,7 @@ export const TableItem:FC<ITableItem> = ({ item, editPress = ()=>{}, deletePress
             >
                 <Button color="primary" size="sm" 
                     onPress={editPress}
-                    startContent={<PlusIcon  className="size-4"/>}
-                    isDisabled
+                    startContent={<PlusIcon  className="size-4"/>}                    
                 >
                     Barang
                 </Button>
