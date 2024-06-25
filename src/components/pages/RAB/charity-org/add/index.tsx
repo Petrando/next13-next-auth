@@ -54,7 +54,7 @@ export const AddRAB = () => {
         try{
             const response = await fetch('/api/RAB/charity-org/add', {
                 method: 'POST',
-                body: JSON.stringify({ date:RABDate, title,  category: 'charity-org', recipient, items }),
+                body: JSON.stringify({ date:RABDate, title, category: 'charity-org', recipient, items }),
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -97,12 +97,13 @@ export const AddRAB = () => {
         
     const totalPrice = items
         .reduce((acc:number, curr:OrderedItem) => {            
-            return acc + curr.price
+            return acc + (curr.price * curr.amount)
         }, 0)
         
     const renderElement = items.length > 0?items.concat(emptyOrderedItem):[]
 
-    const canSubmit = false//title !== "" && recipient.length > 0 && recipient.map((d:CharityOrgRecipient) => d.items).every((d:OrderedItem[]) => d.length > 0)   
+    const canSubmit = title !== "" && 
+        recipient.name !== "" && items.length > 0
 
     return (
         <div className="flex flex-col w-screen px-1 md:px-2">
@@ -216,7 +217,8 @@ export const AddRAB = () => {
                                                 {amount} {unit}                                        
                                             </TableCell>
                                             <TableCell>
-                                                {price} per {unit}
+                                                <CurrencyFormat value={price} thousandSeparator=","
+                                                    prefix="Rp. " suffix={` per ${unit}`} />                                                
                                             </TableCell>
                                             <TableCell>
                                                 <CurrencyFormat value={price * amount} thousandSeparator="," prefix="Rp. " /> 
@@ -224,14 +226,15 @@ export const AddRAB = () => {
                                             <TableCell className="flex items-center">
                                                 <Button color="warning" startContent={<EditIcon className="size-4" />} size="sm"
                                                     onPress={()=>{
-                                                        
+                                                        setIsChangingItem(i)
                                                     }}
                                                 >
                                                     Ubah
                                                 </Button>                                        
                                                 <Button color="danger" startContent={<DeleteIcon className="size-4" />} size="sm"
                                                     onPress={()=>{
-                                                        
+                                                        const updatedItems = items.filter((d:OrderedItem, iItem:number) => iItem !== i)
+                                                        setRAB({...RAB, items: updatedItems})    
                                                     }}
                                                 >
                                                     Hapus
@@ -304,8 +307,14 @@ export const AddRAB = () => {
                     }
                     show={isChangingItem !== null}
                     hideForm={()=>{setIsChangingItem(null)}}
-                    submit={(newItem:OrderedItem)=>{                        
-                        console.log(newItem)
+                    submit={(newItem:OrderedItem)=>{                                                
+                        const updatedRAB = _.cloneDeep(RAB)
+                        if(isChangingItem === -1){
+                            updatedRAB.items.push(newItem)
+                        }else{
+                            updatedRAB.items[isChangingItem] = newItem
+                        }                                                
+                        setRAB(updatedRAB)
                         setIsChangingItem(null)
 
                     }}

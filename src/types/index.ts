@@ -125,7 +125,7 @@ export interface filterOption  {
 
 export interface filterSubCategory {
     name: string;
-    subCategory: filterOption[];
+    subCategory?: filterOption[];
     checked: boolean;
 }
 

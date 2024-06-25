@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { PersonRecipientWItems, CharityOrgRecipient, Item, OrderedItem, IRABMultiPerson, 
-    IRABCharityOrg, IOperator, ICentre, Address, category } from "@/types";
+    IRABCharityOrg, IOperator, ICentre, Address, category, filterCategory } from "@/types";
 
 export const cloner = (obj:any) => {
     return JSON.parse(JSON.stringify(obj))
@@ -101,31 +101,36 @@ export const emptyCategory:category = _.cloneDeep({
     ]
 })
 
-export const categories:category[] = [
+export const categories:filterCategory[] = [
     {
         name: "Kesehatan",
         subCategory: [
             {
                 name: "Perlengkapan Medis",
                 subCategory:[
-                    { name: "Alat Penunjang Gerak" },
-                    { name: "Alat Bantu Pernafasan" }
-                ]
+                    { name: "Alat Penunjang Gerak", checked: true },
+                    { name: "Alat Bantu Pernafasan", checked: true }
+                ], 
+                checked: true
             }
-        ]
+        ],
+        checked: true
     },
     {
         name: "Makanan & Minuman",
         subCategory: [
-            { name: "Beras"}, { name: "Makanan Jadi" }, { name: "Makanan Ringan"},
-            { name: "Minuman" }, { name: "Bumbu & Bahan Masakan"}
-        ]
+            { name: "Beras", checked: true }, { name: "Makanan Jadi", checked: true }, 
+            { name: "Makanan Ringan", checked: true },
+            { name: "Minuman", checked: true }, { name: "Bumbu & Bahan Masakan", checked: true }
+        ], 
+        checked: true
     },
     {
         name: "Rumah Tangga",
         subCategory: [
-            { name: "Kamar Mandi" }, { name: "Kebersihan" }
-        ]
+            { name: "Kamar Mandi", checked: true }, { name: "Kebersihan", checked: true }
+        ], 
+        checked: true
     }
 ]
 
