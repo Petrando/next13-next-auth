@@ -34,10 +34,11 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
     const [ fetchState, setFetchState ] = useState("loading")
     
     const getRecipients = async () => {
-        const filter = existingNiks.length > 0?
+        /*const filter = existingNiks.length > 0?
             {type:"person", "ids.nik": { $nin: existingNiks }}:
-                {type:"person"}
+                {type:"person"}*/
         
+        const filter = {}
         const projection = {}
         const limit = 10
         const offset = 0

@@ -1,12 +1,12 @@
-import React, { useEffect, useState, FC } from "react";
+import React, { useEffect, useState, FC, ChangeEvent } from "react";
 import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,
-        Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Checkbox,  
-            Input, Divider, RadioGroup, Radio, Skeleton } from "@nextui-org/react";
+        Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Select, SelectItem,
+            Checkbox, Input, Divider, RadioGroup, Radio, Skeleton } from "@nextui-org/react";
 import CurrencyFormat from "react-currency-format";
-import { emptyOrderedItem, categories as currentCategories } from "@/variables-and-constants";
-import { Item, OrderedItem, PersonRecipientWItems, RABTypes, category } from "@/types";
+import { emptyOrderedItem, categories as availCategories, emptyCategory } from "@/variables-and-constants";
+import { Item, OrderedItem, PersonRecipientWItems, RABTypes, category, subCategory, option } from "@/types";
 
 type TItemForm = {
     /*
@@ -54,7 +54,7 @@ export const EditItem:FC<TItemForm> = ({recipientItems:{ recipientName, items, i
     const getItems = async () => {
         const filter = RABType === "charity-multi-recipients"?
             {
-                category: "Kesehatan", subCategory: "Perlengkapan Medis"
+                category: "Kesehatan"
             }:
                 RABType === "charity-org"?
                 {
@@ -113,13 +113,7 @@ export const EditItem:FC<TItemForm> = ({recipientItems:{ recipientName, items, i
         }
         
     }, [ items, itemIdx ])
-
-    const categories = RABType === "charity-multi-recipients"?
-        [currentCategories[0]]:
-            RABType === "charity-org"?
-                [currentCategories[1], currentCategories[2]]:
-                    []
-                    
+                        
     useEffect(()=>{
         if(itemType === "new"){
             if(newItemIdx === -1){
@@ -155,7 +149,18 @@ export const EditItem:FC<TItemForm> = ({recipientItems:{ recipientName, items, i
         {...baseSelectedItem, amount:selectedAmount}        
 
     const currentItem = itemType === "new"?newItem:selectedItem
-    const { name, category, subCategory, unit, amount, price } = currentItem || { name:"", amount:0, unit: "", price:0 }       
+    const { name, category, subCategory, subSubCategory, unit, amount, price } = currentItem || 
+        { name:"", amount:0, unit: "", price:0, category: "", subCategory: "", subSubCategory: "" }       
+
+    const categories = RABType === "charity-multi-recipients"?
+        [availCategories[0]]:
+            RABType === "charity-org"?
+                [availCategories[1], availCategories[2]]:
+                    []
+
+    const subCategories = categories.map((dCat:category) => dCat.subCategory).flat()    
+    const subSubCategories = subCategories.map((d:subCategory) => d.subCategory)
+        .flat().filter((d:option | undefined) => typeof d !== "undefined")    
 
     const canSubmit = name !== "" && amount > 0 && itemPrice > 0
 
@@ -241,7 +246,41 @@ export const EditItem:FC<TItemForm> = ({recipientItems:{ recipientName, items, i
                         />
                         
                     </div>
-                    
+                    {
+                        itemType === "new" &&
+                        <NewItemCategory 
+                            isReadonly={newItemIdx !== -1}
+                            categories={categories} 
+                            category={newItem.category}
+                            subCategory={newItem.subCategory}
+                            subSubCategory={newItem.subSubCategory}
+                            changeClassificiation={(newName:string, level:"category" | "subCategory" | "subSubCategory")=>{
+                                
+                                const updatedNewItem = _.cloneDeep(newItem)
+                                switch(level){
+                                    case "category":
+                                        if(updatedNewItem.category!==newName){
+                                            updatedNewItem.category = newName
+                                            setNewItem(updatedNewItem)
+                                        }
+                                        
+                                        break;
+                                    case "subCategory":
+                                        if(updatedNewItem.subCategory !== newName){
+                                            updatedNewItem.subCategory = newName
+                                            setNewItem(updatedNewItem)
+                                        }                                    
+                                        break;
+                                    case "subSubCategory":
+                                        if(updatedNewItem.subSubCategory !== newName){
+                                            updatedNewItem.subSubCategory = newName
+                                            setNewItem(updatedNewItem)
+                                        }                                    
+                                        break
+                                }                            
+                            }}
+                        />
+                    }                    
                     {
                         (itemType === "existing" || (itemType === "new" && newItems.length > 0)) && 
                             <>
@@ -342,3 +381,96 @@ export const EditItem:FC<TItemForm> = ({recipientItems:{ recipientName, items, i
             </ModalContent>
         </Modal>
 )}
+
+type INewCategory = {    
+    categories: category[];
+    category: string;
+    subCategory: string; 
+    subSubCategory: string | undefined;
+    changeClassificiation: (newName:string, level:"category" | "subCategory" | "subSubCategory") => void;   
+    isReadonly: boolean;
+}
+
+const NewItemCategory:FC<INewCategory> = ({
+    categories, category, subCategory, subSubCategory, changeClassificiation, isReadonly}) => {    
+
+    const categoryIdx = categories.findIndex((dCat:category) => dCat.name === category)
+    const subCategories = categoryIdx > -1?categories[categoryIdx].subCategory:[]
+    const subCategoryIdx = subCategories.findIndex((dSub:subCategory) => dSub.name === subCategory)
+    const subSubCategories = typeof subCategories[subCategoryIdx] !== "undefined"?
+        subCategories[subCategoryIdx].subCategory:
+            []
+
+    const hasSubSubCategories = Array.isArray(subSubCategories) && subSubCategories.length > 0
+
+    useEffect(()=>{
+        if(category === ""){
+            changeClassificiation(categories[0].name, "category")
+            changeClassificiation(categories[0].subCategory[0].name, "subCategory")
+            if(subSubCategory && subSubCategory !== ""){
+                changeClassificiation(hasSubSubCategories?subSubCategories[0].name:"", "subSubCategory")
+            }
+        }
+                
+    }, [])
+            
+    const styles = hasSubSubCategories?
+        "basis-full md:basis-1/3":"basis-full md:basis-1/2"            
+
+    return (
+        <div className="flex flex-wrap">
+            <Select                        
+                label="Kategori"
+                variant="bordered"
+                selectedKeys={[category]}
+                className={styles}
+                onChange={(e:ChangeEvent<HTMLSelectElement>)=>{
+                    changeClassificiation(e.target.value, "category")
+                }}
+                isDisabled={isReadonly}
+            >
+                {categories.map((c) => (
+                    <SelectItem key={c.name}>
+                        {c.name}
+                    </SelectItem>
+                    ))}
+            </Select>
+            <Select                        
+                label="Sub Kategori"
+                variant="bordered"
+                selectedKeys={[subCategory]}
+                className={styles}
+                onChange={(e:ChangeEvent<HTMLSelectElement>)=>{
+                    changeClassificiation(e.target.value, "subCategory")
+                }}
+                isDisabled={isReadonly}
+            >
+                {subCategories.map((c) => (
+                    <SelectItem key={c.name}>
+                        {c.name}
+                    </SelectItem>
+                    ))}
+            </Select>
+            {
+                hasSubSubCategories && 
+                <Select                        
+                    label="Sub Sub Kategori"
+                    variant="bordered"
+                    selectedKeys={[subSubCategory?subSubCategory:""]}
+                    className={styles}
+                    onChange={(e:ChangeEvent<HTMLSelectElement>)=>{
+                        changeClassificiation(e.target.value, "subSubCategory")
+                    }}
+                    isDisabled={isReadonly}
+                >
+                    {subSubCategories.map((c) => (
+                        <SelectItem key={c.name}>
+                            {c.name}
+                        </SelectItem>
+                        ))}
+                </Select>
+            }
+        </div>
+
+    )
+}

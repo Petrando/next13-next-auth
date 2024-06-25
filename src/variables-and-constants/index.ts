@@ -89,6 +89,46 @@ export const defaultCentre:ICentre = _.cloneDeep({
     }
 })
 
+export const emptyCategory:category = _.cloneDeep({
+    name:"",
+    subCategory:[
+        {
+            name:"",
+            subCategory:[
+                { name:"" }
+            ]
+        }
+    ]
+})
+
+export const categories:category[] = [
+    {
+        name: "Kesehatan",
+        subCategory: [
+            {
+                name: "Perlengkapan Medis",
+                subCategory:[
+                    { name: "Alat Penunjang Gerak" },
+                    { name: "Alat Bantu Pernafasan" }
+                ]
+            }
+        ]
+    },
+    {
+        name: "Makanan & Minuman",
+        subCategory: [
+            { name: "Beras"}, { name: "Makanan Jadi" }, { name: "Makanan Ringan"},
+            { name: "Minuman" }, { name: "Bumbu & Bahan Masakan"}
+        ]
+    },
+    {
+        name: "Rumah Tangga",
+        subCategory: [
+            { name: "Kamar Mandi" }, { name: "Kebersihan" }
+        ]
+    }
+]
+
 export const weekDays = {
     0: "Minggu", 1: "Senin", 2: "Selasa", 3: "Rabu", 4: "Kamis", 5: "Jumat", 6: "Sabtu"
 }
@@ -224,33 +264,5 @@ export const sampleRecipients:PersonRecipientWItems[] = [
             done: false, RABScreenshot: ""
         },
         type: "person"
-    }
-]
-
-export const categories:category[] = [
-    {
-        category: "Kesehatan",
-        subCategory: [
-            {
-                name: "Perlengkapan Medis",
-                subCategory:[
-                    {name: "Alat Penunjang Gerak"},
-                    {name: "Alat Bantu Pernafasan"}
-                ]
-            }
-        ]
-    },
-    {
-        category: "Makanan & Minuman",
-        subCategory: [
-            { name: "Beras"}, { name: "Makanan Jadi" }, { name: "Makanan Ringan"},
-            { name: "Minuman" }, { name: "Bumbu & Bahan Masakan"}
-        ]
-    },
-    {
-        category: "Rumah Tangga",
-        subCategory: [
-            { name: "Kamar Mandi" }, { name: "Kebersihan" }
-        ]
     }
 ]

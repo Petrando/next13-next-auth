@@ -33,8 +33,12 @@ export const AddRAB = () => {
     const [ isChangingRecipient, setIsChangingRecipient ] = useState(false)
     const [ isEditRecipient, setIsEditRecipient ] = useState(false)
     
-    const [ isAddNewItem, setIsAddItem ] = useState(false)
-    const [ editedItem, setEditedItem ] = useState<OrderedItem | null>(null)
+    /*
+        if isChangingItem is null, item is not being added or edited
+        if it is -1, newItem is being added
+        if it is greater than -1 a recipient item is being edited
+    */
+    const [ isChangingItem, setIsChangingItem ] = useState<null | number>(null)
 
     const [fetchState, setFetchState] = useState("")
     const [fetchError, setFetchError] = useState("")
@@ -164,7 +168,7 @@ export const AddRAB = () => {
                             <div className="w-full flex justify-end items-center p-1">                    
                                 <Button color="primary" 
                                     size="sm"
-                                    onPress={()=>{setIsAddItem(true)}}
+                                    onPress={()=>{setIsChangingItem(-1)}}
                                     isDisabled={fetchState === "submiting"}
                                     startContent={<PlusIcon className="size-4"/>}                                        
                                 >
@@ -286,6 +290,27 @@ export const AddRAB = () => {
                             typeof RAB.recipient._id === "undefined"?_.cloneDeep(emptyCharityOrg):
                                 _.cloneDeep(RAB.recipient)
                     }
+                />
+            }
+            {
+                isChangingItem !== null &&
+                <EditItem
+                    recipientItems={
+                        {
+                            recipientName: recipient.name,
+                            items: isChangingItem === -1?[]:items,
+                            itemIdx: isChangingItem
+                        }
+                    }
+                    show={isChangingItem !== null}
+                    hideForm={()=>{setIsChangingItem(null)}}
+                    submit={(newItem:OrderedItem)=>{                        
+                        console.log(newItem)
+                        setIsChangingItem(null)
+
+                    }}
+                    newItems={newItems}
+                    RABType="charity-org"
                 />
             }
             <div className="flex items-center justify-end px-2 py-3">

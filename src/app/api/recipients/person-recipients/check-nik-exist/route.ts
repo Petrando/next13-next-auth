@@ -8,7 +8,7 @@ export async function POST(req:NextRequest) {
     try {        
         const recipients = client.db("charity-org").collection("recipients");
         const user = await recipients.find({ "ids.nik":nik, type: "person" }).toArray()
-        
+                
         if(user.length > 0){
             throw `Nik ${nik} sudah terdaftar`
         }        

@@ -50,7 +50,7 @@ export interface OrderedItem extends Item {
     amount: number;
 } 
 
-export interface PersonRecipientWItems extends PersonRecipient{
+export interface PersonRecipientWItems extends PersonRecipient {
     items: OrderedItem[];
     completed:{
         done: boolean;
@@ -114,6 +114,24 @@ export type subCategory = {
 
 export type category = {
     _id?: string;
-    category: string;
+    name: string;
     subCategory: subCategory[];
 }
+
+export interface filterOption  {
+    name: string;
+    checked: boolean;
+}
+
+export interface filterSubCategory {
+    name: string;
+    subCategory: filterOption[];
+    checked: boolean;
+}
+
+export interface filterCategory {
+    name: string;
+    subCategory: filterSubCategory[];
+    checked: boolean;
+}
+
