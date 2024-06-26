@@ -8,7 +8,8 @@ export async function PATCH(req:NextRequest) {
     const client = await clientPromise                
 
     const session = client.startSession()  
-        
+    
+    let itemId = item._id
     try {
         session.startTransaction()
         const db = client.db("charity-org")    
@@ -20,10 +21,11 @@ export async function PATCH(req:NextRequest) {
             const {insertedId} = newInsertedItem
 
             item._id = insertedId
+            itemId = insertedId
         }
         
         //after dealing with new recipients and new items, just simply insert the new RAB data        
-        await RABColl.updateOne(
+        const result = await RABColl.updateOne(
             {_id: new ObjectId(RABId)},
             {
                 $push:{
@@ -33,7 +35,7 @@ export async function PATCH(req:NextRequest) {
         )        
         await session.commitTransaction()                       
 
-        return NextResponse.json({ message: "Barang baru berhasil ditambahkan." }, { status: 201 });
+        return NextResponse.json({ message: "Barang baru berhasil ditambahkan.", itemId }, { status: 201 });
     } catch (error) {
         await session.abortTransaction()
         return NextResponse.json(

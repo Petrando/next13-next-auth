@@ -7,6 +7,9 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
             Link,
             CalendarDate
  } from "@nextui-org/react"
+import _ from 'lodash';
+import { EditItem as NewItemForm} from '../../shared/AddEditItem';
+import { UpdateItemForm } from './UpdateItemDialog'; 
 import { ItemsTable } from '../../shared/ItemsTable';
 import { TableItem } from '../../shared/TableItemCard';
 import { TableContact } from '../../shared/TableContact';
@@ -69,7 +72,7 @@ export const RABDetail = () => {
     const addNewItem = async (item:OrderedItem) => {
         setFetchState("loading")
         try{
-            const response = await fetch('/api/charity-org/edit/add-item', {
+            const response = await fetch('/api/RAB/charity-org/edit/add-item', {
                 method: 'PATCH',
                 body: JSON.stringify({ RABId:RAB._id, item }),
                 headers: {
@@ -79,6 +82,8 @@ export const RABDetail = () => {
           
             const data = await response.json();            
             console.log(data)
+            const {itemId} = data
+            getRAB() 
             setIsChangingItem(null)
         }catch(err:any){
             console.log('fetch error : ', err)
@@ -93,7 +98,7 @@ export const RABDetail = () => {
         setFetchState("loading")
         const { _id } = items[isChangingItem as number]
         try{
-            const response = await fetch('/api/charity-org/edit/delete-item', {
+            const response = await fetch('/api/RAB/charity-org/edit/update-item-amount', {
                 method: 'PATCH',
                 body: JSON.stringify({ RABId:RAB._id, itemId: _id, newAmount }),
                 headers: {
@@ -104,6 +109,7 @@ export const RABDetail = () => {
             const data = await response.json();            
             console.log(data)
             setIsChangingItem(null)
+            getRAB()
         }catch(err:any){
             console.log('fetch error : ', err)
             
@@ -116,7 +122,7 @@ export const RABDetail = () => {
     const deleteItem = async () => {
         setFetchState("loading")
         try{
-            const response = await fetch('/api/charity-org/edit/delete-item', {
+            const response = await fetch('/api/RAB/charity-org/edit/delete-item', {
                 method: 'PATCH',
                 body: JSON.stringify({ RABId:RAB._id, itemId: isChangingItem }),
                 headers: {
@@ -140,15 +146,15 @@ export const RABDetail = () => {
         getRAB()        
     }, [rabId])
         
-
     const totalPrice = items
         .reduce((acc:number, curr:OrderedItem) => {            
             return acc + curr.price
         }, 0)
     
     const renderElement = items.length > 0?items.concat(emptyOrderedItem):[]    
-    
-    console.log(date)
+        
+    const itemToChange = (typeof isChangingItem === "number" && isChangingItem > -1)?
+        items[isChangingItem]:null
     //const { ids:{nik} } = printingRecipient
     return (
         <div className="flex flex-col w-screen px-1 md:px-2">            
@@ -174,7 +180,7 @@ export const RABDetail = () => {
                         </h3>
                         <Button color="primary" 
                             size="sm"
-                            onPress={()=>{/*setIsChangingItem(-1)*/}}
+                            onPress={()=>{setIsChangingItem(-1)}}
                             startContent={<PlusIcon className="size-4"/>}                                        
                         >
                             Barang
@@ -201,7 +207,7 @@ export const RABDetail = () => {
                 <TableBody>                    
                     {
                         renderElement.map((d:OrderedItem, i:number)=>{
-                            const {name, productName, unit, amount, price} = d
+                            const {_id, name, productName, unit, amount, price} = d
 
                             const isTotalRow = name === "" && productName === ""
                             if(isTotalRow){
@@ -238,15 +244,14 @@ export const RABDetail = () => {
                                     <TableCell className="flex items-center">
                                         <Button color="warning" startContent={<EditIcon className="size-4" />} size="sm"
                                             onPress={()=>{
-                                                //setIsChangingItem(i)
+                                                setIsChangingItem(i)
                                             }}
                                         >
-                                            Ubah
+                                            Jumlah
                                         </Button>                                        
                                         <Button color="danger" startContent={<DeleteIcon className="size-4" />} size="sm"
                                             onPress={()=>{
-                                                const updatedItems = items.filter((d:OrderedItem, iItem:number) => iItem !== i)
-                                                setRAB({...RAB, items: updatedItems})    
+                                                setIsChangingItem(_id as string)
                                             }}
                                         >
                                             Hapus
@@ -258,6 +263,31 @@ export const RABDetail = () => {
                     }                                            
                 </TableBody>
             </Table>
+            {
+                isChangingItem === -1 &&
+                <NewItemForm
+                    recipientItems={{
+                        recipientName: recipient.name,
+                        items: isChangingItem === -1?[]:items,
+                        itemIdx: -1
+                    }}
+                    show={isChangingItem === -1}
+                    hideForm={()=>{setIsChangingItem(null)}}
+                    submit={addNewItem}
+                    newItems={items}
+                    RABType='charity-org'
+                />
+            }
+            {
+                itemToChange !== null &&
+                <UpdateItemForm
+                    show={itemToChange!==null}
+                    item={itemToChange}
+                    hideForm={()=>{setIsChangingItem(null)}}
+                    submit={updateItemAmount}
+                    fetchState={fetchState}
+                />
+            }
         </div>
     )
 }

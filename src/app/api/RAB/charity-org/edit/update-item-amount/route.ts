@@ -4,7 +4,6 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function PATCH(req:NextRequest) {
     const { RABId, itemId, newAmount } = await req.json();
-    
     const client = await clientPromise                      
         
     try {
@@ -20,11 +19,11 @@ export async function PATCH(req:NextRequest) {
             },
             {
                 arrayFilters: [
-                    { "elem._id": new ObjectId(itemId as string) }
+                    { "elem._id": itemId }
                 ]
             }
         )                              
-
+        
         if (result.modifiedCount === 1) {
             return NextResponse.json({ message: 'Jumlah barang berhasil dirubah' }, {status: 200});
         } else {
