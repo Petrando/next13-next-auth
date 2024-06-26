@@ -22,22 +22,23 @@ export const ListedRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit,
     const [ submitPressed, setSubmitPressed ] = useState(false)
         
     const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();    
-    
+        
     const recipientIdx = recipients.length > 0 ?
         recipients.findIndex((dRec:CharityOrgRecipient) => {
-            const {street, rtRw, kelurahan, kecamatan, kabupaten, propinsi, postCode} = dRec.address
+            //const {street, rtRw, kelurahan, kecamatan, kabupaten, propinsi, postCode} = dRec.address
             return(
-                dRec.name === orgRecipient.name && dRec.number === orgRecipient.number &&
+                selectedId === dRec._id
+                /*dRec.name === orgRecipient.name && dRec.number === orgRecipient.number &&
                 street === orgRecipient.address.street && rtRw === orgRecipient.address.rtRw &&
                 kelurahan === orgRecipient.address.kelurahan &&
                 kecamatan === orgRecipient.address.kecamatan &&
                 kabupaten === orgRecipient.address.kabupaten &&
                 propinsi === orgRecipient.address.propinsi &&
-                postCode === orgRecipient.address.postCode
+                postCode === orgRecipient.address.postCode*/
             
         )}):
             -1
-
+    console.log(selectedId, recipientIdx)
     const getRecipients = async () => {
         const filter = {
             type: "charity-org"
@@ -71,12 +72,16 @@ export const ListedRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit,
 
     useEffect(()=>{
         if(fetchState === "complete" && recipients.length > 0){            
-            if(recipientIdx > -1){
-                const { _id } = recipients[recipientIdx]
+            console.log(orgRecipient)
+            if(orgRecipient.name !== "" && orgRecipient._id){
+                setSelectedId(orgRecipient._id as string)
+            }
+            /*else if(recipientIdx > -1){
+                const { _id } = recipients[0]
                 setSelectedId(_id as string)
-            }            
+            }*/            
         }
-    }, [orgRecipient, recipients, fetchState, recipientIdx])
+    }, [orgRecipient, recipients, fetchState/*, recipientIdx*/])
 
     useEffect(()=>{
         if(show){
