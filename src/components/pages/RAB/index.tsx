@@ -7,7 +7,10 @@ import { Button, Card, CardHeader, CardBody, CardFooter, Divider, DateInput,
         Skeleton
  } from "@nextui-org/react"
 import { createDateString } from "@/lib/functions";
-import { IRABMultiPerson, PersonRecipientWItems, IRABCharityOrg } from "@/types"
+import { IRABMultiPerson, PersonRecipientWItems, IRABCharityOrg, OrderedItem } from "@/types"
+import { EditIcon, DeleteIcon } from "@/components/Icon";
+import CurrencyFormat from "react-currency-format";
+import { TotalCard } from "./shared/TotalCard";
 
 export const RABList = () => {
     const [RABs, setRABs] = useState<(IRABMultiPerson | IRABCharityOrg)[]>([])
@@ -66,7 +69,7 @@ export const RABList = () => {
                 {fetchState === "complete" ? (RABs.length > 0 && RABs.map((d:(IRABMultiPerson | IRABCharityOrg)) => {                    
                     const { category } = d
                     return(
-                        <div key={d._id} className="h-60 basis-full md:basis-1/2 lg:basis-1/3 flex p-1 md:p-2">
+                        <div key={d._id} className="h-60 basis-full md:basis-1/2 lg:basis-1/3 flex p-1 md:p-2 overflow-x-hidden">
                             { category === "charity-multi-recipients"?
                                 <MultiRecipientsCard key={d._id} d={d} />:
                                     <CharityOrgCard key={d._id} d={d} />
@@ -89,27 +92,89 @@ type ICharityOrg = {
 }
 
 const CharityOrgCard:FC<ICharityOrg> = ({d}) => {
+    const { title, recipient, date, items } = d
+    const renderElement = items
+
+    const totalPrice = items
+        .reduce((acc:number, curr:OrderedItem) => {            
+            return acc + (curr.price * curr.amount)
+        }, 0)
     return (
-        <Card  className="basis-full">
+        <Card className="basis-full">
             <CardHeader className="flex">
                 <h3 className="text-lg font-semibold basis-4/5 text-center">
-                    {d.title}
+                    {title}
                 </h3>
                 <DateInput 
                     label={"Tanggal"} 
                     isReadOnly
-                    value={d.date === null?null:createDateString(new Date(d.date))}  
+                    value={date === null?null:createDateString(new Date(date))}  
                     className="basis-1/5"
                 />
             </CardHeader>
             <Divider />
             <CardBody>
-            
+            <Table aria-label="Tabel Bantuan"
+                topContent={
+                    <h3 className="font-semibold basis-4/5 text-center">
+                        Untuk {recipient.name}
+                    </h3>
+                }
+            >
+                <TableHeader>
+                    <TableColumn>No.</TableColumn>
+                    <TableColumn>Nama</TableColumn>
+                    <TableColumn>Volume</TableColumn>
+                    <TableColumn>Harga/unit</TableColumn>                            
+                    <TableColumn>TOTAL</TableColumn>
+                </TableHeader>                
+                <TableBody>                    
+                    {
+                        renderElement.map((d:OrderedItem, i:number)=>{
+                            const {name, productName, unit, amount, price} = d
+
+                            const isTotalRow = name === "" && productName === ""
+                            if(isTotalRow){
+                                return <TableRow key={i.toString()}>
+                                    <TableCell colSpan={0}>{''}</TableCell>
+                                    <TableCell colSpan={0}>{''}</TableCell>
+                                    <TableCell colSpan={0}>{''}</TableCell>
+                                    <TableCell colSpan={0}>{''}</TableCell>                                            
+                                    <TableCell colSpan={5}>
+                                        <TotalCard total={totalPrice} />   
+                                    </TableCell>                                           
+                                </TableRow>
+                            }
+                            
+                            return (
+                                <TableRow key={i.toString()}>
+                                    <TableCell>                                        
+                                        {i + 1}                                        
+                                    </TableCell>
+                                    <TableCell>                                        
+                                        { name } { productName }
+                                    </TableCell>
+                                    <TableCell>
+                                        {amount} {unit}                                        
+                                    </TableCell>
+                                    <TableCell>
+                                        <CurrencyFormat value={price} thousandSeparator=","
+                                            prefix="Rp. " suffix={` per ${unit}`} />                                                
+                                    </TableCell>
+                                    <TableCell>
+                                        <CurrencyFormat value={price * amount} thousandSeparator="," prefix="Rp. " /> 
+                                    </TableCell>  
+                                </TableRow>
+                            )
+                        })
+                    }                                            
+                </TableBody>
+            </Table>
             </CardBody>
             <Divider />
             <CardFooter className="flex justify-end">
                 <Link href={{
-                    pathname:"/RAB/charity-multi-recipients/detail",
+                    pathname:"/RAB/charity-org/detail",
                     query:{
                         _id:d._id
                     }
@@ -129,7 +194,7 @@ type IMultiRecipientsCard = {
 
 const MultiRecipientsCard:FC<IMultiRecipientsCard> = ({d}) => {
     return (
-        <Card  className="basis-full">
+        <Card className="basis-full">
             <CardHeader className="flex">
                 <h3 className="text-lg font-semibold basis-4/5 text-center">
                     {d.title}

@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../../../api/auth/[...nextauth]/route";
-
+import { RABDetail } from "@/components/pages/RAB/charity-org/detail";
 
 const RABDetailPage = async () => {
     const session = await getServerSession(authOptions);
@@ -9,9 +9,7 @@ const RABDetailPage = async () => {
     if(!session){ redirect("/") }    
     
     return (
-        <div className="flex items-center justify-center">
-            <p className="font-semibold">Charity RAB detail</p>
-        </div>
+        <RABDetail />
     )
 }
 
