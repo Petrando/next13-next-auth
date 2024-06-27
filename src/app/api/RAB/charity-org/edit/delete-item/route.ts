@@ -16,7 +16,7 @@ export async function PATCH(req:NextRequest) {
             {
                 $pull:{
                     items:{
-                        _id:new ObjectId(itemId)
+                        _id: itemId
                     } as any
                 }
             }
@@ -30,7 +30,7 @@ export async function PATCH(req:NextRequest) {
         
     } catch (error) {        
         return NextResponse.json(
-            { message: `Tidak berhasil menambahkan barang baru` },
+            { message: `Tidak berhasil menghapus barang` },
             { status: 500 }
         );
     }finally {

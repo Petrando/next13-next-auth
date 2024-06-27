@@ -20,6 +20,7 @@ import { createDateString } from '@/lib/functions';
 import { emptyRABCharityOrg, emptyOrderedItem } from '@/variables-and-constants';
 import { IRABCharityOrg, OrderedItem } from '@/types';
 import CurrencyFormat from 'react-currency-format';
+import { DeleteItemForm } from './DeleteItemDialog';
 
 export const RABDetail = () => {
     const [ tab, setTab ] = useState("recipients");
@@ -130,12 +131,13 @@ export const RABDetail = () => {
                 },
             });
           
-            const data = await response.json();            
-            console.log(data)
+            const data = await response.json();                        
+            
+            const updatedItem = items.filter((d:OrderedItem) => d._id !== isChangingItem as string)
+            setRAB({...RAB, items: updatedItem})
             setIsChangingItem(null)
         }catch(err:any){
-            console.log('fetch error : ', err)
-            
+            console.log('fetch error : ', err)            
         }
         finally{
             setFetchState("complete")
@@ -156,6 +158,8 @@ export const RABDetail = () => {
     const itemToChange = (typeof isChangingItem === "number" && isChangingItem > -1)?
         items[isChangingItem]:null
     //const { ids:{nik} } = printingRecipient
+    const itemToDelete = items.find((d:OrderedItem) => d._id === isChangingItem as string)
+    
     return (
         <div className="flex flex-col w-screen px-1 md:px-2">            
             <div className="px-0 py-2 flex items-center flex-wrap">
@@ -181,7 +185,8 @@ export const RABDetail = () => {
                         <Button color="primary" 
                             size="sm"
                             onPress={()=>{setIsChangingItem(-1)}}
-                            startContent={<PlusIcon className="size-4"/>}                                        
+                            startContent={<PlusIcon className="size-4"/>}
+                            isDisabled={fetchState === "loading"}                                        
                         >
                             Barang
                         </Button>
@@ -189,7 +194,8 @@ export const RABDetail = () => {
                             size="sm"
                             className='ml-1'
                             onPress={()=>{/*setIsChangingItem(-1)*/}}
-                            startContent={<PrintIcon className="size-4"/>}                                        
+                            startContent={<PrintIcon className="size-4"/>}
+                            isDisabled={fetchState === "loading"}                                        
                         >
                             BAST
                         </Button>
@@ -243,6 +249,7 @@ export const RABDetail = () => {
                                     </TableCell>                                            
                                     <TableCell className="flex items-center">
                                         <Button color="warning" startContent={<EditIcon className="size-4" />} size="sm"
+                                            isDisabled={fetchState === "loading"}
                                             onPress={()=>{
                                                 setIsChangingItem(i)
                                             }}
@@ -250,6 +257,7 @@ export const RABDetail = () => {
                                             Jumlah
                                         </Button>                                        
                                         <Button color="danger" startContent={<DeleteIcon className="size-4" />} size="sm"
+                                            isDisabled={fetchState === "loading"}
                                             onPress={()=>{
                                                 setIsChangingItem(_id as string)
                                             }}
@@ -285,6 +293,16 @@ export const RABDetail = () => {
                     item={itemToChange}
                     hideForm={()=>{setIsChangingItem(null)}}
                     submit={updateItemAmount}
+                    fetchState={fetchState}
+                />
+            }
+            {
+                typeof itemToDelete !== "undefined" &&
+                <DeleteItemForm
+                    show={ typeof itemToDelete !== "undefined" }
+                    item={itemToDelete}
+                    hideForm={()=>{setIsChangingItem(null)}}
+                    submit={deleteItem}
                     fetchState={fetchState}
                 />
             }

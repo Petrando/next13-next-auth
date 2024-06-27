@@ -1,27 +1,22 @@
-import { FC, useState, useEffect } from "react"
+import { FC,  } from "react"
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Button, useDisclosure } from "@nextui-org/react"
 import { displayIDR } from "@/lib/functions";
 import { OrderedItem } from "@/types";
 
-type IUpdateForm = {
+type IDeleteForm = {
     show: boolean;
     item: OrderedItem;
     hideForm: () => void;
-    submit: (newAmount:number)=>void;
+    submit: ()=>void;
     fetchState: string;
 }
 
-export const UpdateItemForm:FC<IUpdateForm> = ({ show, item, hideForm, submit, fetchState }) => {
-    const [ newAmount, setAmount ] = useState(0)
+export const DeleteItemForm:FC<IDeleteForm> = ({ show, item, hideForm, submit, fetchState }) => {    
     const { name, productName, category, subCategory, subSubCategory, amount, unit, price } = item
-
-    const initAmt = () => {setAmount(amount)}
-    useEffect(()=>{
-        initAmt()
-    }, [])
+    
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-    
+    console.log(fetchState)
     return (
         <Modal 
             isOpen={show} 
@@ -36,7 +31,7 @@ export const UpdateItemForm:FC<IUpdateForm> = ({ show, item, hideForm, submit, f
             {(onClose) => (
                 <>
                 <ModalHeader className="flex justify-between items-center">
-                    Merubah jumlah {name}                                                            
+                    Hapus {name} dari RAB?                                                            
                 </ModalHeader>
                 <ModalBody>
                 <div className="w-full">                    
@@ -62,9 +57,8 @@ export const UpdateItemForm:FC<IUpdateForm> = ({ show, item, hideForm, submit, f
                             variant="bordered"
                             size="sm"
                             className="basis-1/5 md:basis-1/12" 
-                            value={newAmount.toString()}
-                            type="number"
-                            onChange={(e)=>{setAmount(parseInt(e.target.value))}}    
+                            value={amount.toString()}
+                            type="number"   
                         />
                         <Input                            
                             isReadOnly
@@ -109,23 +103,17 @@ export const UpdateItemForm:FC<IUpdateForm> = ({ show, item, hideForm, submit, f
                             variant="bordered"
                             size="sm"
                             className="basis-2/5 md:basis-3/12 font-semibold" 
-                            value={displayIDR(price * newAmount)}                                
+                            value={displayIDR(price * amount)}                                
                         />
                     </div>
                 </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color={`primary`} size="sm"
-                        isDisabled={newAmount <= 0 || fetchState === "loading"}
-                        onPress={()=>{
-                            if(newAmount === amount){
-                                hideForm()
-                            }else{
-                                submit(newAmount)
-                            }                            
-                        }}
+                    <Button color={`warning`} size="sm"
+                        isDisabled={fetchState === "loading"}
+                        onPress={submit}
                     >
-                        Update
+                        Hapus
                     </Button>
                     <Button color="danger" size="sm" onPress={hideForm}
                         isDisabled={fetchState === "loading"}
