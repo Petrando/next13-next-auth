@@ -23,7 +23,7 @@ export type Contact = {
     value: string;
 }
 
-type RecipientTypes = "person" | "charity-org"
+export type recipientTypes = "person" | "charity-org"
 
 export interface PersonRecipient {
     _id?:string | null;

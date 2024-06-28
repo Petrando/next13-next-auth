@@ -15,6 +15,12 @@ export const displayIDR = (value:number) => {
     return new Intl.NumberFormat("id", {style:"currency", currency: "IDR"}).format(value)
 }
 
+export const totalPrice = (items:OrderedItem[]) => {
+    return items.reduce((acc: number, curr: OrderedItem) => {
+        return acc + (curr.amount * curr.price)
+    }, 0)
+}
+
 export const personDataChanged = (person1:PersonRecipientWItems, person2:PersonRecipientWItems, checkItem = false) => {
     const { _id, name, birthdata:{birthdate, birthplace},
         ids:{nik, noKk}, address:{kelurahan, kecamatan, kabupaten, street, rtRw}, contact} = person1

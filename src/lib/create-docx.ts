@@ -12,23 +12,13 @@ import { Document, Packer, Paragraph, TextRun, Table as TableDocx, TableBorders,
     TextWrappingSide,
     VerticalPositionAlign,
     HorizontalPositionAlign} from "docx";
-import { displayIDR } from "./functions";
+import { displayIDR, totalPrice } from "./functions";
 import { defaultOfficer, emptyOperator, 
     weekDays, localizedDates, localizedMonths, localizedYears } from "@/variables-and-constants";
-import { PersonRecipientWItems,  IOperator, ICentre } from "@/types";
+import { PersonRecipientWItems, IRABCharityOrg,  IOperator, recipientTypes, ICentre } from "@/types";
 import { CalendarDate } from "@internationalized/date";
 
-export const createBASTDocs = (
-    date: CalendarDate,
-    bastNo: string = "591/BAST/4.11/5/2024", 
-    recipient: PersonRecipientWItems, 
-    decidingOperator: IOperator,
-    fieldOperator: IOperator | undefined = undefined,
-    centre: ICentre, 
-    nominalInWords: string = "(Nilai Barang Dalam Rupiah)", 
-    receptor: string = "Dodi Rusdi",
-    picData: string
-) => {
+const localizeDate = (date: CalendarDate) => {
     type dayIndexes = 0 | 1 | 2 | 3 | 4| 5 | 6
     type dateNums = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 
         11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |
@@ -47,12 +37,38 @@ export const createBASTDocs = (
     const tanggal = localizedDates[todate]
     const bulan = localizedMonths[monthNum]
     const tahun = localizedYears[year]
+
+    return { todate, hari, tanggal, bulan, tahun, year }
+}
+
+export const createBASTDocs = (
+    date: CalendarDate,
+    bastNo: string = "591/BAST/4.11/5/2024", 
+    recipient: PersonRecipientWItems | IRABCharityOrg, 
+    decidingOperator: IOperator,
+    fieldOperator: IOperator | undefined = undefined,
+    centre: ICentre,
+    helpType: string, 
+    nominalInWords: {
+        nominal: string, display: boolean
+    } = {
+        nominal: "(Nilai Barang Dalam Rupiah)", display: true
+    }, 
+    receptor: string = "Dodi Rusdi",
+    picData: string
+) => {
+    const {todate, hari, tanggal, bulan, tahun, year} = localizeDate(date)
     
-    const {name, ids:{nik}, address:{street, rtRw, kabupaten, kecamatan, kelurahan},
-        items
-    } = recipient
+    const recType = recipientType(recipient)
+    const {
+        name, nik, street, rtRw, kecamatan, kelurahan, kabupaten, items
+    } = recType === "person"?
+        destructurePersonRecipient(recipient as PersonRecipientWItems):
+            destructureOrgRecipient(recipient as IRABCharityOrg)
+
     const recipientAddress = street + ", " + kelurahan + "-" + kecamatan + "-" + kabupaten
-    const {name: itemName, unit, price} = items[0]
+    const {name: itemName, unit } = items[0]
+    const price = totalPrice(items)
 
     const { name:officerName, NIP, rank } = decidingOperator 
     
@@ -215,7 +231,7 @@ export const createBASTDocs = (
                     }),
                     new Paragraph(""),
                     new Paragraph({
-                        text: `Pada Hari ${hari} Tanggal ${tanggal} Bulan ${bulan} Tahun ${tahun}, berdasarkan Surat Keputusan Kuasa Pengguna Anggaran Sentra Mulya Jaya di Jakarta Nomor : 2592/4.11/RH.00.01/4/2024 Tanggal 29 April 2024 tentang Penerima Bantuan  Asistensi Rehabilitasi Sosial (ATENSI) Alat Bantu Jakarta Tahun 2024.`,
+                        text: `Pada Hari ${hari} Tanggal ${tanggal} Bulan ${bulan} Tahun ${tahun}, berdasarkan Surat Keputusan Kuasa Pengguna Anggaran Sentra Mulya Jaya di Jakarta Nomor : 2592/4.11/RH.00.01/4/2024 Tanggal 29 April 2024 tentang Penerima Bantuan  Asistensi Rehabilitasi Sosial (ATENSI) Jakarta Tahun ${year}.`,
                         heading: HeadingLevel.HEADING_6, alignment: AlignmentType.LEFT                    
                     
                     }),
@@ -307,13 +323,14 @@ export const createBASTDocs = (
                     }),
                     new Paragraph({
                         children: [
-                            new TextRun("PIHAK PERTAMA telah menyerahkan barang berupa "),
+                            new TextRun("PIHAK PERTAMA telah menyerahkan bantuan berupa "),
                             new TextRun({
-                                text:"Alat Bantu", bold: true
+                                text:helpType, bold: true
                             }),
                             new TextRun(" Senilai "),
                             new TextRun({
-                                text:displayIDR(price) + ",- " + nominalInWords, bold: true
+                                text:`${displayIDR(price)} ${nominalInWords.display?",-" + nominalInWords.nominal:""}`, 
+                                bold: true
                             }),
                             new TextRun({
                                 text: " sebagaimana yang terlampir kepada PIHAK KEDUA dan PIHAK KEDUA telah menerima barang tersebut dari PIHAK PERTAMA.",                            
@@ -966,4 +983,31 @@ export const createBASTDocs = (
     return {
         BASTdoc, attachmentDoc
     }
+}
+
+/*
+    How to decide wether recipient is charity organization or person?
+    Person has ids prop, charity org does not
+*/
+
+const recipientType = (recipient:PersonRecipientWItems | IRABCharityOrg) => {
+    return "ids" in recipient?"person":"charity-org"
+}
+
+const destructurePersonRecipient = (recipient: PersonRecipientWItems) => {
+    const {name, ids:{nik}, address:{street, rtRw, kabupaten, kecamatan, kelurahan},
+        items
+    } = recipient
+
+    return {
+        name, nik, street, rtRw, kecamatan, kelurahan, kabupaten, items
+    }
+}
+
+const destructureOrgRecipient = (recipient:IRABCharityOrg) => {
+    const {recipient:charityOrg, items} = recipient
+    const {address, name} = charityOrg
+    const { street, rtRw, kecamatan, kelurahan, kabupaten } = address
+
+    return { name, items, street, rtRw, kecamatan, kelurahan, kabupaten, nik:"" }
 }
