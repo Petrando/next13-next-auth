@@ -4,13 +4,18 @@ import { useState, useEffect, FC } from "react"
 import Link from "next/link"
 import { Button, Card, CardHeader, CardBody, CardFooter, Divider, DateInput,
     Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,
-        Skeleton
+        Skeleton,
+        Dropdown,
+        DropdownItem,
+        DropdownMenu,
+        DropdownTrigger
  } from "@nextui-org/react"
 import { createDateString } from "@/lib/functions";
 import { IRABMultiPerson, PersonRecipientWItems, IRABCharityOrg, OrderedItem } from "@/types"
 import { EditIcon, DeleteIcon } from "@/components/Icon";
 import CurrencyFormat from "react-currency-format";
 import { TotalCard } from "./shared/TotalCard";
+import { color } from "framer-motion";
 
 export const RABList = () => {
     const [RABs, setRABs] = useState<(IRABMultiPerson | IRABCharityOrg)[]>([])
@@ -60,9 +65,32 @@ export const RABList = () => {
                     </h1>
                 </div>
                 <div className="w-fit">
-                    <Link href={"/RAB/charity-multi-recipients/add"}>
-                        <Button color="primary">Tambah RAB</Button>
-                    </Link>
+                    <Dropdown>
+                        <DropdownTrigger>
+                            <Button 
+                                color="primary"
+                                className="capitalize"
+                            >
+                                Tambah RAB
+                            </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu 
+                            aria-label="Dropdown Variants"
+                            color="primary" 
+                            variant="solid"
+                        >
+                            <DropdownItem key="multi-recipients">
+                                <Link href={"/RAB/charity-multi-recipients/add"}>
+                                    Multi Individu
+                                </Link>
+                            </DropdownItem>
+                            <DropdownItem key="charity-org">
+                                <Link href={"/RAB/charity-org/add"}>
+                                    Badan Amal
+                                </Link>
+                            </DropdownItem>                            
+                        </DropdownMenu>
+                    </Dropdown>
                 </div>
             </div>
             <div className="flex flex-wrap px-1 md:px-3">
