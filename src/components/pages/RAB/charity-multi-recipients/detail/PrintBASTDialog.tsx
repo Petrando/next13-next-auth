@@ -2,18 +2,15 @@ import React, { useEffect, useState, FC, ChangeEvent } from "react";
 import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,  
-            Input, Divider, DatePicker,
-                Select, SelectItem, Selection,  
-                Checkbox} from "@nextui-org/react";
-import CurrencyFormat from "react-currency-format";
+        Input, Divider, DatePicker, Select, SelectItem, Checkbox} from "@nextui-org/react";
 import { saveAs } from "file-saver";
 import { Packer } from 'docx';
 import { PrintIcon } from "@/components/Icon";
 import { createBASTDocs } from "@/lib/create-docx";
-import { displayIDR, createDateString } from "@/lib/functions";
-import { emptyOrderedItem, emptyOperator, defaultCentre, weekDays, localizedMonths } from "@/variables-and-constants";
-import { Item, OrderedItem, PersonRecipientWItems, IOperator, ICentre } from "@/types";
-import { Document, Footer, Header, ImageRun,  Paragraph } from "docx";
+import { displayIDR, createDateString, totalPrice } from "@/lib/functions";
+import { emptyOperator, defaultCentre } from "@/variables-and-constants";
+import { PersonRecipientWItems, IOperator, ICentre } from "@/types";
+
 
 type TItemForm = {
     recipient: PersonRecipientWItems,
@@ -79,8 +76,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
     }
 
     const { items } = recipient
-    const { price, unit, amount } = items[0]
-    const nominal = price * amount           
+    const total = totalPrice(items)           
     
     const { name, address: { street, kelurahan, kecamatan, kabupaten, postCode } } = centre
 
@@ -223,7 +219,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                             size="sm"
                             className="basis-full md:basis-1/3"
                             placeholder="Contoh: tiga ratus dua puluh lima ribu rupiah" 
-                            description={`Tuliskan nilai nominal dari harga ${displayIDR(nominal)}`}
+                            description={`Tuliskan nilai nominal dari harga ${displayIDR(total)}`}
                             value={nominalInWords.nominal}
                             onChange={(e)=>{setNominalWords({...nominalInWords, nominal: e.target.value})}}
                             endContent={

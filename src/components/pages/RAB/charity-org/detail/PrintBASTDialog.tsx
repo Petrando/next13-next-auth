@@ -3,24 +3,28 @@ import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,  
             Input, Divider, DatePicker,
-                Select, SelectItem } from "@nextui-org/react";
+                Select, SelectItem,   
+                Checkbox} from "@nextui-org/react";
 import { saveAs } from "file-saver";
 import { Packer } from 'docx';
 import { PrintIcon } from "@/components/Icon";
 import { createBASTDocs } from "@/lib/create-docx";
-import { displayIDR, createDateString } from "@/lib/functions";
+import { displayIDR, createDateString, totalPrice } from "@/lib/functions";
 import { emptyOperator, defaultCentre } from "@/variables-and-constants";
-import { PersonRecipientWItems, CharityOrgRecipient, IRABCharityOrg, IOperator, ICentre } from "@/types";
+import { IRABCharityOrg, IOperator, ICentre } from "@/types";
 
 type TItemForm = {
-    RAB: IRABCharityOrg
+    rab: IRABCharityOrg,
     show: boolean;
     hideForm: ()=>void;        
 }
 
-export const PrintBAST:FC<TItemForm> = ({RAB, show, hideForm }) => {    
+export const PrintBAST:FC<TItemForm> = ({rab, show, hideForm }) => {    
     const [ bastNo, setBastNo ] = useState("")
-    const [ nominalInWords, setNominalWords ] = useState("")
+    const [ nominalInWords, setNominalWords ] = useState({
+        nominal:"", display:true
+    })
+    const [ helpType, setHelpType ] = useState("Alat Bantu")
     const [ picData, setPicData ] = useState("")
     const [ operators, setOperators ] = useState<IOperator[]>([])
     const [ decidingOperatorNip, setDecidingOperator] = useState<string>("");
@@ -72,11 +76,10 @@ export const PrintBAST:FC<TItemForm> = ({RAB, show, hideForm }) => {
         });
     }
 
-    const { items, recipient } = RAB
-    const { price, unit, amount } = items[0]
-    const nominal = price * amount           
+    const { items, recipient } = rab    
+    const total = totalPrice(items)          
     
-    const { name, address: { street, kelurahan, kecamatan, kabupaten, postCode } } = recipient
+    const { name, address: { street, kelurahan, kecamatan, kabupaten, postCode } } = centre
 
     const changeCentre = (e:ChangeEvent<HTMLInputElement>) => {
         const updatedCentre:ICentre = _.cloneDeep(centre)
@@ -198,19 +201,37 @@ export const PrintBAST:FC<TItemForm> = ({RAB, show, hideForm }) => {
                             label="Nomor BAST"                        
                             variant="bordered"
                             size="sm"
-                            className="basis-full md:basis-1/2"
+                            className="basis-full md:basis-1/3"
                             value={bastNo}
                             onChange={(e)=>{setBastNo(e.target.value)}}
-                        />                                                
+                        />    
+                        <Input
+                            placeholder={`Contoh : "Sembako dan Alat Kebersihan"`}
+                            label="Jenis Bantuan"                        
+                            variant="bordered"
+                            size="sm"
+                            className="basis-full md:basis-1/3"
+                            value={helpType}
+                            onChange={(e)=>{setHelpType(e.target.value)}}
+                        />                                             
                         <Input
                             label="Nilai Nominal"
                             variant="bordered"
                             size="sm"
-                            className="basis-full md:basis-1/2"
+                            className="basis-full md:basis-1/3"
                             placeholder="Contoh: tiga ratus dua puluh lima ribu rupiah" 
-                            description={`Tuliskan nilai nominal dari harga ${displayIDR(nominal)}`}
-                            value={nominalInWords}
-                            onChange={(e)=>{setNominalWords(e.target.value)}}
+                            description={`Tuliskan nilai nominal dari harga ${displayIDR(total)}`}
+                            value={nominalInWords.nominal}
+                            onChange={(e)=>{setNominalWords({...nominalInWords, nominal: e.target.value})}}
+                            endContent={
+                                <Checkbox size="sm" 
+                                    isSelected={nominalInWords.display} 
+                                    onValueChange={(e)=>{setNominalWords({...nominalInWords, display:e})}}
+                                    className="flex flex-col items-center"
+                                >
+                                    <span className="text-xs text-slate-800">Tampilkan</span>
+                                </Checkbox>
+                            }
                         />                                                                
                         <Select                        
                             label="Pejabat Pembuat Komitmen"
@@ -264,20 +285,20 @@ export const PrintBAST:FC<TItemForm> = ({RAB, show, hideForm }) => {
                         onPress={()=>{
                             const decidingOperator = operators.find((dOp:IOperator) => dOp.NIP === decidingOperatorNip)
                             const fieldOperator = operators.find((dOp:IOperator) => dOp.NIP === fieldOperatorNip)
-                            /*const { BASTdoc, attachmentDoc } = createBASTDocs(
+                            const { BASTdoc, attachmentDoc } = createBASTDocs(
                                 date,
                                 bastNo === ""?undefined:bastNo,
-                                recipient,
+                                rab,
                                 decidingOperator as IOperator, fieldOperator as IOperator | undefined,
                                 centre,
-                                nominalInWords === ""?undefined:nominalInWords,
+                                helpType, 
+                                nominalInWords,
                                 actingRecipient,
                                 picData
                             )
 
                             saveDocumentToFile(BASTdoc, `bast-${recipient.name}.docx`)
                             saveDocumentToFile(attachmentDoc, `lampiran-bast-${recipient.name}.docx`)                                                        
-                            */
                         }}
                     >
                         Cetak

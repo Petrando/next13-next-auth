@@ -9,7 +9,8 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
  } from "@nextui-org/react"
 import _ from 'lodash';
 import { EditItem as NewItemForm} from '../../shared/AddEditItem';
-import { UpdateItemForm } from './UpdateItemDialog'; 
+import { UpdateItemForm } from './UpdateItemDialog';
+import { PrintBAST } from './PrintBASTDialog'; 
 import { ItemsTable } from '../../shared/ItemsTable';
 import { TableItem } from '../../shared/TableItemCard';
 import { TableContact } from '../../shared/TableContact';
@@ -27,7 +28,7 @@ export const RABDetail = () => {
 
     const [RAB, setRAB] = useState<IRABCharityOrg>(emptyRABCharityOrg)
     const { title, date, recipient, items } = RAB
-
+    const [ printBast, setPrintBast ] = useState(false)
     const [fetchState, setFetchState] = useState("loading")
     /*
         if isChanging item is -1, adding new item
@@ -193,7 +194,7 @@ export const RABDetail = () => {
                         <Button color="primary" 
                             size="sm"
                             className='ml-1'
-                            onPress={()=>{/*setIsChangingItem(-1)*/}}
+                            onPress={()=>{setPrintBast(true)}}
                             startContent={<PrintIcon className="size-4"/>}
                             isDisabled={fetchState === "loading"}                                        
                         >
@@ -304,6 +305,14 @@ export const RABDetail = () => {
                     hideForm={()=>{setIsChangingItem(null)}}
                     submit={deleteItem}
                     fetchState={fetchState}
+                />
+            }
+            {
+                printBast &&
+                <PrintBAST 
+                    show={printBast}
+                    hideForm={()=>{setPrintBast(false)}}
+                    rab={RAB}
                 />
             }
         </div>
