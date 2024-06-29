@@ -69,6 +69,7 @@ export const RABList = () => {
                         <DropdownTrigger>
                             <Button 
                                 color="primary"
+                                variant="bordered"
                                 className="capitalize"
                             >
                                 Tambah RAB
@@ -91,13 +92,16 @@ export const RABList = () => {
                             </DropdownItem>                            
                         </DropdownMenu>
                     </Dropdown>
+                    <Link href={"/RAB/charity-multi-recipients/add"}>
+                        <Button color="primary">Tambah RAB</Button>
+                    </Link>
                 </div>
             </div>
             <div className="flex flex-wrap px-1 md:px-3">
                 {fetchState === "complete" ? (RABs.length > 0 && RABs.map((d:(IRABMultiPerson | IRABCharityOrg)) => {                    
                     const { category } = d
                     return(
-                        <div key={d._id} className="h-60 basis-full md:basis-1/2 lg:basis-1/3 flex p-1 md:p-2 overflow-x-hidden">
+                        <div key={d._id} className="h-72 basis-full md:basis-1/2 lg:basis-1/3 flex p-1 md:p-2 overflow-x-hidden">
                             { category === "charity-multi-recipients"?
                                 <MultiRecipientsCard key={d._id} d={d} />:
                                     <CharityOrgCard key={d._id} d={d} />
