@@ -5,7 +5,7 @@ import {
         Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Checkbox,
             Skeleton } from "@nextui-org/react";
 import { TableContact } from "../../shared/TableContact";
-import { EditItem } from "../../shared/AddEditItem"
+import { EditItem } from "../../shared/AddEditItem";
 import { TableItem } from "../../shared/TableItemCard";
 import { isSameOrderedItem } from "@/lib/functions";
 import { PersonRecipientWItems, PersonRecipient, OrderedItem } from "@/types";
@@ -34,11 +34,10 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
     const [ fetchState, setFetchState ] = useState("loading")
     
     const getRecipients = async () => {
-        /*const filter = existingNiks.length > 0?
+        const filter = existingNiks.length > 0?
             {type:"person", "ids.nik": { $nin: existingNiks }}:
-                {type:"person"}*/
-        
-        const filter = {}
+                {type:"person"}
+                
         const projection = {}
         const limit = 10
         const offset = 0

@@ -92,9 +92,6 @@ export const RABList = () => {
                             </DropdownItem>                            
                         </DropdownMenu>
                     </Dropdown>
-                    <Link href={"/RAB/charity-multi-recipients/add"}>
-                        <Button color="primary">Tambah RAB</Button>
-                    </Link>
                 </div>
             </div>
             <div className="flex flex-wrap px-1 md:px-3">

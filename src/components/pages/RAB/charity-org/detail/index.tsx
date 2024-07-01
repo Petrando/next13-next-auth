@@ -8,7 +8,7 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
             CalendarDate
  } from "@nextui-org/react"
 import _ from 'lodash';
-import { EditItem as NewItemForm} from '../../shared/AddEditItem';
+import { EditItem as NewItemForm } from '../../shared/AddEditItem';
 import { UpdateItemForm } from './UpdateItemDialog';
 import { PrintBAST } from './PrintBASTDialog'; 
 import { ItemsTable } from '../../shared/ItemsTable';

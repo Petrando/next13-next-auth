@@ -1,15 +1,19 @@
-import React, { useEffect, useState, FC, ChangeEvent } from "react";
+import React, { useEffect, useState, FC } from "react";
 import _ from "lodash";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,
-        Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, Select, SelectItem, Selection,
+        Table, TableHeader, TableBody, TableRow, TableColumn, TableCell, 
             Checkbox, Input, Divider, RadioGroup, Radio, Skeleton } from "@nextui-org/react";
+import { NewItemCategory } from "./NewItemCategory";
+import { CategoryFilter } from "./CategoryFilter";
 import CurrencyFormat from "react-currency-format";
-import { emptyOrderedItem, categories as availCategories, emptyCategory } from "@/variables-and-constants";
-import { Item, OrderedItem, PersonRecipientWItems, RABTypes, category, filterCategory, subCategory, filterSubCategory, 
-    option, filterOption } from "@/types";
+import { emptyOrderedItem, categories as availCategories } from "@/variables-and-constants";
+import { Item, OrderedItem, RABTypes, category, subCategory, option } from "@/types";
 
-type TItemForm = {
+/*
+Before separating form for adding new or existing item
+*/
+export type TItemForm = {
     /*
         recipientItems.recipientName is self explanatory
         recipientItems.items are items that belongs to current recipient who's item is being edited.
@@ -27,7 +31,7 @@ type TItemForm = {
     submit: (newItem:OrderedItem)=>void;
     /*
         newItems are items without _id from the calling components
-        in other words : items that are not being listed yet
+        in other words : items that are not being listed yet.        
     */
     newItems: OrderedItem[];
     RABType: RABTypes;
@@ -320,7 +324,7 @@ export const EditItem:FC<TItemForm> = ({recipientItems:{ recipientName, items, i
                                     {
                                         itemType === "existing" &&
                                         <Skeleton isLoaded={fetchState === "complete"}>
-                                            <FilterCategories categories={filterCategories} />
+                                            <CategoryFilter categories={filterCategories} />
                                         </Skeleton>
                                     }
                                     </>
@@ -413,194 +417,3 @@ export const EditItem:FC<TItemForm> = ({recipientItems:{ recipientName, items, i
             </ModalContent>
         </Modal>
 )}
-
-type INewCategory = {    
-    categories: filterCategory[];
-    category: string;
-    subCategory: string; 
-    subSubCategory: string | undefined;
-    changeClassificiation: (newName:string, level:"category" | "subCategory" | "subSubCategory") => void;   
-    isReadonly: boolean;
-}
-
-const NewItemCategory:FC<INewCategory> = ({
-    categories, category, subCategory, subSubCategory, changeClassificiation, isReadonly}) => {    
-
-    const categoryIdx = categories.findIndex((dCat:category) => dCat.name === category)
-    const subCategories = categoryIdx > -1?categories[categoryIdx].subCategory:[]
-    const subCategoryIdx = subCategories.findIndex((dSub:subCategory) => dSub.name === subCategory)
-    const subSubCategories = typeof subCategories[subCategoryIdx] !== "undefined"?
-        subCategories[subCategoryIdx].subCategory:
-            []
-
-    const hasSubSubCategories = Array.isArray(subSubCategories) && subSubCategories.length > 0
-
-    useEffect(()=>{
-        if(category === ""){
-            changeClassificiation(categories[0].name, "category")
-            changeClassificiation(categories[0].subCategory[0].name, "subCategory")
-            if(subSubCategory && subSubCategory !== ""){
-                changeClassificiation(hasSubSubCategories?subSubCategories[0].name:"", "subSubCategory")
-            }
-        }
-                
-    }, [])
-            
-    const styles = hasSubSubCategories?
-        "basis-full md:basis-1/3":"basis-full md:basis-1/2"            
-
-    return (
-        <div className="flex flex-wrap">
-            <Select                        
-                label="Kategori"
-                variant="bordered"
-                selectedKeys={[category]}
-                className={styles}
-                onChange={(e:ChangeEvent<HTMLSelectElement>)=>{
-                    changeClassificiation(e.target.value, "category")
-                }}                
-            >
-                {categories.map((c) => (
-                    <SelectItem key={c.name} isReadOnly={isReadonly}>
-                        {c.name}
-                    </SelectItem>
-                    ))}
-            </Select>
-            <Select                        
-                label="Sub Kategori"
-                variant="bordered"
-                selectedKeys={[subCategory]}
-                className={styles}
-                onChange={(e:ChangeEvent<HTMLSelectElement>)=>{
-                    changeClassificiation(e.target.value, "subCategory")
-                }}
-                isDisabled={isReadonly}
-            >
-                {subCategories.map((c) => (
-                    <SelectItem key={c.name}>
-                        {c.name}
-                    </SelectItem>
-                    ))}
-            </Select>
-            {
-                hasSubSubCategories && 
-                <Select                        
-                    label="Sub Sub Kategori"
-                    variant="bordered"
-                    selectedKeys={[subSubCategory?subSubCategory:""]}
-                    className={styles}
-                    onChange={(e:ChangeEvent<HTMLSelectElement>)=>{
-                        changeClassificiation(e.target.value, "subSubCategory")
-                    }}
-                    isDisabled={isReadonly}
-                >
-                    {subSubCategories.map((c) => (
-                        <SelectItem key={c.name}>
-                            {c.name}
-                        </SelectItem>
-                        ))}
-                </Select>
-            }
-        </div>
-
-    )
-}
-
-type IFilterCategory = {
-    categories: filterCategory[];
-}
-
-const FilterCategories:FC<IFilterCategory> = ({ categories: baseCategories }) => {
-    const [ categories, setCategories ] = useState<Selection>(new Set([]))
-    const [ subCategories, setSubCategories] = useState<Selection>(new Set([]))
-    const [ subSubCategories, setSubSubCategories] = useState<Selection>(new Set([]))
-    
-    const categoryNames = baseCategories.filter((d: filterCategory) => d.checked).map((d:filterCategory) => d.name)
-    const baseSubCategories = baseCategories.map((d:filterCategory) => d.subCategory).flat()
-    const subCategoryNames = baseSubCategories.filter((d:filterSubCategory) => d.checked).map((d:filterSubCategory) => d.name)
-    const baseSubSubCategories = baseSubCategories.filter((d:filterSubCategory) => Array.isArray(d.subCategory))
-        .map((d:filterSubCategory) => d.subCategory).flat()
-    const subSubCategoryNames = baseSubSubCategories.filter((d:filterOption | undefined) => d && d.checked)
-            .map((d:filterOption | undefined) => d && d.name)        
-
-    const changeCategories = (e: ChangeEvent<HTMLSelectElement>) => {
-        setCategories(new Set(e.target.value.split(",")));
-    };
-
-    const changeSubCategories = (e: ChangeEvent<HTMLSelectElement>) => {
-        
-    };
-
-    const changeSubSubCategories = (e: ChangeEvent<HTMLSelectElement>) => {
-        
-    };
-
-    useEffect(()=>{
-        const categories = new Set(categoryNames)
-        setCategories(categories)
-        const subCategories = new Set(subCategoryNames)
-        setSubCategories(subCategories)
-        if(subSubCategoryNames.length > 0){
-            const subSubCategories = new Set(subSubCategoryNames)
-            setSubSubCategories(subSubCategories as Selection)           
-        }
-    }, [])
-
-    const withSubSubCategories = baseSubSubCategories.length > 0
-    const styles = !withSubSubCategories?
-        "basis-full md:basis-1/2 overflow-hidden":
-            "basis-full md:basis-1/3 overflow-hidden"
-
-    return (
-        <div className="flex flex-wrap">
-            <Select
-                label="Kategori"
-                selectionMode="multiple"
-                placeholder="Pilih Kategori"
-                selectedKeys={categories}
-                className={styles}
-                onChange={changeCategories}                
-            >
-                {baseCategories.map((c) => (
-                <SelectItem key={c.name} isReadOnly>
-                    {c.name}
-                </SelectItem>
-                ))}
-            </Select>
-            <Select
-                label="Sub Kategori"
-                selectionMode="multiple"
-                placeholder="Pilih Sub Kategori"
-                selectedKeys={subCategories}
-                className={styles}
-                onChange={changeSubCategories}                
-            >
-                {baseSubCategories.map((c) => (
-                    <SelectItem key={c.name} isReadOnly>
-                        {c.name}
-                    </SelectItem>
-                ))}
-            </Select>
-            {
-                withSubSubCategories &&
-                <Select
-                    label="Sub Sub Kategori"
-                    selectionMode="multiple"
-                    placeholder="Pilih Sub Sub Kategori"
-                    selectedKeys={subSubCategories}
-                    className={styles}
-                    onChange={changeSubSubCategories}                
-                >
-                    {baseSubSubCategories.map((c) => {
-                        const { name } = c as filterOption
-                        return (
-                            <SelectItem key={name} isReadOnly>
-                                {name}
-                            </SelectItem>
-                        )
-                    })}
-                </Select>
-            }
-        </div>   
-    )
-}

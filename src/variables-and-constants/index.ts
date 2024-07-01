@@ -11,6 +11,7 @@ export const emptyOrderedItem: OrderedItem  = _.cloneDeep({
     productName: "",
     category: "", 
     subCategory: "",
+    subSubCategory:"",
     price: 0,
     unit: "",
     amount: 0
