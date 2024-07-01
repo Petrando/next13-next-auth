@@ -16,7 +16,7 @@ import { TotalRow } from "../../shared/TotalTableRow"
 import { TotalCard } from "../../shared/TotalCard"
 import { emptyPerson } from "@/variables-and-constants"
 import { PersonRecipientWItems, OrderedItem } from "@/types"
-import { isSameOrderedItem } from "@/lib/functions"
+import { isSameItem } from "@/lib/functions"
 import { processRecipients } from "./functions"
 
 type IRecipientTable = {
@@ -295,7 +295,7 @@ export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, 
                         updatedSelecteds.forEach((dSelected:PersonRecipientWItems, i: number) => {                                                        
                             if(i !== recipientIdx &&
                                 dSelected.items.length > 0 && 
-                                    isSameOrderedItem(dSelected.items[0], newItem)
+                                    isSameItem(dSelected.items[0], newItem)
                             ){
                                 dSelected.items[0].price = newItem.price
                             }

@@ -18,7 +18,8 @@ export async function POST(req:NextRequest) {
             d.name === curr.name && d.productName === curr.productName && d.category === curr.category && 
             d.subCategory === curr.subCategory && d.unit === curr.unit)
         if(newItemIdx === -1 && !curr._id){
-            acc.push(curr)
+            const { amount, ...rest } = curr
+            acc.push({...rest})
         }
         return acc
     }, [])    

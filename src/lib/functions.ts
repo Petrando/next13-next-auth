@@ -1,5 +1,5 @@
 import { parseDate } from "@internationalized/date";
-import { OrderedItem, PersonRecipientWItems } from "@/types";
+import { OrderedItem, Item, PersonRecipientWItems } from "@/types";
 
 export const createDateString = (date:Date = new Date()) => {    
     const year = date.getFullYear()
@@ -44,11 +44,23 @@ export const personDataChanged = (person1:PersonRecipientWItems, person2:PersonR
     
 }
 
-export const isSameOrderedItem = (item1: OrderedItem, item2:OrderedItem) => {
-    const {_id, name, productName, category, subCategory } = item1
-    const {_id: _id2, name: name2, productName: productName2, 
-            category: category2, subCategory: subCategory2 } = item2
+export const isSameItem = (item1: OrderedItem | Item, item2:OrderedItem | Item) => {
+    const {_id, name, productName, category, subCategory, unit } = item1
+    const {
+        _id: _id2, name: name2, productName: productName2, 
+            category: category2, subCategory: subCategory2, 
+                unit: unit2 
+    } = item2
 
-    return _id === _id2 && name === name2 && productName === productName2 &&
-        category === category2 && subCategory === subCategory2
+    const sameUpToSubCategory = name.toUpperCase() === name2.toUpperCase() && 
+        productName?.toUpperCase() === productName2?.toUpperCase() &&
+            category.toUpperCase() === category2.toUpperCase() && 
+                subCategory.toUpperCase() === subCategory2.toUpperCase() && 
+                    unit.toUpperCase() === unit2.toUpperCase()
+
+    if("subSubCategory" in item1 && "subSubCategory" in item2){
+        return sameUpToSubCategory && item1.subSubCategory?.toUpperCase() === item2.subSubCategory?.toUpperCase()
+    }
+
+    return sameUpToSubCategory
 }

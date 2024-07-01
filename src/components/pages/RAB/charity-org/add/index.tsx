@@ -12,7 +12,7 @@ import { ListedRecipientForm } from "./ListedRecipient"
 import { CogIcon } from "@/components/Icon"
 import { TableItem } from "../../shared/TableItemCard"
 import { EditItem } from "../../shared/AddEditItem"
-import { createDateString, isSameOrderedItem } from "@/lib/functions";
+import { createDateString, isSameItem } from "@/lib/functions";
 import { TableContact } from "../../shared/TableContact"
 import { DeleteIcon, AddDocumentIcon, AddUserIcon, EditIcon, PlusIcon } from "@/components/Icon"
 import { ItemsTable } from "../../shared/ItemsTable"

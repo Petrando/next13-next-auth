@@ -7,7 +7,7 @@ import {
 import { TableContact } from "../../shared/TableContact";
 import { EditItem } from "../../shared/AddEditItem";
 import { TableItem } from "../../shared/TableItemCard";
-import { isSameOrderedItem } from "@/lib/functions";
+import { isSameItem } from "@/lib/functions";
 import { PersonRecipientWItems, PersonRecipient, OrderedItem } from "@/types";
 
 type TRecipientForm = {
@@ -326,7 +326,7 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                         updatedSelecteds.forEach((dSelected:PersonRecipientWItems, i: number) => {                                                        
                             if(i !== selectedIdx &&
                                 dSelected.items.length > 0 && 
-                                    isSameOrderedItem(dSelected.items[0], newItem) 
+                                    isSameItem(dSelected.items[0], newItem) 
                             ){
                                 dSelected.items[0].price = newItem.price
                             }
