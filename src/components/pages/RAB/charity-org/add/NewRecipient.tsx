@@ -34,8 +34,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
         }
     }, [show])    
 
-    const checkOrg = async () => {
-        console.log('checkOrg called') 
+    const checkOrg = async () => {         
         if(!requiredFilled){
             return;
         }             
@@ -51,7 +50,10 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
             const { message } = await response.json();
             
             if(response.ok){                
-                setOrgExist({checked: true, exist: false})                
+                setOrgExist({checked: true, exist: false})
+                if(submitPressed){
+                    submit(recipient as CharityOrgRecipient)
+                }                
             }else{
                 if(recipient !== null && message === `${recipient.name} sudah terdaftar`){
                     setOrgExist({ checked: true, exist: true})
@@ -68,9 +70,15 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
         }         
     }
 
+    useEffect(()=>{
+        if(submitPressed && orgExist.checked && !orgExist.exist){
+            submit(recipient as CharityOrgRecipient)    
+        }
+    }, [orgExist, submitPressed])
+
     const { name, address, contact } = recipient || emptyCharityOrg
     
-    const { street, rtRw, kelurahan, kecamatan, kabupaten, postCode } = address
+    const { street, rtRw, kelurahan, kecamatan, kabupaten, propinsi, postCode } = address
     const { value } = contact[0]
     
     const changeState = (e:ChangeEvent<HTMLInputElement>) => {
@@ -88,6 +96,12 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
         setRecipient(newRecipient)
 
         if(submitPressed){setSubmitPressed(false)}
+        if(orgExist.checked){
+            setOrgExist({...orgExist, checked:false})
+        }
+        if(orgExist.exist){
+            setOrgExist({...orgExist, exist:false})
+        }
     }
 
     const rtNRw = recipient!==null?recipient.address.rtRw.split("/"):""
@@ -95,7 +109,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
     const rw = rtNRw === ""?"":rtNRw[1] 
 
     const requiredFilled = (name !== "" && street !== "" && rt !== "" && rw !== "" && kelurahan !== ""
-        && kecamatan !== "" && kabupaten !== ""
+        && kecamatan !== "" && kabupaten !== "" && propinsi !== ""
     ) 
     
     return (
@@ -116,6 +130,13 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
                     Data Penerima Bantuan Baru
                 </ModalHeader>
                 <ModalBody>
+                    <p className="text-xs text-slate-600 italic">
+                        {
+                            fetchState === "checking org"?"Memeriksa data...":
+                                (orgExist.checked && orgExist.exist)?"Data Sudah Ada":
+                                    ""
+                        }
+                    </p>
                     <div className="w-full flex flex-wrap">
                         <Input                        
                             label="Nama"                        
@@ -216,7 +237,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
                                 label="Kelurahan"                        
                                 variant="bordered"
                                 size="sm"
-                                className="basis-full md:basis-1/3"
+                                className="basis-full md:basis-1/4"
                                 value={kelurahan}                                
                                 onChange={changeState}
                                 name="address.kelurahan"
@@ -229,7 +250,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
                                 label="Kecamatan"                        
                                 variant="bordered"
                                 size="sm"
-                                className="basis-full md:basis-1/3"
+                                className="basis-full md:basis-1/4"
                                 value={kecamatan}
                                 onChange={changeState}
                                 name="address.kecamatan"
@@ -242,7 +263,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
                                 label="Kabupaten"                        
                                 variant="bordered"
                                 size="sm"
-                                className="basis-full md:basis-1/3"
+                                className="basis-full md:basis-1/4"
                                 value={kabupaten}
                                 onChange={changeState}
                                 name="address.kabupaten"
@@ -251,25 +272,36 @@ export const NewRecipientForm:FC<TRecipientForm> = ({ show, hideForm, submit, or
                                 errorMessage="Kabupaten masih kosong"
                                 onBlur={checkOrg}
                             />
+                            <Input
+                                label="Propinsi"                        
+                                variant="bordered"
+                                size="sm"
+                                className="basis-full md:basis-1/4"
+                                value={propinsi}
+                                onChange={changeState}
+                                name="address.propinsi"
+                                isRequired
+                                isInvalid={submitPressed && propinsi === ""}
+                                errorMessage="Propinsi masih kosong"
+                                onBlur={checkOrg}
+                            />
                         </div>
                     </div>
                     <Divider />                                        
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" onPress={()=>{
+                            setSubmitPressed(true)
                             if(!orgExist.checked){
                                 checkOrg()
-                            }
-                            if(!requiredFilled){
-                                setSubmitPressed(true)
                             }
                             else{                                
                                 submit(recipient as CharityOrgRecipient)
                             }                        
                         }}
                         isDisabled={
-                            (orgExist.exist || !orgExist.checked) || 
-                                fetchState === "checking org"}
+                            !requiredFilled || orgExist.exist || fetchState === "checking org"
+                        }
                     >
                         Tambahkan
                     </Button>

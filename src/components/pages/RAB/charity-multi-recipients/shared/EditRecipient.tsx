@@ -83,7 +83,7 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
     const { birthplace } = birthdata    
     
     const { nik, noKk } = ids
-    const { street, rtRw, kelurahan, kecamatan, kabupaten, postCode } = address
+    const { street, rtRw, kelurahan, kecamatan, kabupaten, propinsi, postCode } = address
     const { value } = contact[0]
     
     const changeState = (e:ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +108,7 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
     const rw = rtNRw === ""?"":rtNRw[1]
 
     const requiredFilled = (name !== "" && nik !== "" && noKk !== "" && street !== "" && rt !== "" && rw !== "" && kelurahan !== ""
-        && kecamatan !== "" && kabupaten !== ""
+        && kecamatan !== "" && kabupaten !== "" && propinsi !== ""
     )
     
     const birthdate = birthday !== null?
@@ -287,7 +287,7 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
                                 label="Kelurahan"                        
                                 variant="bordered"
                                 size="sm"
-                                className="basis-full md:basis-1/3"
+                                className="basis-full md:basis-1/4"
                                 value={kelurahan}                                
                                 onChange={changeState}
                                 name="address.kelurahan"
@@ -299,7 +299,7 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
                                 label="Kecamatan"                        
                                 variant="bordered"
                                 size="sm"
-                                className="basis-full md:basis-1/3"
+                                className="basis-full md:basis-1/4"
                                 value={kecamatan}
                                 onChange={changeState}
                                 name="address.kecamatan"
@@ -311,13 +311,25 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
                                 label="Kabupaten"                        
                                 variant="bordered"
                                 size="sm"
-                                className="basis-full md:basis-1/3"
+                                className="basis-full md:basis-1/4"
                                 value={kabupaten}
                                 onChange={changeState}
                                 name="address.kabupaten"
                                 isRequired
                                 isInvalid={submitPressed && kabupaten === ""}
                                 errorMessage="Kabupaten masih kosong"
+                            />
+                            <Input
+                                label="Propinsi"                        
+                                variant="bordered"
+                                size="sm"
+                                className="basis-full md:basis-1/4"
+                                value={propinsi}
+                                onChange={changeState}
+                                name="address.propinsi"
+                                isRequired
+                                isInvalid={submitPressed && propinsi === ""}
+                                errorMessage="Propinsi masih kosong"
                             />
                         </div>
                     </div>
