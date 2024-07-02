@@ -30,10 +30,11 @@ export type TItemForm = {
     submit: (newItem:OrderedItem)=>void;
     /*
         newItems are items without _id from the calling components
-        in other words : items that are not being listed yet.        
+        in other words : items that are not being listed yet.                
     */
     newItems: OrderedItem[];
     RABType: RABTypes;
+    fetchState?: string;
 }
 
 type tItemType = "new" | "existing"
@@ -41,7 +42,17 @@ type tItemType = "new" | "existing"
 export const EditItem:FC<TItemForm> = (props) => {    
     
     const [ itemType, setItemType ] = useState<tItemType>("existing")
-    const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();         
+    const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+    
+    const { recipientItems:{itemIdx, items} } = props
+    const editedNewItem = itemIdx > -1?items[itemIdx]:null
+
+    useEffect(()=>{
+        if(editedNewItem!==null){
+            const itemType = ("_id" in editedNewItem)?"existing":"new"
+            setItemType(itemType)
+        }
+    }, [editedNewItem])
     
     return (
         <Modal 

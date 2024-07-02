@@ -85,7 +85,9 @@ export interface IRABCharityOrg {
 }
 
 export type RABTypes = "charity-multi-recipients" | "charity-org" | "enterpreneur-charity"
-
+export type RABTypesInItemForm = "charity-multi-recipients" | "charity-org" | 
+    "charity-org-new" | "enterpreneur-charity"
+    
 export interface IOperator {
     _id?: string;
     name: string;

@@ -88,7 +88,8 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
             newItems.push(d)
         }
     })
-        
+    
+    console.log(editRecipientItem !== null?editRecipientItem.items:null)
     return (
         <>               
         <Modal 
@@ -312,7 +313,7 @@ export const AddExistingRecipients:FC<TRecipientForm> = ({show, hideForm, submit
                         {
                             recipientName: editRecipientItem.name,
                             items: editRecipientItem.items,
-                            itemIdx: 0
+                            itemIdx: editRecipientItem.items.length>0?0:-1
                         }
                     }
                     show={editRecipientItem !== null}

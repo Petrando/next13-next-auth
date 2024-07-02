@@ -49,7 +49,7 @@ export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, 
     } = processRecipients(recipients)
 
     const renderElement = recipients.length > 0?recipients.concat(emptyPerson):[]
-    
+        
     return (
         <>
         <Tabs 
@@ -281,7 +281,13 @@ export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, 
                         {
                             recipientName: editRecipientItem.name,
                             items: editRecipientItem.items,
-                            itemIdx: 0
+                            itemIdx: editRecipientItem.items.length> 0?0:-1
+                            /*
+                                in multi recipient form every recipient only has one item.
+                                If editRecipientItem - which type is PersonRecipientWItems - items property
+                                length is 0, then it is add new item operation.
+                                If not, it is edit new item operation
+                            */
                         }
                     }
                     show={editRecipientItem !== null}

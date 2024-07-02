@@ -2,12 +2,14 @@ import { FC, useState, useEffect } from "react"
 import { Button, Checkbox, Divider, Input, ModalBody, ModalFooter, 
     Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react"
 import { categories as availCategories } from "@/variables-and-constants"
-import { TItemForm } from "."
-import { OrderedItem, category, subCategory, option, Item } from "@/types"
-import { emptyOrderedItem } from "@/variables-and-constants"
 import _ from "lodash"
 import CurrencyFormat from "react-currency-format"
+import { TItemForm } from "."
 import { NewItemCategory } from "./NewItemCategory"
+import { isSameItem } from "@/lib/functions"
+import { emptyOrderedItem } from "@/variables-and-constants"
+import { OrderedItem, category, subCategory, option, Item } from "@/types"
+
 
 /*
     NewItemForm called when add/edit item without _id filed, 
@@ -29,12 +31,19 @@ export const NewItemForm:FC<INewItemForm> = ({recipientItems:{ items, itemIdx },
     const editedNewItem = itemIdx > -1?items[itemIdx]:null    
 
     useEffect(()=>{
-        if(editedNewItem !== null){
+        if(editedNewItem !== null && !("_id" in editedNewItem)){
             setNewItem(_.cloneDeep(editedNewItem))
         }
     }, [editedNewItem])
 
     const { name, productName, category, subCategory, subSubCategory, unit, amount, price } = newItem
+
+    const itemDataCompleted = (item:OrderedItem) => {
+        const { name, productName, category, subCategory, subSubCategory, unit, amount, price } = item
+
+        return name !== "" && productName !== "" && category !== "" && subCategory !== ""
+            && unit !== "" && amount > 0 && price > 0
+    }
 
     const categories = RABType === "charity-multi-recipients"?
         [availCategories[0]]:
@@ -56,6 +65,19 @@ export const NewItemForm:FC<INewItemForm> = ({recipientItems:{ items, itemIdx },
         return null
     }
 
+    /*
+        newItems from props needs to be filtered so the recipientItems.items is not included in it
+    */
+    const filteredNewItems = newItems.reduce((acc:OrderedItem[], curr: OrderedItem)=>{
+        const isIncluded = items.every((dI:OrderedItem)=>{            
+            return isSameItem(dI, curr)?true:false
+        })
+
+        if(!isIncluded){
+            acc.push(curr)
+        }
+        return acc
+    }, [])
     return <>
         <ModalBody>
             <div className="w-full">                    
@@ -108,7 +130,7 @@ export const NewItemForm:FC<INewItemForm> = ({recipientItems:{ items, itemIdx },
                         }}    
                     />                                        
                     <Input                        
-                        label="Harga per unit"
+                        label={`Harga per ${unit === ""?"unit":unit}`}
                         variant="bordered"
                         size="sm"
                         className="basis-2/5 md:basis-3/12" 
@@ -151,7 +173,7 @@ export const NewItemForm:FC<INewItemForm> = ({recipientItems:{ items, itemIdx },
                     }}
                 />                                                    
                 {
-                    newItems.length > 0 && 
+                    filteredNewItems.length > 0 && 
                         <>
                         <Divider />
                         <Table aria-label="Pilihan Bantuan" className=" mt-2"
@@ -175,7 +197,7 @@ export const NewItemForm:FC<INewItemForm> = ({recipientItems:{ items, itemIdx },
                                 </TableColumn>                            
                             </TableHeader>                
                             <TableBody>
-                                {newItems
+                                {filteredNewItems
                                     .map((d:Item, i:number)=>{
                                         const selected = newItemIdx === i
                                         return (

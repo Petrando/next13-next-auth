@@ -13,7 +13,7 @@ interface ISavedItemForm extends TItemForm {
 }
 
 export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientName, items, itemIdx }, 
-    show, hideForm, submit, RABType, showForm }) => {
+    show, hideForm, submit, RABType, showForm, fetchState: parentFetchState = "" }) => {
     const [ itemSelection, setSelection] = useState<Item[]>([])
     const [ selectedItemId, setSelectedId] = useState("")    
     const [ selectedAmount, setSelectedAmount ]  = useState(1)
@@ -22,15 +22,28 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
 
     const [fetchState, setFetchState] = useState("loading")
 
-    console.log(items)
+    const editedItem = itemIdx > -1?items[itemIdx]:null 
+
+    useEffect(()=>{
+        if(editedItem !== null && "_id" in editedItem){
+            setSelectedId(editedItem._id?editedItem._id:"")
+            setSelectedAmount(editedItem.amount)
+            setPrice(editedItem.price)
+        }
+    }, [editedItem])
+        
+    console.log('saved item form')
     const getItems = async () => {
         type tNameProd = {name:string, productName: string}
         const savedItems = items.filter((d:OrderedItem) => "_id" in d)
+            .filter((d:OrderedItem) => editedItem === null?true:editedItem._id !== d._id)            
             .map((d:OrderedItem) => ({name:d.name, productName:d.productName})) as tNameProd[]
 
         const nameFilter = (Array.isArray(savedItems) && savedItems.length > 0)?
-            {$nor:savedItems}:{}
+                {$nor:savedItems}:{}
+
         console.log(nameFilter)
+        
         const categoryFilter = RABType === "charity-multi-recipients"?
             {
                 category: "Kesehatan"
@@ -47,7 +60,7 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
         const filter = {
             ...categoryFilter, ...nameFilter
         }
-        console.log(filter)
+        
         const projection = {}
         const limit = 10
         const offset = 0
@@ -80,11 +93,17 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
 
     const { name, productName, category, subCategory, subSubCategory, unit, price } = selectedItem?selectedItem:emptyOrderedItem
 
+    const editedItemId = (editedItem !== null && "_id" in editedItem)?editedItem._id:""
+
     useEffect(()=>{
-        if(selectedItem){
+        /*
+            At every selectedId change, price will only be based on selected item if
+            the selected item is not the one that is currently being edited
+        */
+        if(selectedItem && selectedItemId !== editedItemId){            
             setPrice(price)
         }    
-    }, [selectedItem])    
+    }, [selectedItem, editedItemId])    
 
     const categories = RABType === "charity-multi-recipients"?
         [availCategories[0]]:
@@ -152,7 +171,7 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
                     />                                        
                     <Input
                         isDisabled={fetchState!=="complete"}
-                        label="Harga per unit"
+                        label={`Harga per ${unit === ""?"unit":unit}`}
                         variant="bordered"
                         size="sm"
                         className="basis-2/5 md:basis-3/12" 
@@ -233,8 +252,7 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
                     if(selectedItem){
                         const item = {...selectedItem, price: itemPrice, amount: selectedAmount}
                         submit(item);
-                    }
-                    
+                    }                    
                 }}
             >
                 Tambahkan

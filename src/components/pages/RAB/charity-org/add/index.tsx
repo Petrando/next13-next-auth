@@ -301,7 +301,7 @@ export const AddRAB = () => {
                     recipientItems={
                         {
                             recipientName: recipient.name,
-                            items: isChangingItem === -1?[]:items,
+                            items,
                             itemIdx: isChangingItem
                         }
                     }

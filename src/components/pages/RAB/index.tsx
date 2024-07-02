@@ -69,7 +69,6 @@ export const RABList = () => {
                         <DropdownTrigger>
                             <Button 
                                 color="primary"
-                                variant="bordered"
                                 className="capitalize"
                             >
                                 Tambah RAB
