@@ -225,7 +225,7 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
                                             onValueChange={(e)=>{setSelectedId(d._id?d._id:"")}}
                                         />
                                     </TableCell>
-                                    <TableCell>{d.name}</TableCell>
+                                    <TableCell>{d.name}{' '}{d.productName}</TableCell>
                                     <TableCell>
                                         <CurrencyFormat value={d.price} prefix="Rp. " 
                                             thousandSeparator=","
