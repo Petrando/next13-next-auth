@@ -4,7 +4,6 @@ import { ModalBody, Divider, Table, TableRow, TableCell, TableHeader, TableColum
     Skeleton, Checkbox, Input, ModalFooter, Button } from "@nextui-org/react";
 import _ from "lodash";
 import { CategoryFilter } from "./CategoryFilter";
-import { NewItemCategory } from "./NewItemCategory";
 import { TItemForm } from "."
 import { categories as availCategories, emptyOrderedItem } from "@/variables-and-constants";
 import { Item, OrderedItem, category, subCategory, option } from "@/types";
@@ -23,6 +22,7 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
 
     const [fetchState, setFetchState] = useState("loading")
 
+    console.log(items)
     const getItems = async () => {
         type tNameProd = {name:string, productName: string}
         const savedItems = items.filter((d:OrderedItem) => "_id" in d)
@@ -30,6 +30,7 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
 
         const nameFilter = (Array.isArray(savedItems) && savedItems.length > 0)?
             {$nor:savedItems}:{}
+        console.log(nameFilter)
         const categoryFilter = RABType === "charity-multi-recipients"?
             {
                 category: "Kesehatan"
@@ -46,6 +47,7 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
         const filter = {
             ...categoryFilter, ...nameFilter
         }
+        console.log(filter)
         const projection = {}
         const limit = 10
         const offset = 0
@@ -77,6 +79,12 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
     const selectedItem = itemSelection.find((d:Item) => d._id === selectedItemId)
 
     const { name, productName, category, subCategory, subSubCategory, unit, price } = selectedItem?selectedItem:emptyOrderedItem
+
+    useEffect(()=>{
+        if(selectedItem){
+            setPrice(price)
+        }    
+    }, [selectedItem])    
 
     const categories = RABType === "charity-multi-recipients"?
         [availCategories[0]]:
@@ -222,8 +230,11 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
             <Button color={`primary`} size="sm"
                 isDisabled={!canSubmit}
                 onPress={()=>{
-                    //currentItem.price = itemPrice
-                    //submit(currentItem);
+                    if(selectedItem){
+                        const item = {...selectedItem, price: itemPrice, amount: selectedAmount}
+                        submit(item);
+                    }
+                    
                 }}
             >
                 Tambahkan

@@ -8,7 +8,7 @@ import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell
             CalendarDate
  } from "@nextui-org/react"
 import _ from 'lodash';
-import { EditItem as NewItemForm } from '../../shared/AddEditItem';
+import { EditItem } from '../../shared/AddEditItem';
 import { UpdateItemForm } from './UpdateItemDialog';
 import { PrintBAST } from './PrintBASTDialog'; 
 import { ItemsTable } from '../../shared/ItemsTable';
@@ -274,16 +274,16 @@ export const RABDetail = () => {
             </Table>
             {
                 isChangingItem === -1 &&
-                <NewItemForm
+                <EditItem
                     recipientItems={{
                         recipientName: recipient.name,
-                        items: isChangingItem === -1?[]:items,
+                        items: items,
                         itemIdx: -1
                     }}
                     show={isChangingItem === -1}
                     hideForm={()=>{setIsChangingItem(null)}}
                     submit={addNewItem}
-                    newItems={items}
+                    newItems={[]}
                     RABType='charity-org'
                 />
             }

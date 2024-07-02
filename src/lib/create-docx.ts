@@ -1343,8 +1343,13 @@ export const createBASTDocs = (
                         heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER
                     }),
                     new Paragraph({children:[
-                        new TextRun({ text:"NIP."  + (noFieldOperator?"":fieldOperatorNip)})], 
-                        heading: HeadingLevel.HEADING_6, alignment: AlignmentType.CENTER})
+                        new TextRun({ text:`NIP. ${noFieldOperator?"":fieldOperatorNip}`})], 
+                        heading: HeadingLevel.HEADING_6, 
+                        alignment: AlignmentType.CENTER,
+                        /*indent:{
+                            right:noFieldOperator?2000:0
+                        }*/
+                    })
                 ],
             },
         ],
@@ -1353,6 +1358,7 @@ export const createBASTDocs = (
     const attachmentDoc = recType === "person"?
         createAttachment1(date, bastNo, recipient as PersonRecipientWItems, receptor):
             createAttachment2(date, bastNo, recipient as IRABCharityOrg, items, receptor)
+
     return {
         BASTdoc, attachmentDoc
     }
