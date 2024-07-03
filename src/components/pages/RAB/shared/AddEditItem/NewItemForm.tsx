@@ -293,8 +293,7 @@ const NewItemCharityOrg:FC<INewItemForm> = ({recipientItems:{ items, itemIdx }, 
 
     const existingItems = items.filter((d:OrderedItem, i: number) => i !== itemIdx)
     const itemListed = existingItems.find((d:OrderedItem) => isSameItem(d, newItem)) === undefined?
-        false:true    
-    console.log(itemListed)
+        false:true        
 
     return <>
         <ModalBody>
