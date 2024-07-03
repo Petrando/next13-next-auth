@@ -31,8 +31,7 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
             setPrice(editedItem.price)
         }
     }, [editedItem])
-        
-    console.log('saved item form')
+            
     const getItems = async () => {
         type tNameProd = {name:string, productName: string}
         const savedItems = items.filter((d:OrderedItem) => "_id" in d)
@@ -40,9 +39,7 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
             .map((d:OrderedItem) => ({name:d.name, productName:d.productName})) as tNameProd[]
 
         const nameFilter = (Array.isArray(savedItems) && savedItems.length > 0)?
-                {$nor:savedItems}:{}
-
-        console.log(nameFilter)
+                {$nor:savedItems}:{}        
         
         const categoryFilter = RABType === "charity-multi-recipients"?
             {
@@ -247,7 +244,7 @@ export const SavedItemForm:FC<ISavedItemForm> = ({ recipientItems:{ recipientNam
         </ModalBody>
         <ModalFooter>
             <Button color={`primary`} size="sm"
-                isDisabled={!canSubmit}
+                isDisabled={!canSubmit || fetchState === "loading" || parentFetchState !== ""}
                 onPress={()=>{
                     if(selectedItem){
                         const item = {...selectedItem, price: itemPrice, amount: selectedAmount}
