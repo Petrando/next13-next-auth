@@ -292,13 +292,8 @@ const NewItemCharityOrg:FC<INewItemForm> = ({recipientItems:{ items, itemIdx }, 
         && category !== "" && subCategory !== "" && amount > 0 && price > 0   
 
     const existingItems = items.filter((d:OrderedItem, i: number) => i !== itemIdx)
-    const itemListed = existingItems.every((d:OrderedItem) => {
-        if(isSameItem(newItem, d)){
-            return true
-        }
-        return false
-    })    
-
+    const itemListed = existingItems.find((d:OrderedItem) => isSameItem(d, newItem)) === undefined?
+        false:true    
     console.log(itemListed)
 
     return <>
