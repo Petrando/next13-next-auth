@@ -5,7 +5,7 @@ import clientPromise from "@/lib/mongodb";
 
 
 export async function POST(req:NextRequest) {
-    const { filter, projection, limit, offset, itemPerPage = 10 } = await req.json();    
+    const { filter, projection, limit, offset, itemPerPage = 10, logo = "KemensosLogo" } = await req.json();    
     const client = await clientPromise;
 
     const skip = offset * itemPerPage
@@ -18,7 +18,7 @@ export async function POST(req:NextRequest) {
                                    
         await session.commitTransaction()
 
-        const filePath = path.join(process.cwd(), 'public', 'images', 'BASTLogo.png');
+        const filePath = path.join(process.cwd(), 'public', 'images', logo);
         const fileBuffer = fs.readFileSync(filePath);
         const base64String = fileBuffer.toString('base64')        
         

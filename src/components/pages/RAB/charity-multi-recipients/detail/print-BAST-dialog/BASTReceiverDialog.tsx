@@ -6,11 +6,11 @@ import {
 import { saveAs } from "file-saver";
 import { Packer } from 'docx';
 import { PrintIcon } from "@/components/Icon";
+import { createReceiverBASTDocs } from "@/lib/create-docx/BAST/receiverBAST";
 import { createBASTDocs } from "@/lib/create-docx";
 import { displayIDR, createDateString, totalPrice } from "@/lib/functions";
 import { emptyOperator, defaultCentre } from "@/variables-and-constants";
 import { PersonRecipientWItems, IOperator, ICentre } from "@/types";
-
 
 export type TItemForm = {
     recipient: PersonRecipientWItems,
@@ -125,7 +125,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
             {(onClose) => (
                 <>
                 <ModalHeader className="flex justify-between items-center">
-                    <span>CETAK BAST UNTUK {recipient.name}</span>
+                    <span>BAST Penerima Untuk {recipient.name}</span>
                     <DatePicker label="Tanggal Pelaksanaan" className="max-w-[200px] md:max-w-[284px]" 
                         value={date} 
                         onChange={setDate}
@@ -284,7 +284,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                         onPress={()=>{
                             const decidingOperator = operators.find((dOp:IOperator) => dOp.NIP === decidingOperatorNip)
                             const fieldOperator = operators.find((dOp:IOperator) => dOp.NIP === fieldOperatorNip)
-                            const { BASTdoc, attachmentDoc } = createBASTDocs(
+                            const { BASTdoc, attachmentDoc } = createReceiverBASTDocs(
                                 date,
                                 bastNo === ""?undefined:bastNo,
                                 recipient,
@@ -295,7 +295,7 @@ export const PrintBAST:FC<TItemForm> = ({recipient, show, hideForm }) => {
                                 actingRecipient,
                                 picData
                             )
-
+                            
                             saveDocumentToFile(BASTdoc, `bast-${recipient.name}.docx`)
                             saveDocumentToFile(attachmentDoc, `lampiran-bast-${recipient.name}.docx`)                                                        
                         }}

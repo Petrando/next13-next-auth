@@ -13,7 +13,7 @@ import { displayIDR, createDateString, totalPrice } from "@/lib/functions";
 import { emptyOperator, defaultCentre } from "@/variables-and-constants";
 import { IRABCharityOrg, IOperator, ICentre } from "@/types";
 
-type TItemForm = {
+export type TItemForm = {
     rab: IRABCharityOrg,
     show: boolean;
     hideForm: ()=>void;        
@@ -112,6 +112,7 @@ export const PrintBAST:FC<TItemForm> = ({rab, show, hideForm }) => {
         }
         setCentre(updatedCentre)
     }
+    
     return (
         <Modal 
             isOpen={show} 
@@ -126,7 +127,7 @@ export const PrintBAST:FC<TItemForm> = ({rab, show, hideForm }) => {
             {(onClose) => (
                 <>
                 <ModalHeader className="flex justify-between items-center">
-                    <span>CETAK BAST UNTUK {recipient.name}</span>
+                    <span>BAST Penerima Untuk {recipient.name}</span>
                     <DatePicker label="Tanggal Pelaksanaan" className="max-w-[200px] md:max-w-[284px]" 
                         value={date} 
                         onChange={setDate}

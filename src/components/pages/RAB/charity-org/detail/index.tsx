@@ -9,7 +9,7 @@ import _ from 'lodash';
 import { EditItem } from '../../shared/AddEditItem';
 import { UpdateItemForm } from './UpdateItemDialog';
 import { SelectBAST } from '../../shared/SelectBASTButton';
-import { PrintBAST } from './PrintBASTDialog';
+import { PrintBAST as ReceiverBAST } from './print-BAST-dialog/BASTReceiverDialog';
 import { TotalCard } from '../../shared/TotalCard';
 import { DeleteIcon, EditIcon, PlusIcon, PrintIcon } from '@/components/Icon';
 import { createDateString } from '@/lib/functions';
@@ -298,7 +298,7 @@ export const RABDetail = () => {
             }
             {
                 printBast === "Penerima" &&
-                <PrintBAST 
+                <ReceiverBAST 
                     show={printBast === "Penerima"}
                     hideForm={()=>{setPrintBast("")}}
                     rab={RAB}

@@ -14,7 +14,7 @@ import { TotalRow } from '../../shared/TotalTableRow';
 import { TotalCard } from '../../shared/TotalCard';
 import { PrintIcon } from '@/components/Icon';
 import { SelectBAST } from '../../shared/SelectBASTButton';
-import { PrintBAST } from './PrintBASTDialog';
+import { PrintBAST as PrintReceiverBAST } from './print-BAST-dialog/BASTReceiverDialog';
 import { createDateString } from '@/lib/functions';
 import { emptyRAB, emptyPerson } from '@/variables-and-constants';
 import { IRABMultiPerson, PersonRecipientWItems, OrderedItem } from '@/types';
@@ -212,7 +212,7 @@ export const RABDetail = () => {
             </div>
             {
                 nik !== "" && type === "Penerima" &&
-                <PrintBAST recipient={data} show={nik!==""}
+                <PrintReceiverBAST recipient={data} show={nik!==""}
                     hideForm={()=>{setPrintingRecipient({data: emptyPerson, type: ""})}} />
              }
         </div>
