@@ -13,6 +13,7 @@ import { TableContact } from '../../shared/TableContact';
 import { TotalRow } from '../../shared/TotalTableRow';
 import { TotalCard } from '../../shared/TotalCard';
 import { PrintIcon } from '@/components/Icon';
+import { SelectBAST } from '../../shared/SelectBASTButton';
 import { PrintBAST } from './PrintBASTDialog';
 import { createDateString } from '@/lib/functions';
 import { emptyRAB, emptyPerson } from '@/variables-and-constants';
@@ -24,7 +25,7 @@ export const RABDetail = () => {
     const [RAB, setRAB] = useState<IRABMultiPerson>(emptyRAB)
     const [fetchState, setFetchState] = useState("loading")
 
-    const [ printingRecipient, setPrintingRecipient ] = useState(emptyPerson)
+    const [ printingRecipient, setPrintingRecipient ] = useState({data: emptyPerson, type: ""})
 
     const searchParams = useSearchParams()
     const rabId = searchParams.get("_id")
@@ -76,7 +77,8 @@ export const RABDetail = () => {
     const niks = recipients.map((d:PersonRecipientWItems) => d.ids.nik)
     const renderElement = recipients.length > 0?recipients.concat(emptyPerson):[]    
     
-    const { ids:{nik} } = printingRecipient
+    const { data, type } = printingRecipient
+    const { ids:{nik} } = data
     return (
         <div className="flex flex-col w-screen px-1 md:px-2">            
             <div className="px-0 py-2 flex items-center flex-wrap">
@@ -176,13 +178,10 @@ export const RABDetail = () => {
                                                 <TableItem item={d.items[0]} isDisabled={true} />                                        
                                             </TableCell>
                                             <TableCell>
-                                                <Button size='sm' color='primary' startContent={<PrintIcon className='size-4' />}
-                                                    onPress={()=>{
-                                                        setPrintingRecipient(d)
-                                                    }}
-                                                >
-                                                    BAST 
-                                                </Button>                                        
+                                                <SelectBAST
+                                                    selectReceive={()=>{setPrintingRecipient({data:d, type:"Penerima"})}}
+                                                    selectDeliver={()=>{setPrintingRecipient({data:d, type:"Pekerjaan"})}}
+                                                />                                       
                                             </TableCell>                                    
                                         </TableRow>
                                     )
@@ -212,9 +211,9 @@ export const RABDetail = () => {
                 </Link>
             </div>
             {
-                nik !== "" &&
-                <PrintBAST recipient={printingRecipient} show={nik!==""}
-                    hideForm={()=>{setPrintingRecipient(emptyPerson)}} />
+                nik !== "" && type === "Penerima" &&
+                <PrintBAST recipient={data} show={nik!==""}
+                    hideForm={()=>{setPrintingRecipient({data: emptyPerson, type: ""})}} />
              }
         </div>
     )

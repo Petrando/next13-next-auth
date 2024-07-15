@@ -12,7 +12,7 @@ import { emptyOperator, defaultCentre } from "@/variables-and-constants";
 import { PersonRecipientWItems, IOperator, ICentre } from "@/types";
 
 
-type TItemForm = {
+export type TItemForm = {
     recipient: PersonRecipientWItems,
     show: boolean;
     hideForm: ()=>void;        

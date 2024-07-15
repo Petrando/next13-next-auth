@@ -3,18 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,    
-        DatePicker, Input,  Skeleton, Tabs, Tab,
-            Link,
-            CalendarDate
+        DatePicker, Input
  } from "@nextui-org/react"
 import _ from 'lodash';
 import { EditItem } from '../../shared/AddEditItem';
 import { UpdateItemForm } from './UpdateItemDialog';
-import { PrintBAST } from './PrintBASTDialog'; 
-import { ItemsTable } from '../../shared/ItemsTable';
-import { TableItem } from '../../shared/TableItemCard';
-import { TableContact } from '../../shared/TableContact';
-import { TotalRow } from '../../shared/TotalTableRow';
+import { SelectBAST } from '../../shared/SelectBASTButton';
+import { PrintBAST } from './PrintBASTDialog';
 import { TotalCard } from '../../shared/TotalCard';
 import { DeleteIcon, EditIcon, PlusIcon, PrintIcon } from '@/components/Icon';
 import { createDateString } from '@/lib/functions';
@@ -28,16 +23,14 @@ export const RABDetail = () => {
 
     const [RAB, setRAB] = useState<IRABCharityOrg>(emptyRABCharityOrg)
     const { title, date, recipient, items } = RAB
-    const [ printBast, setPrintBast ] = useState(false)
-    const [fetchState, setFetchState] = useState("loading")
+    const [ printBast, setPrintBast ] = useState("")
+    const [ fetchState, setFetchState ] = useState("loading")
     /*
         if isChanging item is -1, adding new item
         if greater than -1, is editing new item index
         if it contains a string, it will be the item id to delete 
     */
-    const [ isChangingItem, setIsChangingItem ] = useState<null | number | string>(null)
-
-    //const [ printingRecipient, setPrintingRecipient ] = useState(emptyPerson)
+    const [ isChangingItem, setIsChangingItem ] = useState<null | number | string>(null)    
 
     const searchParams = useSearchParams()
     const rabId = searchParams.get("_id")
@@ -191,15 +184,11 @@ export const RABDetail = () => {
                         >
                             Barang
                         </Button>
-                        <Button color="primary" 
-                            size="sm"
-                            className='ml-1'
-                            onPress={()=>{setPrintBast(true)}}
-                            startContent={<PrintIcon className="size-4"/>}
-                            isDisabled={fetchState === "loading"}                                        
-                        >
-                            BAST
-                        </Button>
+                        <SelectBAST
+                            selectReceive={()=>{setPrintBast("Penerima")}}
+                            selectDeliver={()=>{setPrintBast("Pekerjaan")}}
+                        />                                       
+                                            
                     </div>
                 }
             >
@@ -308,10 +297,10 @@ export const RABDetail = () => {
                 />
             }
             {
-                printBast &&
+                printBast === "Penerima" &&
                 <PrintBAST 
-                    show={printBast}
-                    hideForm={()=>{setPrintBast(false)}}
+                    show={printBast === "Penerima"}
+                    hideForm={()=>{setPrintBast("")}}
                     rab={RAB}
                 />
             }
