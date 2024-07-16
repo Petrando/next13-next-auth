@@ -8,7 +8,7 @@ import {
 import { saveAs } from "file-saver";
 import { Packer } from 'docx';
 import { PrintIcon } from "@/components/Icon";
-import { createBASTDocs } from "@/lib/create-docx";
+import { createReceiverBASTDocs } from "@/lib/create-docx/BAST/receiverBAST";
 import { displayIDR, createDateString, totalPrice } from "@/lib/functions";
 import { emptyOperator, defaultCentre } from "@/variables-and-constants";
 import { IRABCharityOrg, IOperator, ICentre } from "@/types";
@@ -43,7 +43,7 @@ export const PrintBAST:FC<TItemForm> = ({rab, show, hideForm }) => {
         try{
             const response = await fetch('/api/RAB/print-data', {
                 method: 'POST',
-                body: JSON.stringify({ filter, projection, limit, offset }),
+                body: JSON.stringify({ filter, projection, limit, offset, logo: "KemensosLogo.png" }),
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -286,7 +286,7 @@ export const PrintBAST:FC<TItemForm> = ({rab, show, hideForm }) => {
                         onPress={()=>{
                             const decidingOperator = operators.find((dOp:IOperator) => dOp.NIP === decidingOperatorNip)
                             const fieldOperator = operators.find((dOp:IOperator) => dOp.NIP === fieldOperatorNip)
-                            const { BASTdoc, attachmentDoc } = createBASTDocs(
+                            const { BASTdoc, attachmentDoc } = createReceiverBASTDocs(
                                 date,
                                 bastNo === ""?undefined:bastNo,
                                 rab,

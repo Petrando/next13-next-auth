@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { PersonRecipientWItems, CharityOrgRecipient, Item, OrderedItem, IRABMultiPerson, 
-    IRABCharityOrg, IOperator, ICentre, Address, category, filterCategory } from "@/types";
+    IRABCharityOrg, IOperator, ICentre, IVendor, Address, category, filterCategory } from "@/types";
 
 export const cloner = (obj:any) => {
     return JSON.parse(JSON.stringify(obj))
@@ -87,7 +87,29 @@ export const defaultCentre:ICentre = _.cloneDeep({
         kabupaten: "Jakarta Timur",
         propinsi: "",
         postCode: "13760"
+    },
+    email: "", phone: ""
+})
+
+export const defaultVendorCentre:IVendor = _.cloneDeep({
+    name:"PT. Mendengar Mandiri Nusantara", 
+    address :{
+        street: "AD PREMIER LANTAI 17 SUITE 04 B, JL. TB. SIMATUPANG NO.5",
+        rtRw: "",
+        kelurahan: "Ragunan",
+        kecamatan: "Pasar Minggu",
+        kabupaten: "Kota Adm. Jakarta Selatan",
+        propinsi: "DKI Jakarta",
+        postCode: "12550"
+    },
+    email: "m2nusantara23@gmail.com",
+    phone: "081255525238",
+    owner: {
+        name: "Nurul Aini",
+        NIP: "",
+        rank: "Direktur"
     }
+
 })
 
 export const emptyCategory:category = _.cloneDeep({
@@ -101,6 +123,7 @@ export const emptyCategory:category = _.cloneDeep({
         }
     ]
 })
+
 
 export const categories:filterCategory[] = [
     {

@@ -15,6 +15,7 @@ import { TotalCard } from '../../shared/TotalCard';
 import { PrintIcon } from '@/components/Icon';
 import { SelectBAST } from '../../shared/SelectBASTButton';
 import { PrintBAST as PrintReceiverBAST } from './print-BAST-dialog/BASTReceiverDialog';
+import { PrintBAST as PrintGigBAST } from './print-BAST-dialog/BASTGigDialog';
 import { createDateString } from '@/lib/functions';
 import { emptyRAB, emptyPerson } from '@/variables-and-constants';
 import { IRABMultiPerson, PersonRecipientWItems, OrderedItem } from '@/types';
@@ -25,7 +26,8 @@ export const RABDetail = () => {
     const [RAB, setRAB] = useState<IRABMultiPerson>(emptyRAB)
     const [fetchState, setFetchState] = useState("loading")
 
-    const [ printingRecipient, setPrintingRecipient ] = useState({data: emptyPerson, type: ""})
+    const [ printingRecipient, setPrintingRecipient ] = useState(emptyPerson)
+    const [ printWorkingBast, setPrintWorkingBast ] = useState(false)
 
     const searchParams = useSearchParams()
     const rabId = searchParams.get("_id")
@@ -76,9 +78,9 @@ export const RABDetail = () => {
 
     const niks = recipients.map((d:PersonRecipientWItems) => d.ids.nik)
     const renderElement = recipients.length > 0?recipients.concat(emptyPerson):[]    
+        
+    const { ids:{nik} } = printingRecipient
     
-    const { data, type } = printingRecipient
-    const { ids:{nik} } = data
     return (
         <div className="flex flex-col w-screen px-1 md:px-2">            
             <div className="px-0 py-2 flex items-center flex-wrap">
@@ -93,6 +95,16 @@ export const RABDetail = () => {
                     <Input size="lg" variant="underlined" fullWidth label="Judul RAB" value={title} 
                         isReadOnly                        
                     />
+                </div>
+                <div className="w-fit p-1">
+                    <Button
+                        color="primary"
+                        onPress={()=>{setPrintWorkingBast(true)}}
+                        startContent={<PrintIcon />}
+                        disabled={fetchState === "loading"}
+                    >
+                        BAST Pekerjaan
+                    </Button>
                 </div>
             </div>
             <Tabs 
@@ -178,10 +190,13 @@ export const RABDetail = () => {
                                                 <TableItem item={d.items[0]} isDisabled={true} />                                        
                                             </TableCell>
                                             <TableCell>
-                                                <SelectBAST
-                                                    selectReceive={()=>{setPrintingRecipient({data:d, type:"Penerima"})}}
-                                                    selectDeliver={()=>{setPrintingRecipient({data:d, type:"Pekerjaan"})}}
-                                                />                                       
+                                                <Button
+                                                    color="primary" size="sm"
+                                                    startContent={<PrintIcon />}
+                                                    onPress={()=>{setPrintingRecipient(d)}}
+                                                >
+                                                    BAST    
+                                                </Button>                                       
                                             </TableCell>                                    
                                         </TableRow>
                                     )
@@ -211,10 +226,16 @@ export const RABDetail = () => {
                 </Link>
             </div>
             {
-                nik !== "" && type === "Penerima" &&
-                <PrintReceiverBAST recipient={data} show={nik!==""}
-                    hideForm={()=>{setPrintingRecipient({data: emptyPerson, type: ""})}} />
-             }
+                nik !== "" &&
+                <PrintReceiverBAST 
+                    recipient={printingRecipient} show={nik!==""} hideForm={()=>{setPrintingRecipient(emptyPerson)}} />
+            }
+            {
+                printWorkingBast &&
+                <PrintGigBAST
+                    items={items} show={printWorkingBast} hideForm={()=>{setPrintWorkingBast(false)}}
+                />
+            }
         </div>
     )
 }

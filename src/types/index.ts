@@ -98,6 +98,12 @@ export interface IOperator {
 export interface ICentre  {
     name: string;
     address: Address;
+    email: string;
+    phone: string;
+}
+
+export interface IVendor extends ICentre {
+    owner: IOperator;
 }
 
 /*

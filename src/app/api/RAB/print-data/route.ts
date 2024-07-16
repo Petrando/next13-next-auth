@@ -5,7 +5,7 @@ import clientPromise from "@/lib/mongodb";
 
 
 export async function POST(req:NextRequest) {
-    const { filter, projection, limit, offset, itemPerPage = 10, logo = "KemensosLogo" } = await req.json();    
+    const { filter, projection, limit, offset, itemPerPage = 10, logo = "KemensosLogo.png" } = await req.json();    
     const client = await clientPromise;
 
     const skip = offset * itemPerPage

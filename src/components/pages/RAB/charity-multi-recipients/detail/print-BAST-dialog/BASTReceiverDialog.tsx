@@ -7,7 +7,6 @@ import { saveAs } from "file-saver";
 import { Packer } from 'docx';
 import { PrintIcon } from "@/components/Icon";
 import { createReceiverBASTDocs } from "@/lib/create-docx/BAST/receiverBAST";
-import { createBASTDocs } from "@/lib/create-docx";
 import { displayIDR, createDateString, totalPrice } from "@/lib/functions";
 import { emptyOperator, defaultCentre } from "@/variables-and-constants";
 import { PersonRecipientWItems, IOperator, ICentre } from "@/types";
