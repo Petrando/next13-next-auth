@@ -358,7 +358,7 @@ export const createGigBASTDoc = (
         { label: "Sentra ‘’Mulya Jaya’’ Di Jakarta", width: 80 }
     )
     const line34 = tableAsContent(
-        { label: "Pelaksanaan Anggaran (DIPA) Tahun Anggaran", width: 15 },
+        { label: `Pelaksanaan Anggaran (DIPA) Tahun Anggaran ${year}`, width: 15 },
         { label: year.toString(), width: 80 }
     )
     const line35 = tableAsContent(
@@ -606,11 +606,14 @@ export const createGigBASTDoc = (
                                         children: [
                                             new Paragraph({
                                                 children:[
-                                                    new TextRun(`Kementrian Sosial RI Sentra "Mulya Jaya" di Jakarta`)
+                                                    new TextRun({
+                                                        text:`Kementrian Sosial RI Sentra "Mulya Jaya" di Jakarta`.toUpperCase(), 
+                                                        bold:true
+                                                    })
                                                 ],
                                                 heading: HeadingLevel.HEADING_6,
-                                            }),
-                                            
+                                                alignment: AlignmentType.CENTER
+                                            }),                                            
                                         ],                                        
                                     }),                                    
                                     new TableCell({                                        
@@ -621,9 +624,15 @@ export const createGigBASTDoc = (
                                         children: [
                                             new Paragraph({
                                                 children:[
-                                                    new TextRun("Berita Acara Serah Terima Pelaksanaan Pekerjaan")
+                                                    new TextRun(
+                                                        {
+                                                            text: "Berita Acara Serah Terima Pelaksanaan Pekerjaan".toUpperCase(),
+                                                            bold: true
+                                                        }
+                                                    )
                                                 ],
                                                 heading: HeadingLevel.HEADING_6,
+                                                alignment: AlignmentType.CENTER
                                             })
                                         ],
                                     }),
