@@ -1,5 +1,5 @@
-import { Document, Packer, Paragraph, TextRun, Table as TableDocx, TableBorders, TableCell as TableCellDocx, 
-    TableRow as TableRowDocx, ImageRun, Header, Footer, HeadingLevel, WidthType, 
+import { Document, Packer, Paragraph, TextRun, Table, TableBorders, TableCell, 
+    TableRow, ImageRun, Header, Footer, HeadingLevel, WidthType, 
     ShadingType,
     UnderlineType,
     AlignmentType,
@@ -12,34 +12,12 @@ import { Document, Packer, Paragraph, TextRun, Table as TableDocx, TableBorders,
     TextWrappingSide,
     VerticalPositionAlign,
     HorizontalPositionAlign} from "docx";
-import { displayIDR, totalPrice } from "../../functions";
-import { defaultOfficer, emptyOperator, 
-    weekDays, localizedDates, localizedMonths, localizedYears } from "@/variables-and-constants";
+import { displayIDR, totalPrice, localizeDate } from "../../functions";
+import { defaultOfficer, emptyOperator } from "@/variables-and-constants";
 import { PersonRecipientWItems, IRABCharityOrg,  IOperator, recipientTypes, ICentre, CharityOrgRecipient, OrderedItem } from "@/types";
 import { CalendarDate } from "@internationalized/date";
 
-const localizeDate = (date: CalendarDate) => {
-    type dayIndexes = 0 | 1 | 2 | 3 | 4| 5 | 6
-    type dateNums = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 
-        11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |
-            21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 
-                31
-    type monthIdxs = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
-    type yearNums = 2023 | 2024 | 2025 | 2026 | 2027 | 2028    
 
-    const currentDate = new Date(date.year + "-" + date.month + "-" + date.day)
-    const todate = currentDate.getDate() as dateNums
-    const dayNum = currentDate.getDay() as dayIndexes
-    const monthNum = currentDate.getMonth() + 1 as monthIdxs
-    const year = currentDate.getFullYear() as yearNums
-
-    const hari = weekDays[dayNum]
-    const tanggal = localizedDates[todate]
-    const bulan = localizedMonths[monthNum]
-    const tahun = localizedYears[year]
-
-    return { todate, hari, tanggal, bulan, tahun, year }
-}
 
 const createAttachment1 = (
     date: CalendarDate,
@@ -77,16 +55,16 @@ const createAttachment1 = (
                         alignment: AlignmentType.LEFT
                     }),
                     new Paragraph(""),                                 
-                    new TableDocx({
+                    new Table({
                         columnWidths: [4505, 4505],
                         rows: [
-                            new TableRowDocx({
+                            new TableRow({
                                 height:{
                                     value: 500,
                                     rule: "exact"
                                 },
                                 children: [
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 10,
                                             type: WidthType.PERCENTAGE,
@@ -104,7 +82,7 @@ const createAttachment1 = (
                                             })
                                         ],                                        
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 60,
                                             type: WidthType.PERCENTAGE,
@@ -122,7 +100,7 @@ const createAttachment1 = (
                                             })
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 15,
                                             type: WidthType.PERCENTAGE,
@@ -140,7 +118,7 @@ const createAttachment1 = (
                                             })
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 15,
                                             type: WidthType.PERCENTAGE,
@@ -160,13 +138,13 @@ const createAttachment1 = (
                                     })
                                 ],                                                
                             }),
-                            new TableRowDocx({
+                            new TableRow({
                                 height:{
                                     value: 500,
                                     rule: "exact"
                                 },
                                 children: [
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 10,
                                             type: WidthType.PERCENTAGE,
@@ -184,7 +162,7 @@ const createAttachment1 = (
                                             })
                                         ],                                        
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 60,
                                             type: WidthType.PERCENTAGE,
@@ -202,7 +180,7 @@ const createAttachment1 = (
                                             })
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 15,
                                             type: WidthType.PERCENTAGE,
@@ -220,7 +198,7 @@ const createAttachment1 = (
                                             })
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 15,
                                             type: WidthType.PERCENTAGE,
@@ -246,13 +224,13 @@ const createAttachment1 = (
                         }                        
                     }),
                     new Paragraph(""),
-                    new TableDocx({
+                    new Table({
                         columnWidths: [4505, 4505],
                         borders: TableBorders.NONE,
                         rows: [
-                            new TableRowDocx({                            
+                            new TableRow({                            
                                 children: [                                
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 70,
                                             type: WidthType.PERCENTAGE,
@@ -261,7 +239,7 @@ const createAttachment1 = (
                                         children: [
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 30,
                                             type: WidthType.PERCENTAGE,
@@ -277,12 +255,12 @@ const createAttachment1 = (
                                     
                                 ],                                                
                             }),
-                            new TableRowDocx({
-                                children: [new TableCellDocx({children:[]})]
+                            new TableRow({
+                                children: [new TableCell({children:[]})]
                             }),
-                            new TableRowDocx({                            
+                            new TableRow({                            
                                 children: [                                
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 70,
                                             type: WidthType.PERCENTAGE,
@@ -291,7 +269,7 @@ const createAttachment1 = (
                                         children: [
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 30,
                                             type: WidthType.PERCENTAGE,
@@ -307,18 +285,18 @@ const createAttachment1 = (
                                     
                                 ],                                                
                             }),
-                            new TableRowDocx({
-                                children: [new TableCellDocx({children:[]})]
+                            new TableRow({
+                                children: [new TableCell({children:[]})]
                             }),
-                            new TableRowDocx({
-                                children: [new TableCellDocx({children:[]})]
+                            new TableRow({
+                                children: [new TableCell({children:[]})]
                             }),
-                            new TableRowDocx({
-                                children: [new TableCellDocx({children:[]})]
+                            new TableRow({
+                                children: [new TableCell({children:[]})]
                             }),
-                            new TableRowDocx({                            
+                            new TableRow({                            
                                 children: [                                
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 70,
                                             type: WidthType.PERCENTAGE,
@@ -327,7 +305,7 @@ const createAttachment1 = (
                                         children: [
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 30,
                                             type: WidthType.PERCENTAGE,
@@ -368,13 +346,13 @@ const createAttachment2 = (
         
     const itemsRow = items.map((d:OrderedItem, i:number) => {
         return (
-            new TableRowDocx({
+            new TableRow({
                 height:{
                     value: 500,
                     rule: "exact"
                 },
                 children: [
-                    new TableCellDocx({
+                    new TableCell({
                         width: {
                             size: 10,
                             type: WidthType.PERCENTAGE,
@@ -392,7 +370,7 @@ const createAttachment2 = (
                             })
                         ],                                        
                     }),
-                    new TableCellDocx({
+                    new TableCell({
                         width: {
                             size: 30,
                             type: WidthType.PERCENTAGE,
@@ -410,7 +388,7 @@ const createAttachment2 = (
                             })
                         ],
                     }),
-                    new TableCellDocx({
+                    new TableCell({
                         width: {
                             size: 30,
                             type: WidthType.PERCENTAGE,
@@ -428,7 +406,7 @@ const createAttachment2 = (
                             })
                         ],
                     }),
-                    new TableCellDocx({
+                    new TableCell({
                         width: {
                             size: 15,
                             type: WidthType.PERCENTAGE,
@@ -446,7 +424,7 @@ const createAttachment2 = (
                             })
                         ],
                     }),
-                    new TableCellDocx({
+                    new TableCell({
                         width: {
                             size: 15,
                             type: WidthType.PERCENTAGE,
@@ -494,16 +472,16 @@ const createAttachment2 = (
                         alignment: AlignmentType.LEFT
                     }),
                     new Paragraph(""),                                 
-                    new TableDocx({
+                    new Table({
                         columnWidths: [4505, 4505],
                         rows: [
-                            new TableRowDocx({
+                            new TableRow({
                                 height:{
                                     value: 500,
                                     rule: "exact"
                                 },
                                 children: [
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 10,
                                             type: WidthType.PERCENTAGE,
@@ -521,7 +499,7 @@ const createAttachment2 = (
                                             })
                                         ],                                        
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 30,
                                             type: WidthType.PERCENTAGE,
@@ -539,7 +517,7 @@ const createAttachment2 = (
                                             })
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 30,
                                             type: WidthType.PERCENTAGE,
@@ -557,7 +535,7 @@ const createAttachment2 = (
                                             })
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 15,
                                             type: WidthType.PERCENTAGE,
@@ -575,7 +553,7 @@ const createAttachment2 = (
                                             })
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 15,
                                             type: WidthType.PERCENTAGE,
@@ -602,13 +580,13 @@ const createAttachment2 = (
                         }                        
                     }),
                     new Paragraph(""),
-                    new TableDocx({
+                    new Table({
                         columnWidths: [4505, 4505],
                         borders: TableBorders.NONE,
                         rows: [
-                            new TableRowDocx({                            
+                            new TableRow({                            
                                 children: [                                
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 70,
                                             type: WidthType.PERCENTAGE,
@@ -617,7 +595,7 @@ const createAttachment2 = (
                                         children: [
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 30,
                                             type: WidthType.PERCENTAGE,
@@ -633,12 +611,12 @@ const createAttachment2 = (
                                     
                                 ],                                                
                             }),
-                            new TableRowDocx({
-                                children: [new TableCellDocx({children:[]})]
+                            new TableRow({
+                                children: [new TableCell({children:[]})]
                             }),
-                            new TableRowDocx({                            
+                            new TableRow({                            
                                 children: [                                
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 70,
                                             type: WidthType.PERCENTAGE,
@@ -647,7 +625,7 @@ const createAttachment2 = (
                                         children: [
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 30,
                                             type: WidthType.PERCENTAGE,
@@ -663,18 +641,18 @@ const createAttachment2 = (
                                     
                                 ],                                                
                             }),
-                            new TableRowDocx({
-                                children: [new TableCellDocx({children:[]})]
+                            new TableRow({
+                                children: [new TableCell({children:[]})]
                             }),
-                            new TableRowDocx({
-                                children: [new TableCellDocx({children:[]})]
+                            new TableRow({
+                                children: [new TableCell({children:[]})]
                             }),
-                            new TableRowDocx({
-                                children: [new TableCellDocx({children:[]})]
+                            new TableRow({
+                                children: [new TableCell({children:[]})]
                             }),
-                            new TableRowDocx({                            
+                            new TableRow({                            
                                 children: [                                
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 70,
                                             type: WidthType.PERCENTAGE,
@@ -683,7 +661,7 @@ const createAttachment2 = (
                                         children: [
                                         ],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 30,
                                             type: WidthType.PERCENTAGE,
@@ -1022,13 +1000,13 @@ export const createReceiverBASTDocs = (
                     
                     }),
                     new Paragraph({text:"", heading: HeadingLevel.HEADING_6}),
-                    new TableDocx({
+                    new Table({
                         borders: TableBorders.NONE,
                         columnWidths: [4505, 4505],
                         rows: [
-                            new TableRowDocx({
+                            new TableRow({
                                 children: [
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 60,
                                             type: WidthType.PERCENTAGE,
@@ -1037,7 +1015,7 @@ export const createReceiverBASTDocs = (
                                             
                                         ],                                        
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,
@@ -1056,16 +1034,16 @@ export const createReceiverBASTDocs = (
                                     }),
                                 ],                                                
                             }),
-                            new TableRowDocx({
+                            new TableRow({
                                 children: [
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 60,
                                             type: WidthType.PERCENTAGE,
                                         },
                                         children: [],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,
@@ -1091,13 +1069,13 @@ export const createReceiverBASTDocs = (
                     }),                                        
                     new Paragraph({text:"", heading: HeadingLevel.HEADING_6}),
                     new Paragraph({text:"", heading: HeadingLevel.HEADING_6}),
-                    new TableDocx({
+                    new Table({
                         borders: TableBorders.NONE,
                         columnWidths: [4505, 4505],
                         rows: [
-                            new TableRowDocx({
+                            new TableRow({
                                 children: [
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,
@@ -1114,14 +1092,14 @@ export const createReceiverBASTDocs = (
                                             })
                                         ],                                        
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 20,
                                             type: WidthType.PERCENTAGE,
                                         },
                                         children: [],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,
@@ -1140,9 +1118,9 @@ export const createReceiverBASTDocs = (
                                     }),
                                 ],                                                
                             }),
-                            new TableRowDocx({
+                            new TableRow({
                                 children: [
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,
@@ -1159,14 +1137,14 @@ export const createReceiverBASTDocs = (
                                             })
                                         ],                                        
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 20,
                                             type: WidthType.PERCENTAGE,
                                         },
                                         children: [],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,
@@ -1185,23 +1163,23 @@ export const createReceiverBASTDocs = (
                                     }),
                                 ],                                                
                             }),
-                            new TableRowDocx({
+                            new TableRow({
                                 children: [
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,
                                         },
                                         children: [],                                        
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 20,
                                             type: WidthType.PERCENTAGE,
                                         },
                                         children: [],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,
@@ -1225,13 +1203,13 @@ export const createReceiverBASTDocs = (
                             size: 100, type: WidthType.PERCENTAGE
                         }                        
                     }),                
-                    new TableDocx({
+                    new Table({
                         borders: TableBorders.NONE,
                         columnWidths: [4505, 4505],
                         rows: [
-                            new TableRowDocx({
+                            new TableRow({
                                 children: [
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,
@@ -1248,14 +1226,14 @@ export const createReceiverBASTDocs = (
                                             })
                                         ],                                        
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 20,
                                             type: WidthType.PERCENTAGE,
                                         },
                                         children: [],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,
@@ -1277,23 +1255,23 @@ export const createReceiverBASTDocs = (
                                     }),
                                 ],                                                
                             }),
-                            new TableRowDocx({
+                            new TableRow({
                                 children: [
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,
                                         },
                                         children: [],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 20,
                                             type: WidthType.PERCENTAGE,
                                         },
                                         children: [],
                                     }),
-                                    new TableCellDocx({
+                                    new TableCell({
                                         width: {
                                             size: 40,
                                             type: WidthType.PERCENTAGE,

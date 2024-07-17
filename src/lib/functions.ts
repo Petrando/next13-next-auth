@@ -1,5 +1,33 @@
-import { parseDate } from "@internationalized/date";
+import { CalendarDate, parseDate } from "@internationalized/date";
 import { OrderedItem, Item, PersonRecipientWItems } from "@/types";
+import { weekDays, localizedDates, localizedMonths, localizedYears } from "@/variables-and-constants";
+
+export const localizeDate = (date: CalendarDate) => {
+    type dayIndexes = 0 | 1 | 2 | 3 | 4| 5 | 6
+    type dateNums = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 
+        11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |
+            21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 
+                31
+    type monthIdxs = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+    type yearNums = 2023 | 2024 | 2025 | 2026 | 2027 | 2028    
+
+    const currentDate = new Date(date.year + "-" + date.month + "-" + date.day)
+    const todate = currentDate.getDate() as dateNums
+    const dayNum = currentDate.getDay() as dayIndexes
+    const monthNum = currentDate.getMonth() + 1 as monthIdxs
+    const year = currentDate.getFullYear() as yearNums
+
+    const hari = weekDays[dayNum]
+    const tanggal = localizedDates[todate]
+    const bulan = localizedMonths[monthNum]
+    const tahun = localizedYears[year]
+
+    return { todate, hari, tanggal, bulan, tahun, year }
+}
+
+export function dateDiff(first: Date, second: Date) {        
+    return Math.round((second.getTime() - first.getTime()) / (1000 * 60 * 60 * 24));
+}
 
 export const createDateString = (date:Date = new Date()) => {    
     const year = date.getFullYear()
