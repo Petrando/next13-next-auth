@@ -10,6 +10,7 @@ import { EditItem } from '../../shared/AddEditItem';
 import { UpdateItemForm } from './UpdateItemDialog';
 import { SelectBAST } from '../../shared/SelectBASTButton';
 import { PrintBAST as ReceiverBAST } from './print-BAST-dialog/BASTReceiverDialog';
+import { PrintBAST as GigBAST } from '../../charity-multi-recipients/detail/print-BAST-dialog/BASTGigDialog';
 import { TotalCard } from '../../shared/TotalCard';
 import { DeleteIcon, EditIcon, PlusIcon, PrintIcon } from '@/components/Icon';
 import { createDateString } from '@/lib/functions';
@@ -302,6 +303,14 @@ export const RABDetail = () => {
                     show={printBast === "Penerima"}
                     hideForm={()=>{setPrintBast("")}}
                     rab={RAB}
+                />
+            }
+            {
+                printBast === "Pekerjaan" &&
+                <GigBAST 
+                    show={printBast === "Pekerjaan"}
+                    hideForm={()=>{setPrintBast("")}}
+                    items={items}
                 />
             }
         </div>

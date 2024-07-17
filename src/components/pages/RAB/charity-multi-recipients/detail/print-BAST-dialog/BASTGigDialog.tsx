@@ -8,8 +8,8 @@ import { Packer } from 'docx';
 import { PrintIcon } from "@/components/Icon";
 import { createGigBASTDoc } from "@/lib/create-docx/BAST/gigBAST";
 import { displayIDR, createDateString, totalPrice } from "@/lib/functions";
-import { emptyOperator, defaultCentre, defaultVendorCentre } from "@/variables-and-constants";
-import { PersonRecipientWItems, IOperator, ICentre, Item, OrderedItem, IVendor } from "@/types";
+import { defaultCentre, defaultVendorCentre } from "@/variables-and-constants";
+import { IOperator, ICentre, OrderedItem, IVendor } from "@/types";
 
 export type TItemForm = {
     items: OrderedItem[],

@@ -138,7 +138,6 @@ const tableAsListItem = (idx: number, contents: Table[]) => {
     )
 }
 
-
 const fifty2Table = (param1: tTableContentParam, param2: tTableContentParam) => {
     const { label, width = 50, bold = false } = param1
     const { label: label2, width: width2 = 50, bold: bold2 = false } = param2
@@ -332,7 +331,7 @@ export const createGigBASTDoc = (
         name: vendorName
     } = vendor
     const line21 = tableAsContent({ label: "Nama", width: 15 }, { label: ownerName, width: 80, bold: true }, 80)
-    const line22 = tableAsContent({ label: "Jabatan", width: 15 }, { label: `${rank} ${vendor.name}`, width: 80 }, 80)
+    const line22 = tableAsContent({ label: "Jabatan", width: 15 }, { label: `${ownerRank} ${vendor.name}`, width: 80 }, 80)
     const line23 = tableAsContent(
         { label: "Alamat", width: 15}, 
         { label: `${vendorStreet} desa/kelurahan ${vendorKelurahan}, kec. ${vendorKecamatan}, 
@@ -378,8 +377,8 @@ export const createGigBASTDoc = (
     const line42 = tableAsContent(
         { label: "Jangka Waktu", width: 15 },
         { label: `${dateDiff(
-            new Date(endDate.year + "-" + endDate.month + "-" + endDate.day),
-            new Date(startDate.year + "-" + startDate.month + "-" + startDate.day))} hari kerja`, width: 80 }
+            new Date(startDate.year + "-" + startDate.month + "-" + startDate.day),
+            new Date(endDate.year + "-" + endDate.month + "-" + endDate.day))} hari kerja`, width: 80 }
     )
     const line43 = tableAsContent(
         { label: "Pelaksanaan", width: 15 },
