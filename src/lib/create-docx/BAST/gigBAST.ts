@@ -18,9 +18,9 @@ import {
     WidthType,
     PageBreak,
 } from "docx";
-import { ICentre, IOperator, IVendor } from "@/types";
 import { CalendarDate } from "@internationalized/date";
 import { localizeDate, displayIDR, dateDiff } from "@/lib/functions";
+import { ICentre, IOperator, IVendor } from "@/types";
 
 const textRun = (text:string, bold:boolean = false) => {
     return (
@@ -202,6 +202,197 @@ const lineBreaker = ( text: string, lineBreak: number, bold: boolean = false ) =
     )
 }
 
+export const header = ( logo: string, vendor: IVendor ) => {
+    const headerLogo = new Paragraph({
+        children: [
+            new ImageRun({
+                data: logo,
+                transformation: {
+                    width: 450,
+                    height: 110
+                }
+            }),
+        ],
+    })
+
+    const { address:{ street, rtRw, kelurahan, kecamatan, kabupaten, propinsi, postCode}, email, phone } = vendor
+    
+    const headerText = new Table({
+        borders: TableBorders.NONE,
+        columnWidths: [4505, 4505],
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        width: {
+                            size: 10,
+                            type: WidthType.PERCENTAGE,
+                        },
+                        children: [
+                            new Paragraph({
+                                children:[
+                                    new TextRun({
+                                        text: "Alamat"
+                                    })
+                                ],
+                                heading: HeadingLevel.HEADING_6,
+                            }),
+                            
+                        ],                                        
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2,
+                            type: WidthType.PERCENTAGE,
+                        },
+                        children: [
+                            new Paragraph({
+                                children:[
+                                    new TextRun({
+                                        text: ":"
+                                    })
+                                ],
+                                heading: HeadingLevel.HEADING_6,
+                            }),
+                            
+                        ],                                        
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 88,
+                            type: WidthType.PERCENTAGE,
+                        },
+                        children: [
+                            new Paragraph({
+                                children:[
+                                    new TextRun({
+                                        text: street + ", " + kelurahan + ", " + 
+                                                kecamatan + ", " + kabupaten + ", " +  propinsi + ", Kode Pos: " + postCode
+                                    })
+                                ],
+                                heading: HeadingLevel.HEADING_6,
+                            })
+                        ],
+                    }),
+                ],                                                
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        width: {
+                            size: 10,
+                            type: WidthType.PERCENTAGE,
+                        },
+                        children: [
+                            new Paragraph({
+                                children:[
+                                    new TextRun({
+                                        text: "Email"
+                                    })
+                                ],
+                                heading: HeadingLevel.HEADING_6,
+                            })
+                        ],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2,
+                            type: WidthType.PERCENTAGE,
+                        },
+                        children: [
+                            new Paragraph({
+                                children:[
+                                    new TextRun({
+                                        text: ":"
+                                    })
+                                ],
+                                heading: HeadingLevel.HEADING_6,
+                            }),
+                            
+                        ],                                        
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 88,
+                            type: WidthType.PERCENTAGE,
+                        },
+                        children: [
+                            new Paragraph({
+                                children:[
+                                    new TextRun({
+                                        text:email
+                                    })
+                                ],
+                                heading: HeadingLevel.HEADING_6,
+                            }),
+                        ],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        width: {
+                            size: 10,
+                            type: WidthType.PERCENTAGE,
+                        },
+                        children: [
+                            new Paragraph({
+                                children:[
+                                    new TextRun({
+                                        text: "Telp"
+                                    })
+                                ],
+                                heading: HeadingLevel.HEADING_6,
+                            })
+                        ],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2,
+                            type: WidthType.PERCENTAGE,
+                        },
+                        children: [
+                            new Paragraph({
+                                children:[
+                                    new TextRun({
+                                        text: ":"
+                                    })
+                                ],
+                                heading: HeadingLevel.HEADING_6,
+                            }),
+                            
+                        ],                                        
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 88,
+                            type: WidthType.PERCENTAGE,
+                        },
+                        children: [
+                            new Paragraph({
+                                children:[
+                                    new TextRun({
+                                        text:phone
+                                    })
+                                ],
+                                heading: HeadingLevel.HEADING_6,
+                            })
+                        ],
+                    }),
+                ],
+            }),                                                        
+        ],
+        width:{
+            size: 100, type: WidthType.PERCENTAGE
+        }                       
+    })
+
+    return (
+        [ headerLogo, headerText]
+    )
+}
+
 export const createGigBASTDoc = (
     startDate: CalendarDate, endDate: CalendarDate,
     centre: ICentre, decidingOperator: IOperator,
@@ -338,9 +529,7 @@ export const createGigBASTDoc = (
             ${vendorKabupaten}, provinsi ${vendorPropinsi}, kode pos: ${vendorPostCode}`, width: 80 }, 80)
     const line24 = tableAsContent(
         { label: "", width: 15 }, 
-        { label: `Dalam hal ini bertindak untuk dan atas nama ${vendorName} yang Selanjutnya disebut PIHAK KEDUA`, bold: true, width: 80 }, 80)    
-
-    const { address:{ street, rtRw, kelurahan, kecamatan, kabupaten, propinsi, postCode}, email, phone } = vendor
+        { label: `Dalam hal ini bertindak untuk dan atas nama ${vendorName} yang Selanjutnya disebut PIHAK KEDUA`, bold: true, width: 80 }, 80)        
     
     const { todate, hari, tanggal, bulan, tahun, year } = localizeDate(endDate)
     const { todate: todateStart, bulan: bulanStart,  year: yearStart } = localizeDate(startDate)
@@ -400,187 +589,7 @@ export const createGigBASTDoc = (
                     },
                 },
                 children: [
-                    new Paragraph({
-                        children: [
-                            new ImageRun({
-                                data: logo,
-                                transformation: {
-                                    width: 450,
-                                    height: 110
-                                }
-                            }),
-                        ],
-                    }),
-                    new Table({
-                        borders: TableBorders.NONE,
-                        columnWidths: [4505, 4505],
-                        rows: [
-                            new TableRow({
-                                children: [
-                                    new TableCell({
-                                        width: {
-                                            size: 10,
-                                            type: WidthType.PERCENTAGE,
-                                        },
-                                        children: [
-                                            new Paragraph({
-                                                children:[
-                                                    new TextRun({
-                                                        text: "Alamat"
-                                                    })
-                                                ],
-                                                heading: HeadingLevel.HEADING_6,
-                                            }),
-                                            
-                                        ],                                        
-                                    }),
-                                    new TableCell({
-                                        width: {
-                                            size: 2,
-                                            type: WidthType.PERCENTAGE,
-                                        },
-                                        children: [
-                                            new Paragraph({
-                                                children:[
-                                                    new TextRun({
-                                                        text: ":"
-                                                    })
-                                                ],
-                                                heading: HeadingLevel.HEADING_6,
-                                            }),
-                                            
-                                        ],                                        
-                                    }),
-                                    new TableCell({
-                                        width: {
-                                            size: 88,
-                                            type: WidthType.PERCENTAGE,
-                                        },
-                                        children: [
-                                            new Paragraph({
-                                                children:[
-                                                    new TextRun({
-                                                        text: street + ", " + kelurahan + ", " + 
-                                                                kecamatan + ", " + kabupaten + ", " +  propinsi + ", Kode Pos: " + postCode
-                                                    })
-                                                ],
-                                                heading: HeadingLevel.HEADING_6,
-                                            })
-                                        ],
-                                    }),
-                                ],                                                
-                            }),
-                            new TableRow({
-                                children: [
-                                    new TableCell({
-                                        width: {
-                                            size: 10,
-                                            type: WidthType.PERCENTAGE,
-                                        },
-                                        children: [
-                                            new Paragraph({
-                                                children:[
-                                                    new TextRun({
-                                                        text: "Email"
-                                                    })
-                                                ],
-                                                heading: HeadingLevel.HEADING_6,
-                                            })
-                                        ],
-                                    }),
-                                    new TableCell({
-                                        width: {
-                                            size: 2,
-                                            type: WidthType.PERCENTAGE,
-                                        },
-                                        children: [
-                                            new Paragraph({
-                                                children:[
-                                                    new TextRun({
-                                                        text: ":"
-                                                    })
-                                                ],
-                                                heading: HeadingLevel.HEADING_6,
-                                            }),
-                                            
-                                        ],                                        
-                                    }),
-                                    new TableCell({
-                                        width: {
-                                            size: 88,
-                                            type: WidthType.PERCENTAGE,
-                                        },
-                                        children: [
-                                            new Paragraph({
-                                                children:[
-                                                    new TextRun({
-                                                        text:email
-                                                    })
-                                                ],
-                                                heading: HeadingLevel.HEADING_6,
-                                            }),
-                                        ],
-                                    }),
-                                ],
-                            }),
-                            new TableRow({
-                                children: [
-                                    new TableCell({
-                                        width: {
-                                            size: 10,
-                                            type: WidthType.PERCENTAGE,
-                                        },
-                                        children: [
-                                            new Paragraph({
-                                                children:[
-                                                    new TextRun({
-                                                        text: "Telp"
-                                                    })
-                                                ],
-                                                heading: HeadingLevel.HEADING_6,
-                                            })
-                                        ],
-                                    }),
-                                    new TableCell({
-                                        width: {
-                                            size: 2,
-                                            type: WidthType.PERCENTAGE,
-                                        },
-                                        children: [
-                                            new Paragraph({
-                                                children:[
-                                                    new TextRun({
-                                                        text: ":"
-                                                    })
-                                                ],
-                                                heading: HeadingLevel.HEADING_6,
-                                            }),
-                                            
-                                        ],                                        
-                                    }),
-                                    new TableCell({
-                                        width: {
-                                            size: 88,
-                                            type: WidthType.PERCENTAGE,
-                                        },
-                                        children: [
-                                            new Paragraph({
-                                                children:[
-                                                    new TextRun({
-                                                        text:phone
-                                                    })
-                                                ],
-                                                heading: HeadingLevel.HEADING_6,
-                                            })
-                                        ],
-                                    }),
-                                ],
-                            }),                                                        
-                        ],
-                        width:{
-                            size: 100, type: WidthType.PERCENTAGE
-                        }                       
-                    }),
+                    ...header(logo, vendor),
                     new Paragraph({
                         children: [],                        
                         border: {
