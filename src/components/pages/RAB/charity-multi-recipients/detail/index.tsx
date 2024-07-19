@@ -12,10 +12,11 @@ import { TableItem } from '../../shared/TableItemCard';
 import { TableContact } from '../../shared/TableContact';
 import { TotalRow } from '../../shared/TotalTableRow';
 import { TotalCard } from '../../shared/TotalCard';
-import { PrintIcon } from '@/components/Icon';
+import { PrintIcon, CogIcon } from '@/components/Icon';
 import { SelectBAST } from '../../shared/SelectBASTButton';
 import { PrintBAST as PrintReceiverBAST } from './print-BAST-dialog/BASTReceiverDialog';
-import { PrintBAST as PrintGigBAST } from './print-BAST-dialog/BASTGigDialog';
+import { PrintBAST as PrintGigBAST } from '../../shared/PrintDocDialogs/BASTGigDialog';
+import { PrintDocs } from '../../shared/PrintDocDialogs';
 import { createDateString } from '@/lib/functions';
 import { emptyRAB, emptyPerson } from '@/variables-and-constants';
 import { IRABMultiPerson, PersonRecipientWItems, OrderedItem } from '@/types';
@@ -28,6 +29,7 @@ export const RABDetail = () => {
 
     const [ printingRecipient, setPrintingRecipient ] = useState(emptyPerson)
     const [ printWorkingBast, setPrintWorkingBast ] = useState(false)
+    const [ printDocs, setPrintDocs ] = useState(false)
 
     const searchParams = useSearchParams()
     const rabId = searchParams.get("_id")
@@ -99,11 +101,21 @@ export const RABDetail = () => {
                 <div className="w-fit p-1">
                     <Button
                         color="primary"
-                        onPress={()=>{setPrintWorkingBast(true)}}
+                        size="md"
+                        onPress={()=>{ setPrintWorkingBast(true) }}
                         startContent={<PrintIcon />}
                         disabled={fetchState === "loading"}
                     >
                         BAST Pekerjaan
+                    </Button>
+                    <Button
+                        color="primary"
+                        size="md"
+                        onPress={()=>{ setPrintDocs(true) }}
+                        startContent={<CogIcon />}
+                        disabled={fetchState === "loading"}
+                    >
+                        Pilih Dokumen
                     </Button>
                 </div>
             </div>
@@ -235,6 +247,10 @@ export const RABDetail = () => {
                 <PrintGigBAST
                     items={items} show={printWorkingBast} hideForm={()=>{setPrintWorkingBast(false)}}
                 />
+            }
+            {
+                printDocs &&
+                <PrintDocs RAB={RAB} show={printDocs} hideForm={()=>{setPrintDocs(false)}} />
             }
         </div>
     )

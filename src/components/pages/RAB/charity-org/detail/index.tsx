@@ -10,19 +10,20 @@ import { EditItem } from '../../shared/AddEditItem';
 import { UpdateItemForm } from './UpdateItemDialog';
 import { SelectBAST } from '../../shared/SelectBASTButton';
 import { PrintBAST as ReceiverBAST } from './print-BAST-dialog/BASTReceiverDialog';
-import { PrintBAST as GigBAST } from '../../charity-multi-recipients/detail/print-BAST-dialog/BASTGigDialog';
+import { PrintBAST as GigBAST } from '../../shared/PrintDocDialogs/BASTGigDialog';
 import { TotalCard } from '../../shared/TotalCard';
-import { DeleteIcon, EditIcon, PlusIcon, PrintIcon } from '@/components/Icon';
+import { CogIcon, DeleteIcon, EditIcon, PlusIcon, PrintIcon } from '@/components/Icon';
 import { createDateString } from '@/lib/functions';
 import { emptyRABCharityOrg, emptyOrderedItem } from '@/variables-and-constants';
 import { IRABCharityOrg, OrderedItem } from '@/types';
 import CurrencyFormat from 'react-currency-format';
 import { DeleteItemForm } from './DeleteItemDialog';
+import { PrintDocs } from '../../shared/PrintDocDialogs';
 
 export const RABDetail = () => {
     const [ tab, setTab ] = useState("recipients");
 
-    const [RAB, setRAB] = useState<IRABCharityOrg>(emptyRABCharityOrg)
+    const [ RAB, setRAB ] = useState<IRABCharityOrg>(emptyRABCharityOrg)
     const { title, date, recipient, items } = RAB
     const [ printBast, setPrintBast ] = useState("")
     const [ fetchState, setFetchState ] = useState("loading")
@@ -32,7 +33,7 @@ export const RABDetail = () => {
         if it contains a string, it will be the item id to delete 
     */
     const [ isChangingItem, setIsChangingItem ] = useState<null | number | string>(null)    
-
+    const [ printDocs, setPrintDocs ] = useState(false)
     const searchParams = useSearchParams()
     const rabId = searchParams.get("_id")
 
@@ -184,12 +185,19 @@ export const RABDetail = () => {
                             isDisabled={fetchState === "loading"}                                        
                         >
                             Barang
-                        </Button>
+                        </Button>                        
                         <SelectBAST
                             selectReceive={()=>{setPrintBast("Penerima")}}
                             selectDeliver={()=>{setPrintBast("Pekerjaan")}}
                         />                                       
-                                            
+                        <Button color="primary" 
+                            size="sm"
+                            onPress={()=>{setPrintDocs(true)}}
+                            startContent={<CogIcon className="size-4"/>}
+                            isDisabled={fetchState === "loading"}                                        
+                        >
+                            Barang
+                        </Button>                    
                     </div>
                 }
             >
@@ -312,6 +320,10 @@ export const RABDetail = () => {
                     hideForm={()=>{setPrintBast("")}}
                     items={items}
                 />
+            }
+            {
+                printDocs &&
+                <PrintDocs RAB={RAB} show={printDocs} hideForm={()=>{setPrintDocs(false)}} />
             }
         </div>
     )

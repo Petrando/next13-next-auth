@@ -2,191 +2,20 @@ import {
     AlignmentType,
     convertInchesToTwip,
     Document,
-    Footer,
     HeadingLevel,
-    ImageRun,
-    Packer,
     Paragraph,
     Table,
     TableCell,
     TableRow,
-    TabStopPosition,
-    UnderlineType,
     LevelFormat,
-    TableBorders,
     TextRun,
     WidthType,
     PageBreak,
 } from "docx";
+import { vendorHeader as header, textRun, tableAsContent, tableAsListItem, fifty2Table } from "../shared";
 import { CalendarDate } from "@internationalized/date";
 import { localizeDate, displayIDR, dateDiff } from "@/lib/functions";
 import { ICentre, IOperator, IVendor } from "@/types";
-
-const textRun = (text:string, bold:boolean = false) => {
-    return (
-        new TextRun({
-            text, bold
-        })
-    )
-}
-
-type tTableContentParam = { 
-    label: string;
-    width?: number;
-    bold?: boolean;
-}
-
-const tableAsContent = (param1: tTableContentParam, param2: tTableContentParam, tableWidth:number = 100) => {
-    const { label, width = 25, bold = false } = param1
-    const { label: label2, width: width2 = 70, bold: bold2 = false } = param2
-
-    return (
-        new Table({
-            borders: TableBorders.NONE,                                                                                        
-            rows: [
-                new TableRow({
-                    children:[
-                        new TableCell({
-                            width: {
-                                type: WidthType.PERCENTAGE,
-                                size: width
-                            },
-                            children: [
-                                new Paragraph({
-                                    children:[
-                                        textRun(label, bold)
-                                    ], 
-                                    heading: HeadingLevel.HEADING_6,
-                                })
-                            ]
-                        }),
-                        new TableCell({
-                            width: {
-                                type: WidthType.PERCENTAGE,
-                                size: 5
-                            },
-                            children: [
-                                new Paragraph({text: label!==""?":":"", heading: HeadingLevel.HEADING_6,})
-                            ]
-                        }),
-                        new TableCell({
-                            width: {
-                                type: WidthType.PERCENTAGE,
-                                size: width2
-                            },
-                            children: [
-                                new Paragraph({
-                                    children:[
-                                        textRun(label2, bold2)
-                                    ], 
-                                    heading: HeadingLevel.HEADING_6
-                                }),
-                            ]
-                        })
-                    ],                                                        
-                })
-            ],
-            width:{
-                size: tableWidth, type: WidthType.PERCENTAGE
-            }
-        })
-    )
-}
-
-const tableAsListItem = (idx: number, contents: Table[]) => {
-    return (
-        new Table({
-            borders: TableBorders.NONE,
-            columnWidths: [4505, 4505],
-            rows: [
-                new TableRow({
-                    children: [
-                        new TableCell({
-                            width: {
-                                size: 3,
-                                type: WidthType.PERCENTAGE,
-                            },
-                            children: [
-                                new Paragraph({
-                                    children:[
-                                        new TextRun({
-                                            text: `${idx}.`
-                                        })
-                                    ],
-                                    heading: HeadingLevel.HEADING_6,
-                                }),
-                                
-                            ],                                        
-                        }),                                    
-                        new TableCell({
-                            width: {
-                                size: 97,
-                                type: WidthType.PERCENTAGE,
-                            },
-                            children: [
-                                ...contents 
-                            ],
-                        }),
-                    ],                                                
-                }),
-                                                                                                   
-            ],
-            width:{
-                size: 100, type: WidthType.PERCENTAGE
-            }                       
-        })
-    )
-}
-
-const fifty2Table = (param1: tTableContentParam, param2: tTableContentParam) => {
-    const { label, width = 50, bold = false } = param1
-    const { label: label2, width: width2 = 50, bold: bold2 = false } = param2
-
-    return (
-        new Table({
-            borders: TableBorders.NONE,                                                                                        
-            rows: [
-                new TableRow({
-                    children:[
-                        new TableCell({
-                            width: {
-                                type: WidthType.PERCENTAGE,
-                                size: width
-                            },
-                            children: [
-                                new Paragraph({
-                                    children:[
-                                        textRun(label, bold)
-                                    ], 
-                                    heading: HeadingLevel.HEADING_6,
-                                    alignment: AlignmentType.CENTER
-                                })
-                            ]
-                        }),
-                        new TableCell({
-                            width: {
-                                type: WidthType.PERCENTAGE,
-                                size: width2
-                            },
-                            children: [
-                                new Paragraph({
-                                    children:[
-                                        textRun(label2, bold2)
-                                    ], 
-                                    heading: HeadingLevel.HEADING_6,
-                                    alignment: AlignmentType.CENTER
-                                }),
-                            ]
-                        })
-                    ],                                                        
-                })
-            ],
-            width:{
-                size: 100, type: WidthType.PERCENTAGE
-            }
-        })
-    )
-}
 
 const lineBreaker = ( text: string, lineBreak: number, bold: boolean = false ) => {
     return (
@@ -199,197 +28,6 @@ const lineBreaker = ( text: string, lineBreak: number, bold: boolean = false ) =
                 })
             ]
         })
-    )
-}
-
-export const header = ( logo: string, vendor: IVendor ) => {
-    const headerLogo = new Paragraph({
-        children: [
-            new ImageRun({
-                data: logo,
-                transformation: {
-                    width: 450,
-                    height: 110
-                }
-            }),
-        ],
-    })
-
-    const { address:{ street, rtRw, kelurahan, kecamatan, kabupaten, propinsi, postCode}, email, phone } = vendor
-    
-    const headerText = new Table({
-        borders: TableBorders.NONE,
-        columnWidths: [4505, 4505],
-        rows: [
-            new TableRow({
-                children: [
-                    new TableCell({
-                        width: {
-                            size: 10,
-                            type: WidthType.PERCENTAGE,
-                        },
-                        children: [
-                            new Paragraph({
-                                children:[
-                                    new TextRun({
-                                        text: "Alamat"
-                                    })
-                                ],
-                                heading: HeadingLevel.HEADING_6,
-                            }),
-                            
-                        ],                                        
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2,
-                            type: WidthType.PERCENTAGE,
-                        },
-                        children: [
-                            new Paragraph({
-                                children:[
-                                    new TextRun({
-                                        text: ":"
-                                    })
-                                ],
-                                heading: HeadingLevel.HEADING_6,
-                            }),
-                            
-                        ],                                        
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 88,
-                            type: WidthType.PERCENTAGE,
-                        },
-                        children: [
-                            new Paragraph({
-                                children:[
-                                    new TextRun({
-                                        text: street + ", " + kelurahan + ", " + 
-                                                kecamatan + ", " + kabupaten + ", " +  propinsi + ", Kode Pos: " + postCode
-                                    })
-                                ],
-                                heading: HeadingLevel.HEADING_6,
-                            })
-                        ],
-                    }),
-                ],                                                
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({
-                        width: {
-                            size: 10,
-                            type: WidthType.PERCENTAGE,
-                        },
-                        children: [
-                            new Paragraph({
-                                children:[
-                                    new TextRun({
-                                        text: "Email"
-                                    })
-                                ],
-                                heading: HeadingLevel.HEADING_6,
-                            })
-                        ],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2,
-                            type: WidthType.PERCENTAGE,
-                        },
-                        children: [
-                            new Paragraph({
-                                children:[
-                                    new TextRun({
-                                        text: ":"
-                                    })
-                                ],
-                                heading: HeadingLevel.HEADING_6,
-                            }),
-                            
-                        ],                                        
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 88,
-                            type: WidthType.PERCENTAGE,
-                        },
-                        children: [
-                            new Paragraph({
-                                children:[
-                                    new TextRun({
-                                        text:email
-                                    })
-                                ],
-                                heading: HeadingLevel.HEADING_6,
-                            }),
-                        ],
-                    }),
-                ],
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({
-                        width: {
-                            size: 10,
-                            type: WidthType.PERCENTAGE,
-                        },
-                        children: [
-                            new Paragraph({
-                                children:[
-                                    new TextRun({
-                                        text: "Telp"
-                                    })
-                                ],
-                                heading: HeadingLevel.HEADING_6,
-                            })
-                        ],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2,
-                            type: WidthType.PERCENTAGE,
-                        },
-                        children: [
-                            new Paragraph({
-                                children:[
-                                    new TextRun({
-                                        text: ":"
-                                    })
-                                ],
-                                heading: HeadingLevel.HEADING_6,
-                            }),
-                            
-                        ],                                        
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 88,
-                            type: WidthType.PERCENTAGE,
-                        },
-                        children: [
-                            new Paragraph({
-                                children:[
-                                    new TextRun({
-                                        text:phone
-                                    })
-                                ],
-                                heading: HeadingLevel.HEADING_6,
-                            })
-                        ],
-                    }),
-                ],
-            }),                                                        
-        ],
-        width:{
-            size: 100, type: WidthType.PERCENTAGE
-        }                       
-    })
-
-    return (
-        [ headerLogo, headerText]
     )
 }
 
@@ -505,12 +143,12 @@ export const createGigBASTDoc = (
     const attachmentTable = tableAsContent({ label: "Lampiran" }, { label: "-" })
 
     const { NIP, name, rank } = decidingOperator
-    const line1 = tableAsContent({ label: "Nama", width: 15 }, { label: name, width: 80, bold: true }, 80)
-    const line2 = tableAsContent({ label: "Jabatan", width: 15 }, { label: "Pejabat Pembuat Komitmen", width: 80 }, 80)
-    const line3 = tableAsContent({ label: "Alamat", width: 15}, { label: "Jl. Tat Twam Asi No. 47 Komplek Depsos Pasar Rebo Jakarta Timur", width: 80 }, 80)
+    const line1 = tableAsContent({ label: "Nama", width: 15 }, { label: name, width: 80, bold: true }, 80, HeadingLevel.HEADING_6)
+    const line2 = tableAsContent({ label: "Jabatan", width: 15 }, { label: "Pejabat Pembuat Komitmen", width: 80 }, 80, HeadingLevel.HEADING_6)
+    const line3 = tableAsContent({ label: "Alamat", width: 15}, { label: "Jl. Tat Twam Asi No. 47 Komplek Depsos Pasar Rebo Jakarta Timur", width: 80 }, 80, HeadingLevel.HEADING_6)
     const line4 = tableAsContent(
         { label: "", width: 15 }, 
-        { label: "Dalam hal ini bertindak untuk dan atas nama Sentra ’’Mulya Jaya’’ di Jakarta, yang selanjutnya disebut PIHAK PERTAMA", bold: true, width: 80 }, 80)    
+        { label: "Dalam hal ini bertindak untuk dan atas nama Sentra ’’Mulya Jaya’’ di Jakarta, yang selanjutnya disebut PIHAK PERTAMA", bold: true, width: 80 }, 80, HeadingLevel.HEADING_6)    
 
     const { 
         owner: { name: ownerName, rank: ownerRank }, 
@@ -521,57 +159,83 @@ export const createGigBASTDoc = (
         },
         name: vendorName
     } = vendor
-    const line21 = tableAsContent({ label: "Nama", width: 15 }, { label: ownerName, width: 80, bold: true }, 80)
-    const line22 = tableAsContent({ label: "Jabatan", width: 15 }, { label: `${ownerRank} ${vendor.name}`, width: 80 }, 80)
+    const line21 = tableAsContent(
+        { label: "Nama", width: 15 }, 
+        { label: ownerName, width: 80, bold: true }, 80, HeadingLevel.HEADING_6
+    )
+    const line22 = tableAsContent(
+        { label: "Jabatan", width: 15 }, 
+        { label: `${ownerRank} ${vendor.name}`, width: 80 }, 80, HeadingLevel.HEADING_6
+    )
     const line23 = tableAsContent(
         { label: "Alamat", width: 15}, 
         { label: `${vendorStreet} desa/kelurahan ${vendorKelurahan}, kec. ${vendorKecamatan}, 
-            ${vendorKabupaten}, provinsi ${vendorPropinsi}, kode pos: ${vendorPostCode}`, width: 80 }, 80)
+            ${vendorKabupaten}, provinsi ${vendorPropinsi}, kode pos: ${vendorPostCode}`, width: 80 }, 
+        80, HeadingLevel.HEADING_6)
     const line24 = tableAsContent(
         { label: "", width: 15 }, 
-        { label: `Dalam hal ini bertindak untuk dan atas nama ${vendorName} yang Selanjutnya disebut PIHAK KEDUA`, bold: true, width: 80 }, 80)        
+        { label: `Dalam hal ini bertindak untuk dan atas nama ${vendorName} yang Selanjutnya disebut PIHAK KEDUA`, 
+        bold: true, width: 80 }, 80, HeadingLevel.HEADING_6)        
     
     const { todate, hari, tanggal, bulan, tahun, year } = localizeDate(endDate)
     const { todate: todateStart, bulan: bulanStart,  year: yearStart } = localizeDate(startDate)
 
     const line31 = tableAsContent(
         { label: "Pekerjaaan", width: 15 },
-        { label: gig, width: 80 }
+        { label: gig, width: 80 },
+        100,
+        HeadingLevel.HEADING_6
     )
     const line32 = tableAsContent(
         { label: "Lokasi", width: 15 },
-        { label: location, width: 80 }
+        { label: location, width: 80 },
+        100,
+        HeadingLevel.HEADING_6
     )
     const line33 = tableAsContent(
         { label: "Daftar Isian", width: 15 },
-        { label: "Sentra ‘’Mulya Jaya’’ Di Jakarta", width: 80 }
+        { label: "Sentra ‘’Mulya Jaya’’ Di Jakarta", width: 80 },
+        100,
+        HeadingLevel.HEADING_6
     )
     const line34 = tableAsContent(
         { label: `Pelaksanaan Anggaran (DIPA) Tahun Anggaran ${year}`, width: 15 },
-        { label: year.toString(), width: 80 }
+        { label: year.toString(), width: 80 },
+        100,
+        HeadingLevel.HEADING_6
     )
     const line35 = tableAsContent(
         { label: "Kontraktor Pelaksana", width: 15 },
-        { label: vendorName, width: 80, bold: true }
+        { label: vendorName, width: 80, bold: true },
+        100,
+        HeadingLevel.HEADING_6
     )
     const line36 = tableAsContent(
         { label: "Surat Perintah Kerja", width: 15 },
-        { label: `${spkNo} Tanggal ${todateStart} ${bulanStart} ${yearStart}`, width: 80  }
+        { label: `${spkNo} Tanggal ${todateStart} ${bulanStart} ${yearStart}`, width: 80 },
+        100,
+        HeadingLevel.HEADING_6
     )
     
     const line41 = tableAsContent(
         { label: "Biaya Pelaksanaan", width: 15 },
-        { label: `${displayIDR(total)} (${nominalInWords.nominal})`, width: 80, bold: true }
+        { label: `${displayIDR(total)} (${nominalInWords.nominal})`, width: 80, bold: true },
+        100,
+        HeadingLevel.HEADING_6
     )    
     const line42 = tableAsContent(
         { label: "Jangka Waktu", width: 15 },
         { label: `${dateDiff(
             new Date(startDate.year + "-" + startDate.month + "-" + startDate.day),
-            new Date(endDate.year + "-" + endDate.month + "-" + endDate.day))} hari kerja`, width: 80 }
+            new Date(endDate.year + "-" + endDate.month + "-" + endDate.day))} hari kerja`, width: 80 },
+        100,
+        HeadingLevel.HEADING_6
     )
     const line43 = tableAsContent(
         { label: "Pelaksanaan", width: 15 },
-        { label: `${todateStart} ${bulanStart} sampai ${todate} ${bulan} ${year}`, width: 80 }
+        { label: `${todateStart} ${bulanStart} sampai ${todate} ${bulan} ${year}`, width: 80 },
+        100,
+        HeadingLevel.HEADING_6
     )
     const doc = new Document({
         styles,
@@ -735,20 +399,25 @@ export const createGigBASTDoc = (
                     }),
                     lineBreaker("", 2),
                     fifty2Table(
-                        { label: "PIHAK KEDUA"}, { label: "PIHAK PERTAMA"}
+                        { label: "PIHAK KEDUA", style: HeadingLevel.HEADING_6 }, 
+                        { label: "PIHAK PERTAMA", style: HeadingLevel.HEADING_6 }
                     ),
                     fifty2Table(
-                        { label: vendorName, bold: true}, { label: "PEJABAT PENERIMA HASIL PEKERJAAN"}
+                        { label: vendorName, bold: true, style: HeadingLevel.HEADING_6 }, 
+                        { label: "PEJABAT PENERIMA HASIL PEKERJAAN", style: HeadingLevel.HEADING_6 }
                     ),
                     fifty2Table(
-                        { label: "" }, { label: "Sentra Mulya Jaya di Jakarta", bold: true}
+                        { label: "", style: HeadingLevel.HEADING_6 }, 
+                        { label: "Sentra Mulya Jaya di Jakarta", bold: true, style: HeadingLevel.HEADING_6 }
                     ),
                     lineBreaker("", 3),
                     fifty2Table(
-                        { label: name, bold: true }, { label: ownerName, bold: true}
+                        { label: name, bold: true, style: HeadingLevel.HEADING_6 }, 
+                        { label: ownerName, bold: true, style: HeadingLevel.HEADING_6 }
                     ),
                     fifty2Table(
-                        { label: ownerRank }, { label: `NIP. ${NIP}`}
+                        { label: ownerRank, style: HeadingLevel.HEADING_6 }, 
+                        { label: `NIP. ${NIP}`, style: HeadingLevel.HEADING_6 }
                     ),
                 ],
             },

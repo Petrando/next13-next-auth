@@ -268,7 +268,7 @@ export const PrintBAST:FC<TItemForm> = ({items, show, hideForm }) => {
                                 picData
                             )
                             
-                            saveDocumentToFile(doc, `bast-${vendor.name}.docx`)
+                            saveDocumentToFile(doc, `bast-pekerjaan-${vendor.name}.docx`)
                         }}
                     >
                         Cetak

@@ -1,23 +1,14 @@
-import { Document, Packer, Paragraph, TextRun, Table, TableBorders, TableCell, 
-    TableRow, ImageRun, Header, Footer, HeadingLevel, WidthType, 
-    ShadingType,
+import { Document, Paragraph, TextRun, Table, TableBorders, TableCell, 
+    TableRow, HeadingLevel, WidthType, 
     UnderlineType,
     AlignmentType,
     LevelFormat,
-    convertInchesToTwip,
-    convertMillimetersToTwip,
-    HorizontalPositionRelativeFrom,
-    VerticalPositionRelativeFrom,
-    TextWrappingType,
-    TextWrappingSide,
-    VerticalPositionAlign,
-    HorizontalPositionAlign} from "docx";
+    convertInchesToTwip} from "docx";
+import { centreHeader as header } from "../shared";
 import { displayIDR, totalPrice, localizeDate } from "../../functions";
-import { defaultOfficer, emptyOperator } from "@/variables-and-constants";
-import { PersonRecipientWItems, IRABCharityOrg,  IOperator, recipientTypes, ICentre, CharityOrgRecipient, OrderedItem } from "@/types";
+import { emptyOperator } from "@/variables-and-constants";
+import { PersonRecipientWItems, IRABCharityOrg,  IOperator, ICentre, OrderedItem } from "@/types";
 import { CalendarDate } from "@internationalized/date";
-
-
 
 const createAttachment1 = (
     date: CalendarDate,
@@ -805,64 +796,7 @@ export const createReceiverBASTDocs = (
         sections: [
             {                            
                 children: [                                        
-                    new Paragraph({
-                        children:[
-                            new ImageRun({
-                                data: picData,
-                                transformation: {
-                                    width: 70,
-                                    height: 80
-                                },
-                                floating: {
-                                    horizontalPosition: {
-                                        relative: HorizontalPositionRelativeFrom.COLUMN,
-                                        align: HorizontalPositionAlign.LEFT
-                                    },
-                                    verticalPosition: {
-                                        relative: VerticalPositionRelativeFrom.PARAGRAPH,
-                                        align: VerticalPositionAlign.CENTER
-                                    },
-                                    wrap: {
-                                        type: TextWrappingType.SQUARE,
-                                        side: TextWrappingSide.BOTH_SIDES,
-                                    },
-                                },
-                            }),                                    
-                            new TextRun({
-                                text:"KEMENTRIAN SOSIAL REPUBLIK INDONESIA",                                
-                                color:"000000"
-                            }),
-                            new TextRun({
-                                text: `SENTRA "${centreName.toUpperCase()}" DI JAKARTA`,
-                                break: 1
-                            }),
-                            new TextRun({
-                                text: `${(centreAddress + " " +  postCode).toUpperCase()}`,
-                                break: 1
-                            }),
-                            /*new TextRun({
-                                text: `JAKARTA TIMUR 13760`,
-                                break: 1
-                            }),*/
-                            new TextRun({
-                                text: `TELEPON (021) 8400631    FAKSIMILE: (021) 8415717`,
-                                break: 1
-                            }),
-                            new TextRun({
-                                text: `http://mulyajaya.depsos.go.id/  EMAIL: pskw_mulyajaya@depsos.go.id`,
-                                break: 1
-                            })
-                        ],                            
-                        heading: HeadingLevel.HEADING_1, 
-                        border: {
-                            bottom: {
-                                color: "000000",
-                                space: 2,
-                                style: "double",
-                                size: 8,
-                            },
-                        }                               
-                    }),                    
+                    header(picData, centre, HeadingLevel.HEADING_1),                   
                     new Paragraph({
                         children:[
                             new TextRun({
