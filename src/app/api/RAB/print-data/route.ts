@@ -21,7 +21,7 @@ export async function POST(req:NextRequest) {
         const filePath = path.join(process.cwd(), 'public', 'images', logo);
         const fileBuffer = fs.readFileSync(filePath);
         const base64String = fileBuffer.toString('base64')        
-        
+                
         return NextResponse.json(
             { 
                 message: "Daftar petugas dan logo", 

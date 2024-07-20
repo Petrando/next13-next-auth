@@ -1,8 +1,8 @@
 import { ICentre, IVendor } from "@/types"
 import { Paragraph, ImageRun, HorizontalPositionRelativeFrom, HorizontalPositionAlign, VerticalPositionRelativeFrom, VerticalPositionAlign, TextWrappingType, TextWrappingSide, TextRun, HeadingLevel, Table, TableBorders, TableCell, TableRow, WidthType, AlignmentType } from "docx"
-import { isArray } from "lodash"
 
 type tStyle = "Heading1" | "Heading2" | "Heading3" | "Heading4" | "Heading5" | "Heading6" | "Title" | undefined
+
 export const centreHeader = (
     logo: string, centre: ICentre, 
     style: tStyle = undefined,
@@ -71,7 +71,7 @@ export const centreHeader = (
     )
 }
 
-export const vendorHeader = ( logo: string, vendor: IVendor ) => {
+export const vendorHeader = ( logo: string, vendor: IVendor, style: tStyle = undefined, ) => {
     const headerLogo = new Paragraph({
         children: [
             new ImageRun({
@@ -104,7 +104,7 @@ export const vendorHeader = ( logo: string, vendor: IVendor ) => {
                                         text: "Alamat"
                                     })
                                 ],
-                                heading: HeadingLevel.HEADING_6,
+                                heading: style,
                             }),
                             
                         ],                                        
@@ -121,7 +121,7 @@ export const vendorHeader = ( logo: string, vendor: IVendor ) => {
                                         text: ":"
                                     })
                                 ],
-                                heading: HeadingLevel.HEADING_6,
+                                heading: style,
                             }),
                             
                         ],                                        
@@ -139,7 +139,7 @@ export const vendorHeader = ( logo: string, vendor: IVendor ) => {
                                                 kecamatan + ", " + kabupaten + ", " +  propinsi + ", Kode Pos: " + postCode
                                     })
                                 ],
-                                heading: HeadingLevel.HEADING_6,
+                                heading: style,
                             })
                         ],
                     }),
@@ -159,7 +159,7 @@ export const vendorHeader = ( logo: string, vendor: IVendor ) => {
                                         text: "Email"
                                     })
                                 ],
-                                heading: HeadingLevel.HEADING_6,
+                                heading: style,
                             })
                         ],
                     }),
@@ -175,7 +175,7 @@ export const vendorHeader = ( logo: string, vendor: IVendor ) => {
                                         text: ":"
                                     })
                                 ],
-                                heading: HeadingLevel.HEADING_6,
+                                heading: style,
                             }),
                             
                         ],                                        
@@ -192,7 +192,7 @@ export const vendorHeader = ( logo: string, vendor: IVendor ) => {
                                         text:email
                                     })
                                 ],
-                                heading: HeadingLevel.HEADING_6,
+                                heading: style,
                             }),
                         ],
                     }),
@@ -212,7 +212,7 @@ export const vendorHeader = ( logo: string, vendor: IVendor ) => {
                                         text: "Telp"
                                     })
                                 ],
-                                heading: HeadingLevel.HEADING_6,
+                                heading: style,
                             })
                         ],
                     }),
@@ -228,7 +228,7 @@ export const vendorHeader = ( logo: string, vendor: IVendor ) => {
                                         text: ":"
                                     })
                                 ],
-                                heading: HeadingLevel.HEADING_6,
+                                heading: style,
                             }),
                             
                         ],                                        
@@ -245,7 +245,7 @@ export const vendorHeader = ( logo: string, vendor: IVendor ) => {
                                         text:phone
                                     })
                                 ],
-                                heading: HeadingLevel.HEADING_6,
+                                heading: style,
                             })
                         ],
                     }),
@@ -258,11 +258,25 @@ export const vendorHeader = ( logo: string, vendor: IVendor ) => {
     })
 
     return (
-        [ headerLogo, headerText]
+        [ headerLogo, headerText,
+            new Paragraph({
+                text:"",
+                border: {
+                    bottom: {
+                        color: "000000",
+                        space: 2,
+                        style: "double",
+                        size: 8,
+                    },
+                } 
+            })
+
+         ]
     )
 }
 
-export const textRun = (text:string, bold:boolean = false, lineBreak: number = 0, italics: boolean = false) => {
+export const textRun = (text:string, bold:boolean = false, lineBreak: number = 0, 
+    italics: boolean = false) => {
     return (
         new TextRun({
             text, bold, break: lineBreak, italics
@@ -309,7 +323,10 @@ export const tableAsContent = (param1: tTableContentParam, param2: tTableContent
                                 size: 5
                             },
                             children: [
-                                new Paragraph({text: label!==""?":":"", heading: HeadingLevel.HEADING_6,})
+                                new Paragraph({
+                                    text: label!==""?":":"", 
+                                    heading: style
+                                })
                             ]
                         }),
                         new TableCell({

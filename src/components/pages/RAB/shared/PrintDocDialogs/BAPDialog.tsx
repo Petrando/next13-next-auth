@@ -23,10 +23,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
     const [ dipaNo, setDipaNo ] = useState("SP DIPA- 027.04.2.690564/2024 ")
     const [ dipaDate, setDipaDate] = useState(createDateString())
     const [ spkNo, setSpkNo ] = useState("080/4.11/PL.01.02/SPK/3/2024")
-
-    const [ nominalInWords, setNominalWords ] = useState({
-        nominal:"", display:true
-    })    
+       
     const [ picData, setPicData ] = useState("")
 
     const [ centreName, setCentreName ] = useState(defaultCentre.name)
@@ -113,9 +110,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
             const docblob = blob.slice(0, blob.size, mimeType);
             saveAs(docblob, fileName);
         });
-    }
-    
-    const total = totalPrice(items)     
+    }        
 
     return (
         <Modal 

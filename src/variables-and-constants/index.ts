@@ -85,7 +85,7 @@ export const defaultCentre:ICentre = _.cloneDeep({
         kelurahan: "Komplek Depsos",
         kecamatan: "Pasar Rebo",
         kabupaten: "Jakarta Timur",
-        propinsi: "",
+        propinsi: "DKI Jakarta",
         postCode: "13760"
     },
     email: "", phone: ""

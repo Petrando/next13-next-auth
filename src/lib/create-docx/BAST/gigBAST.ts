@@ -253,18 +253,7 @@ export const createGigBASTDoc = (
                     },
                 },
                 children: [
-                    ...header(logo, vendor),
-                    new Paragraph({
-                        children: [],                        
-                        border: {
-                            bottom: {
-                                color: "000000",
-                                space: 2,
-                                style: "double",
-                                size: 8,
-                            },
-                        } 
-                    }),
+                    ...header(logo, vendor, HeadingLevel.HEADING_6),                    
                     new Paragraph(""),
                     new Table({
                         columnWidths: [4505, 4505],

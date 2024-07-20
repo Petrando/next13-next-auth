@@ -5,6 +5,7 @@ import {
     } from "@nextui-org/react";
 import { PrintIcon } from "@/components/Icon";
 import { PrintBAP } from "./BAPDialog";
+import { PrintReceipt } from "./ReceiptDialog";
 import { IRABMultiPerson, IRABCharityOrg, PersonRecipientWItems } from "@/types"
 
 type TPrintDocs = {    
@@ -50,7 +51,9 @@ export const PrintDocs:FC<TPrintDocs> = ({ RAB, show, hideForm }) => {
                     <Button className="basis-full md:basis-1/4" size="md" color="primary">
                         Permohonan Pembayaran
                     </Button>
-                    <Button className="basis-full md:basis-1/4" size="md" color="primary">
+                    <Button className="basis-full md:basis-1/4" size="md" color="primary"
+                        onPress={()=>{setPrintDoc("receipt")}}
+                    >
                         Kwitansi
                     </Button>
                     <Button className="basis-full md:basis-1/4" size="md" color="primary">
@@ -68,6 +71,10 @@ export const PrintDocs:FC<TPrintDocs> = ({ RAB, show, hideForm }) => {
         {
             printDoc === "BAP" &&
             <PrintBAP items={items} show={printDoc === "BAP"} hideForm={()=>{setPrintDoc("")}} />
+        }
+        {
+            printDoc === "receipt" &&
+            <PrintReceipt items={items} show={printDoc === "receipt"} hideForm={()=>{setPrintDoc("")}} />
         }
         </>
     )
