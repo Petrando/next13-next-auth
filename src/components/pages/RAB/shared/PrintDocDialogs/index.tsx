@@ -45,10 +45,10 @@ export const PrintDocs:FC<TPrintDocs> = ({ RAB, show, hideForm }) => {
                     >
                         BAP
                     </Button>
-                    <Button className="basis-full md:basis-1/4" size="md" color="primary">
+                    <Button className="basis-full md:basis-1/4" size="md">
                         HPS
                     </Button>
-                    <Button className="basis-full md:basis-1/4" size="md" color="primary">
+                    <Button className="basis-full md:basis-1/4" size="md">
                         Permohonan Pembayaran
                     </Button>
                     <Button className="basis-full md:basis-1/4" size="md" color="primary"
@@ -56,7 +56,7 @@ export const PrintDocs:FC<TPrintDocs> = ({ RAB, show, hideForm }) => {
                     >
                         Kwitansi
                     </Button>
-                    <Button className="basis-full md:basis-1/4" size="md" color="primary">
+                    <Button className="basis-full md:basis-1/4" size="md">
                         SPH
                     </Button>
                 </ModalBody>
