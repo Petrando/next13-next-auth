@@ -285,7 +285,7 @@ export const textRun = (text:string, bold:boolean = false, lineBreak: number = 0
 }
 
 type tTableContentParam = { 
-    label: string;
+    label: string | Table;
     width?: number;
     bold?: boolean;
     italics?: boolean;
@@ -297,6 +297,16 @@ export const tableAsContent = (param1: tTableContentParam, param2: tTableContent
     const { label, width = 25, bold = false, italics = false } = param1
     const { label: label2, width: width2 = 70, bold: bold2 = false, italics: italics2 = false } = param2
 
+    const paragraphChild = ( label: string, bold: boolean ) => {
+        return (
+            new Paragraph({
+                children:[
+                    textRun(label, bold, 0, italics)
+                ], 
+                heading: style,
+            })
+        )
+    }
     return (
         new Table({
             borders: TableBorders.NONE,                                                                                        
@@ -309,12 +319,8 @@ export const tableAsContent = (param1: tTableContentParam, param2: tTableContent
                                 size: width
                             },
                             children: [
-                                new Paragraph({
-                                    children:[
-                                        textRun(label, bold, 0, italics)
-                                    ], 
-                                    heading: style,
-                                })
+                                typeof label === "string"?
+                                    paragraphChild(label, bold):label
                             ]
                         }),
                         new TableCell({
@@ -335,12 +341,8 @@ export const tableAsContent = (param1: tTableContentParam, param2: tTableContent
                                 size: width2
                             },
                             children: [
-                                new Paragraph({
-                                    children:[
-                                        textRun(label2, bold2, 0, italics2)
-                                    ], 
-                                    heading: style
-                                }),
+                                typeof label2 === "string"?
+                                    paragraphChild(label2, bold2):label2
                             ]
                         })
                     ],                                                        
@@ -403,6 +405,17 @@ export const fifty2Table = (param1: tTableContentParam, param2: tTableContentPar
     const { label, width = 50, bold = false, style = undefined } = param1
     const { label: label2, width: width2 = 50, bold: bold2 = false, style: style2 = undefined } = param2
 
+    const paragraphChild = ( label: string, bold: boolean, style: tStyle ) => {
+        return (
+            new Paragraph({
+                children:[
+                    textRun(label, bold)
+                ], 
+                heading: style,
+                alignment: AlignmentType.CENTER
+            })
+        )
+    }
     return (
         new Table({
             borders: TableBorders.NONE,                                                                                        
@@ -415,13 +428,7 @@ export const fifty2Table = (param1: tTableContentParam, param2: tTableContentPar
                                 size: width
                             },
                             children: [
-                                new Paragraph({
-                                    children:[
-                                        textRun(label, bold)
-                                    ], 
-                                    heading: style,
-                                    alignment: AlignmentType.CENTER
-                                })
+                                typeof label === "string"?paragraphChild(label, bold, style):label
                             ]
                         }),
                         new TableCell({
@@ -430,13 +437,7 @@ export const fifty2Table = (param1: tTableContentParam, param2: tTableContentPar
                                 size: width2
                             },
                             children: [
-                                new Paragraph({
-                                    children:[
-                                        textRun(label2, bold2)
-                                    ], 
-                                    heading: style2,
-                                    alignment: AlignmentType.CENTER
-                                }),
+                                typeof label2 === "string"?paragraphChild(label2, bold2, style2):label2
                             ]
                         })
                     ],                                                        
