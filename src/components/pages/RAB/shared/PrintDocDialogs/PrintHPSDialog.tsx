@@ -6,7 +6,7 @@ import {
 import { saveAs } from "file-saver";
 import { Packer } from 'docx';
 import { PrintIcon } from "@/components/Icon";
-import { createPaymentReqDoc } from "@/lib/create-docx/paymentReqDoc"
+import { createHpsDoc } from "@/lib/create-docx/hpsDoc";
 import { displayIDR, createDateString, totalPrice } from "@/lib/functions";
 import { defaultCentre, defaultVendorCentre } from "@/variables-and-constants";
 import { IOperator, ICentre, OrderedItem, IVendor } from "@/types";
@@ -17,14 +17,9 @@ export type TItemForm = {
     hideForm: ()=>void;        
 }
 
-export const PrintPaymentReq:FC<TItemForm> = ({items, show, hideForm }) => {
-    const [ receiptNum, setReceiptNum ] = useState("058/MMN/RK/03/2024")
-    const [ receiptDate, setReceiptDate ] = useState(createDateString())    
-    const [ spkNum, setSpkNum ] = useState("080/4.11/PL.01.02/SPK/3/2024")
-    const [ spkDate, setSpkDate ] = useState(createDateString())
-    const [ payment, setPayment ] = useState({
-        value: 147370000, inWords: "Seratus Empat Puluh Tujuh Juta Tiga Ratus Tujuh Puluh Ribu Rupiah"
-    })
+export const PrintHPS:FC<TItemForm> = ({items, show, hideForm }) => {
+    const [ hpsNo, setHpsNo ] = useState("067/4.11/PL.02.01/HPS/3/2024")
+    const [ hpsDate, setHpsDate ] = useState(createDateString())
     const [ purpose, setPurpose ] = useState("Bantuan Atensi Alat Bantu di Kota Tangerang Sentra Mulya Jaya")
     const [ picData, setPicData ] = useState("")
 
@@ -44,7 +39,7 @@ export const PrintPaymentReq:FC<TItemForm> = ({items, show, hideForm }) => {
         try{
             const response = await fetch('/api/RAB/print-data', {
                 method: 'POST',
-                body: JSON.stringify({ filter, projection, limit, offset, logo: "MMN.jpg" }),
+                body: JSON.stringify({ filter, projection, limit, offset, logo: "KemensosLogo.png" }),
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -105,7 +100,7 @@ export const PrintPaymentReq:FC<TItemForm> = ({items, show, hideForm }) => {
             {(onClose) => (
                 <>
                 <ModalHeader className="flex justify-between items-center">
-                    <span>Permohonan Pembayaran</span>
+                    <span>Harga Perkiraan Sendiri/Owner Estimation</span>
                     <div className="flex">
                                                
                     </div>                                        
@@ -115,29 +110,16 @@ export const PrintPaymentReq:FC<TItemForm> = ({items, show, hideForm }) => {
                         <div className="w-full flex flex-wrap mb-2">
                             <Input
                                 placeholder={``}
-                                label="No. Kuitansi"                        
+                                label="No. HPS"                        
                                 variant="bordered"
                                 size="sm"
-                                className="basis-1/2 md:basis-1/4"
-                                value={receiptNum}                                    
-                                onChange={(e)=>{setReceiptNum(e.target.value)}}                                
+                                className="basis-full md:basis-2/3"
+                                value={hpsNo}                                    
+                                onChange={(e)=>{setHpsNo(e.target.value)}}                                
                             />                            
-                            <DatePicker label="Tanggal Kuitansi" className="basis-1/2 md:basis-1/4" 
-                                value={receiptDate} 
-                                onChange={setReceiptDate}
-                            />                                  
-                            <Input
-                                placeholder={``}
-                                label="No. SPK"                        
-                                variant="bordered"
-                                size="sm"
-                                className="basis-1/2 md:basis-1/4"
-                                value={spkNum}                                    
-                                onChange={(e)=>{setSpkNum(e.target.value)}}                                
-                            />
-                            <DatePicker label="Tanggal SPK" className="basis-1/2 md:basis-1/4" 
-                                value={receiptDate} 
-                                onChange={setSpkDate}
+                            <DatePicker label="Tanggal" className="basis-full md:basis-1/3" 
+                                value={hpsDate} 
+                                onChange={setHpsDate}
                             />               
                             <Select                        
                                 label="Sentra"
@@ -156,7 +138,7 @@ export const PrintPaymentReq:FC<TItemForm> = ({items, show, hideForm }) => {
                                     </SelectItem>
                                     ))}
                             </Select>
-                            <Select                        
+                            {/*<Select                        
                                 label="Vendor"
                                 variant="bordered"
                                 placeholder="Pilih Vendor"
@@ -172,33 +154,33 @@ export const PrintPaymentReq:FC<TItemForm> = ({items, show, hideForm }) => {
                                         {c.name}
                                     </SelectItem>
                                     ))}
-                            </Select>                        
-                            <Divider className="my-2"/>                                                                                        
-                                <Select                        
-                                    label="Pejabat Pembuat Komitmen"
-                                    variant="bordered"
-                                    placeholder="Pilih Pejabat"
-                                    selectedKeys={[decidingOperatorNip]}
-                                    className="basis-full md:basis-1/2"
-                                    onChange={
-                                        (e:ChangeEvent<HTMLSelectElement>)=>{
-                                            setDecidingOperator(e.target.value)
-                                    }}
-                                >
-                                    {operators.map((operator) => (
-                                        <SelectItem key={operator.NIP}>
-                                            {operator.name}
-                                        </SelectItem>
-                                        ))}
-                                </Select>
-                                <Input
-                                    label="Owner Vendor"                        
-                                    variant="bordered"
-                                    size="sm"
-                                    className="basis-full md:basis-1/2"
-                                    value={vendor.owner.name}
-                                    isDisabled
-                                />
+                            </Select> */}                       
+                                                                                                                    
+                            <Select                        
+                                label="Pejabat Pembuat Komitmen"
+                                variant="bordered"
+                                placeholder="Pilih Pejabat"
+                                selectedKeys={[decidingOperatorNip]}
+                                className="basis-full md:basis-1/2"
+                                onChange={
+                                    (e:ChangeEvent<HTMLSelectElement>)=>{
+                                        setDecidingOperator(e.target.value)
+                                }}
+                            >
+                                {operators.map((operator) => (
+                                    <SelectItem key={operator.NIP}>
+                                        {operator.name}
+                                    </SelectItem>
+                                    ))}
+                            </Select>
+                            {/*<Input
+                                label="Owner Vendor"                        
+                                variant="bordered"
+                                size="sm"
+                                className="basis-full md:basis-1/2"
+                                value={vendor.owner.name}
+                                isDisabled
+                            />*/}
                             <Divider className="my-2" />
                                 <Input
                                     placeholder={``}
@@ -208,27 +190,7 @@ export const PrintPaymentReq:FC<TItemForm> = ({items, show, hideForm }) => {
                                     className="basis-full"
                                     value={purpose}                                    
                                     onChange={(e)=>{setPurpose(e.target.value)}}                                    
-                                />                                                                                            
-                                <Input
-                                    placeholder={``}
-                                    label="Nilai"                        
-                                    variant="bordered"
-                                    size="sm"
-                                    className="basis-full md:basis-1/2"
-                                    value={payment.value.toString()}                                    
-                                    onChange={(e)=>{setPayment({...payment, value: parseInt(e.target.value)})}}
-                                    description={displayIDR(payment.value)}
-                                />
-                                <Input
-                                    placeholder={``}
-                                    label="Nilai Kontrak"                        
-                                    variant="bordered"
-                                    size="sm"
-                                    className="basis-full md:basis-1/2"
-                                    value={payment.inWords}                                    
-                                    onChange={(e)=>{setPayment({...payment, inWords: e.target.value})}}
-                                    description={`Nilai dari angka ${displayIDR(payment.value)}`}
-                                />                                
+                                />                                  
                         </div>                                        
                     </div>
                 </ModalBody>
@@ -238,21 +200,17 @@ export const PrintPaymentReq:FC<TItemForm> = ({items, show, hideForm }) => {
                         isDisabled={picData === ""}
                         onPress={()=>{
                             const decidingOperator = operators.find((dOp:IOperator) => dOp.NIP === decidingOperatorNip)
-
-                            const {doc} = createPaymentReqDoc(
+                            const { doc } = createHpsDoc(
                                 {
-                                    receiptNum, date: receiptDate
+                                    hpsNo, date: hpsDate,
+                                    
                                 },
-                                {
-                                    spkNum, date: spkDate
-                                },                               
-                                centre?centre:defaultCentre, decidingOperator as IOperator,                              
-                                vendor as IVendor,                            
-                                payment, purpose,   
+                                centre as ICentre, decidingOperator as IOperator,
+                                vendor as IVendor, purpose,
                                 picData
-                            )                            
+                            )                         
 
-                            saveDocumentToFile(doc, `permohonan-bayar-${vendor.name}.docx`)
+                            saveDocumentToFile(doc, `hps-${purpose}.docx`)
                         }}
                     >
                         Cetak

@@ -7,6 +7,7 @@ import { PrintIcon } from "@/components/Icon";
 import { PrintBAP } from "./BAPDialog";
 import { PrintReceipt } from "./ReceiptDialog";
 import { PrintPaymentReq } from "./PaymentReqDialog";
+import { PrintHPS } from "./PrintHPSDialog";
 import { IRABMultiPerson, IRABCharityOrg, PersonRecipientWItems } from "@/types"
 
 type TPrintDocs = {    
@@ -46,7 +47,9 @@ export const PrintDocs:FC<TPrintDocs> = ({ RAB, show, hideForm }) => {
                     >
                         BAP
                     </Button>
-                    <Button className="basis-full md:basis-1/4" size="md">
+                    <Button className="basis-full md:basis-1/4" size="md" color="primary"
+                        onPress={()=>{setPrintDoc("HPS")}}
+                    >
                         HPS
                     </Button>
                     <Button className="basis-full md:basis-1/4" size="md" color="primary"
@@ -82,6 +85,10 @@ export const PrintDocs:FC<TPrintDocs> = ({ RAB, show, hideForm }) => {
         {
             printDoc === "paymentReq" &&
             <PrintPaymentReq items={items} show={printDoc === "paymentReq"} hideForm={()=>{setPrintDoc("")}} />
+        }
+        {
+            printDoc === "HPS" &&
+            <PrintHPS items={items} show={printDoc === "HPS"} hideForm={()=>{setPrintDoc("")}} />
         }
         </>
     )
