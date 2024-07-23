@@ -155,24 +155,6 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                     ))}
                             </Select>
                             <Select                        
-                                label="Vendor"
-                                variant="bordered"
-                                placeholder="Pilih Vendor"
-                                selectedKeys={[vendorName]}
-                                className="basis-full md:basis-1/2"
-                                onChange={
-                                    (e:ChangeEvent<HTMLSelectElement>)=>{
-                                        setVendorName(e.target.value)
-                                }}
-                            >
-                                {vendors.map((c) => (
-                                    <SelectItem key={c.name}>
-                                        {c.name}
-                                    </SelectItem>
-                                    ))}
-                            </Select>                        
-                            <Divider className="my-2"/>                                                                                        
-                                <Select                        
                                     label="Pejabat Pembuat Komitmen"
                                     variant="bordered"
                                     placeholder="Pilih Pejabat"
@@ -186,6 +168,24 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                     {operators.map((operator) => (
                                         <SelectItem key={operator.NIP}>
                                             {operator.name}
+                                        </SelectItem>
+                                        ))}
+                                </Select>                                                    
+                            <Divider className="my-2"/>                                                                                        
+                                <Select                        
+                                    label="Vendor"
+                                    variant="bordered"
+                                    placeholder="Pilih Vendor"
+                                    selectedKeys={[vendorName]}
+                                    className="basis-full md:basis-1/2"
+                                    onChange={
+                                        (e:ChangeEvent<HTMLSelectElement>)=>{
+                                            setVendorName(e.target.value)
+                                    }}
+                                >
+                                    {vendors.map((c) => (
+                                        <SelectItem key={c.name}>
+                                            {c.name}
                                         </SelectItem>
                                         ))}
                                 </Select>

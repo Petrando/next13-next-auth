@@ -157,37 +157,37 @@ export const PrintPaymentReq:FC<TItemForm> = ({items, show, hideForm }) => {
                                     ))}
                             </Select>
                             <Select                        
-                                label="Vendor"
+                                label="Pejabat Pembuat Komitmen"
                                 variant="bordered"
-                                placeholder="Pilih Vendor"
-                                selectedKeys={[vendorName]}
+                                placeholder="Pilih Pejabat"
+                                selectedKeys={[decidingOperatorNip]}
                                 className="basis-full md:basis-1/2"
                                 onChange={
                                     (e:ChangeEvent<HTMLSelectElement>)=>{
-                                        setVendorName(e.target.value)
+                                        setDecidingOperator(e.target.value)
                                 }}
                             >
-                                {vendors.map((c) => (
-                                    <SelectItem key={c.name}>
-                                        {c.name}
+                                {operators.map((operator) => (
+                                    <SelectItem key={operator.NIP}>
+                                        {operator.name}
                                     </SelectItem>
                                     ))}
-                            </Select>                        
-                            <Divider className="my-2"/>                                                                                        
+                            </Select>                                                    
+                            <Divider className="my-2"/>                                                                                                                        
                                 <Select                        
-                                    label="Pejabat Pembuat Komitmen"
+                                    label="Vendor"
                                     variant="bordered"
-                                    placeholder="Pilih Pejabat"
-                                    selectedKeys={[decidingOperatorNip]}
+                                    placeholder="Pilih Vendor"
+                                    selectedKeys={[vendorName]}
                                     className="basis-full md:basis-1/2"
                                     onChange={
                                         (e:ChangeEvent<HTMLSelectElement>)=>{
-                                            setDecidingOperator(e.target.value)
+                                            setVendorName(e.target.value)
                                     }}
                                 >
-                                    {operators.map((operator) => (
-                                        <SelectItem key={operator.NIP}>
-                                            {operator.name}
+                                    {vendors.map((c) => (
+                                        <SelectItem key={c.name}>
+                                            {c.name}
                                         </SelectItem>
                                         ))}
                                 </Select>
