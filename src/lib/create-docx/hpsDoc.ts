@@ -43,14 +43,6 @@ export const createHpsDoc = (
                     font: "Arial",
                     italic: true
                 }
-            },
-            heading4: {
-                run: {
-                    size: 22,                
-                    color: "000000",
-                    font: "Arial",
-                    bold: true
-                }
             },            
         }
     }

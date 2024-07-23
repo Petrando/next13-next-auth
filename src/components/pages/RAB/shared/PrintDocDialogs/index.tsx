@@ -8,6 +8,7 @@ import { PrintBAP } from "./BAPDialog";
 import { PrintReceipt } from "./ReceiptDialog";
 import { PrintPaymentReq } from "./PaymentReqDialog";
 import { PrintHPS } from "./PrintHPSDialog";
+import { PrintSPH } from "./SPHDialog";
 import { IRABMultiPerson, IRABCharityOrg, PersonRecipientWItems } from "@/types"
 
 type TPrintDocs = {    
@@ -62,7 +63,9 @@ export const PrintDocs:FC<TPrintDocs> = ({ RAB, show, hideForm }) => {
                     >
                         Kwitansi
                     </Button>
-                    <Button className="basis-full md:basis-1/4" size="md">
+                    <Button className="basis-full md:basis-1/4" size="md" color="primary"
+                        onPress={()=>{setPrintDoc("SPH")}}
+                    >
                         SPH
                     </Button>
                 </ModalBody>
@@ -89,6 +92,10 @@ export const PrintDocs:FC<TPrintDocs> = ({ RAB, show, hideForm }) => {
         {
             printDoc === "HPS" &&
             <PrintHPS items={items} show={printDoc === "HPS"} hideForm={()=>{setPrintDoc("")}} />
+        }
+        {
+            printDoc === "SPH" &&
+            <PrintSPH items={items} show={printDoc === "SPH"} hideForm={()=>{setPrintDoc("")}} />
         }
         </>
     )
