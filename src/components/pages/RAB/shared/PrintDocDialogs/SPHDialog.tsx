@@ -6,7 +6,7 @@ import {
 import { saveAs } from "file-saver";
 import { Packer } from 'docx';
 import { PrintIcon } from "@/components/Icon";
-import { createReceiptDoc } from "@/lib/create-docx/receiptDoc";
+import { createSphDoc } from "@/lib/create-docx/sphDoc";
 import { displayIDR, createDateString, totalPrice } from "@/lib/functions";
 import { defaultCentre, defaultVendorCentre } from "@/variables-and-constants";
 import { IOperator, ICentre, OrderedItem, IVendor } from "@/types";
@@ -224,7 +224,18 @@ export const PrintSPH:FC<TItemForm> = ({items, show, hideForm }) => {
                         onPress={()=>{
                             const decidingOperator = operators.find((dOp:IOperator) => dOp.NIP === decidingOperatorNip)                                                        
 
-                            //saveDocumentToFile(doc, `kuitansi-${vendor.name}.docx`)
+                            const { doc } = createSphDoc(
+                                {
+                                    sphNum, date: sphDate
+                                },
+                                centre as ICentre, decidingOperator as IOperator,
+                                vendor as IVendor,
+                                value,
+                                purpose,
+                                picData
+                            )
+                            
+                            saveDocumentToFile(doc, `SPH-${vendor.name}.docx`)
                         }}
                     >
                         Cetak
