@@ -1,14 +1,13 @@
 import { FC, useState } from "react"
 import {
-    Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,  
-        Input, Divider, DatePicker, Select, SelectItem, Checkbox
+    Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,          
     } from "@nextui-org/react";
-import { PrintIcon } from "@/components/Icon";
 import { PrintBAP } from "./BAPDialog";
 import { PrintReceipt } from "./ReceiptDialog";
 import { PrintPaymentReq } from "./PaymentReqDialog";
 import { PrintHPS } from "./PrintHPSDialog";
 import { PrintSPH } from "./SPHDialog";
+import { PrintSJ } from "./SJDialog";
 import { IRABMultiPerson, IRABCharityOrg, PersonRecipientWItems } from "@/types"
 
 type TPrintDocs = {    
@@ -68,6 +67,11 @@ export const PrintDocs:FC<TPrintDocs> = ({ RAB, show, hideForm }) => {
                     >
                         SPH
                     </Button>
+                    <Button className="basis-full md:basis-1/4" size="md" color="primary"
+                        onPress={()=>{setPrintDoc("SJ")}}
+                    >
+                        Surat Jalan
+                    </Button>
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" size="md" onPress={hideForm}>
@@ -96,6 +100,10 @@ export const PrintDocs:FC<TPrintDocs> = ({ RAB, show, hideForm }) => {
         {
             printDoc === "SPH" &&
             <PrintSPH items={items} show={printDoc === "SPH"} hideForm={()=>{setPrintDoc("")}} />
+        }
+        {
+            printDoc === "SJ" &&
+            <PrintSJ items={items} show={printDoc === "SJ"} hideForm={()=>{setPrintDoc("")}} />
         }
         </>
     )
