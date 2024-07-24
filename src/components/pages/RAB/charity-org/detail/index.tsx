@@ -193,10 +193,10 @@ export const RABDetail = () => {
                         <Button color="primary" 
                             size="sm"
                             onPress={()=>{setPrintDocs(true)}}
-                            startContent={<CogIcon className="size-4"/>}
+                            startContent={<PrintIcon className="size-4"/>}
                             isDisabled={fetchState === "loading"}                                        
                         >
-                            Barang
+                            Dokumen
                         </Button>                    
                     </div>
                 }
