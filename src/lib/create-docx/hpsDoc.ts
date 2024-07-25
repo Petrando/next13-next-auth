@@ -159,32 +159,32 @@ export const createHpsDoc = (
                     }),
                     new Paragraph(""),
                     fifty2Table(
-                        { label: ""},
+                        { content: ""},
                         {
-                            label: "Disahkan Di : Jakarta",
+                            content: "Disahkan Di : Jakarta",
                             style: HeadingLevel.HEADING_2
                         }
                     ),
                     fifty2Table(
-                        { label: ""},
+                        { content: ""},
                         {
-                            label: `Pada Tanggal ${todate} ${bulan} ${year}`,
+                            content: `Pada Tanggal ${todate} ${bulan} ${year}`,
                             style: HeadingLevel.HEADING_2                            
                         }
                     ),
                     new Paragraph(""),
                     fifty2Table(
-                        { label: ""},
+                        { content: ""},
                         {
-                            label: "Pejabat Pembuat Komitmen",
+                            content: "Pejabat Pembuat Komitmen",
                             style: HeadingLevel.HEADING_2
                             
                         }
                     ),
                     fifty2Table(
-                        { label: ""},
+                        { content: ""},
                         {
-                            label: `Sentra "${centre.name}" di Jakarta`,
+                            content: `Sentra "${centre.name}" di Jakarta`,
                             style: HeadingLevel.HEADING_3
                             
                         }
@@ -193,18 +193,18 @@ export const createHpsDoc = (
                     new Paragraph(""),
                     new Paragraph(""),                                                                               
                     fifty2Table(
-                        { label: ""},
+                        { content: ""},
                         {
-                            label: `${decidingOperator.name}`,
+                            content: `${decidingOperator.name}`,
                             bold: true,
                             style: HeadingLevel.HEADING_2
                             
                         }
                     ),
                     fifty2Table(
-                        { label: ""},
+                        { content: ""},
                         {
-                            label: `NIP. ${decidingOperator.NIP}`,
+                            content: `NIP. ${decidingOperator.NIP}`,
                             style: HeadingLevel.HEADING_2
                             
                         }

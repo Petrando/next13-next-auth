@@ -367,25 +367,25 @@ export const createSjDoc = (
                     }),
                     new Paragraph(""),
                     fifty2Table(
-                        { label: ""},
-                        { label: `Jakarta, ${todate} ${bulan} ${year}`, style: HeadingLevel.HEADING_5}
+                        { content: ""},
+                        { content: `Jakarta, ${todate} ${bulan} ${year}`, style: HeadingLevel.HEADING_5}
                     ),
                     new Paragraph(""),
                     new Paragraph(""),                                                          
                     fifty2Table(
-                        { label: sendTo, style: HeadingLevel.HEADING_5 },
-                        { label: vendor.name, style: HeadingLevel.HEADING_5 }
+                        { content: sendTo, style: HeadingLevel.HEADING_5 },
+                        { content: vendor.name, style: HeadingLevel.HEADING_5 }
                     ),
                     new Paragraph(""),
                     new Paragraph(""),
                     new Paragraph(""),
                     fifty2Table(
-                        { label: "", style: HeadingLevel.HEADING_5 },
-                        { label: vendor.owner.name, style: HeadingLevel.HEADING_6, bold: true }
+                        { content: "", style: HeadingLevel.HEADING_5 },
+                        { content: vendor.owner.name, style: HeadingLevel.HEADING_6, bold: true }
                     ),
                     fifty2Table(
-                        { label: "", style: HeadingLevel.HEADING_5 },
-                        { label: vendor.owner.rank, style: HeadingLevel.HEADING_5 }
+                        { content: "", style: HeadingLevel.HEADING_5 },
+                        { content: vendor.owner.rank, style: HeadingLevel.HEADING_5 }
                     ),
                     new Paragraph(""),
                     new Paragraph({

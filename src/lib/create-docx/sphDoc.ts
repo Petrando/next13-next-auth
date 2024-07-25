@@ -144,37 +144,37 @@ export const createSphDoc = (
                     new Paragraph(""),
                     fifty2Table(
                         {
-                            label: tableAsContent(
-                                { label:"Nomor" }, 
-                                { label: sph.sphNum },
+                            content: tableAsContent(
+                                { content:"Nomor" }, 
+                                { content: sph.sphNum },
                                 100, HeadingLevel.HEADING_3
                             ),
                         },
                         {
-                            label: `Jakarta, ${todate} ${bulan} ${year}`,
+                            content: `Jakarta, ${todate} ${bulan} ${year}`,
                             style: HeadingLevel.HEADING_3
                         }
                     ),
                     fifty2Table(
                         {
-                            label: tableAsContent(
-                                { label:"Lampiran" }, 
-                                { label: "1 (satu) berkas" },
+                            content: tableAsContent(
+                                { content:"Lampiran" }, 
+                                { content: "1 (satu) berkas" },
                                 100, HeadingLevel.HEADING_3
                             )
                         },
-                        { label: ""}
+                        { content: ""}
                     ),
                     fifty2Table(
                         {
-                            label: tableAsContent(
-                                { label:"Perihal" }, 
-                                { label: "Surat Penawaran Harga", bold: true },
+                            content: tableAsContent(
+                                { content:"Perihal" }, 
+                                { content: "Surat Penawaran Harga", bold: true },
                                 100, HeadingLevel.HEADING_3
                             )
                         },
                         {
-                            label: ""
+                            content: ""
                         }
                     ),
                     new Paragraph({
@@ -199,10 +199,10 @@ export const createSphDoc = (
                     new Paragraph(""),
                     fifty2Table(
                         {
-                            label:""
+                            content:""
                         },
                         {
-                            label: vendor.name, bold: true, style: HeadingLevel.HEADING_3
+                            content: vendor.name, bold: true, style: HeadingLevel.HEADING_3
                         }
                     ),
                     new Paragraph({
@@ -212,18 +212,18 @@ export const createSphDoc = (
                     }),                    
                     fifty2Table(
                         {
-                            label:""
+                            content:""
                         },
                         {
-                            label: vendor.owner.name, bold: true, style: HeadingLevel.HEADING_3
+                            content: vendor.owner.name, bold: true, style: HeadingLevel.HEADING_3
                         }
                     ),
                     fifty2Table(
                         {
-                            label:""
+                            content:""
                         },
                         {
-                            label: vendor.owner.rank, bold: true, style: HeadingLevel.HEADING_3
+                            content: vendor.owner.rank, bold: true, style: HeadingLevel.HEADING_3
                         }
                     )                                        
                 ]

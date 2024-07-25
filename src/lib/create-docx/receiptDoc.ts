@@ -137,10 +137,10 @@ export const createReceiptDoc = (
     const renderPoints = points.map((d:tPoint, i: number) =>         
         tableAsContent(
             {
-                label: d.about, bold: true
+                content: d.about, bold: true
             },
             {
-                label: d.description, bold: true
+                content: d.description, bold: true
             },
             100,
             HeadingLevel.HEADING_2
@@ -190,23 +190,23 @@ export const createReceiptDoc = (
                     new Paragraph(""),
                     new Paragraph(""),
                     fifty2Table(
-                        {label:""},
-                        {label:`Jakarta, ${todate} ${bulan} ${year}`, style: HeadingLevel.HEADING_5}
+                        {content:""},
+                        {content:`Jakarta, ${todate} ${bulan} ${year}`, style: HeadingLevel.HEADING_5}
                     ),
                     fifty2Table(
-                        {label:""},
-                        {label:vendor.name, style: HeadingLevel.HEADING_5}
+                        {content:""},
+                        {content:vendor.name, style: HeadingLevel.HEADING_5}
                     ),
                     new Paragraph(""),
                     new Paragraph(""),
                     new Paragraph(""),
                     fifty2Table(
-                        {label:""},
-                        {label:vendor.owner.name, style: HeadingLevel.HEADING_6, bold: true }
+                        {content:""},
+                        {content:vendor.owner.name, style: HeadingLevel.HEADING_6, bold: true }
                     ),
                     fifty2Table(
-                        {label:""},
-                        {label:vendor.owner.rank, style: HeadingLevel.HEADING_5}
+                        {content:""},
+                        {content:vendor.owner.rank, style: HeadingLevel.HEADING_5}
                     ),
                     
                 ]

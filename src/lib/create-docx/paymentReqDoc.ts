@@ -152,37 +152,37 @@ export const createPaymentReqDoc = (
                     new Paragraph(""),
                     fifty2Table(
                         {
-                            label: tableAsContent(
-                                { label:"Nomor" }, 
-                                { label: spk.spkNum },
+                            content: tableAsContent(
+                                { content:"Nomor" }, 
+                                { content: spk.spkNum },
                                 100, HeadingLevel.HEADING_3
                             ),
                         },
                         {
-                            label: `Jakarta, ${todate} ${bulan} ${year}`,
+                            content: `Jakarta, ${todate} ${bulan} ${year}`,
                             style: HeadingLevel.HEADING_3
                         }
                     ),
                     fifty2Table(
                         {
-                            label: tableAsContent(
-                                { label:"Lampiran" }, 
-                                { label: "1 (satu) berkas" },
+                            content: tableAsContent(
+                                { content:"Lampiran" }, 
+                                { content: "1 (satu) berkas" },
                                 100, HeadingLevel.HEADING_3
                             )
                         },
-                        { label: ""}
+                        { content: ""}
                     ),
                     fifty2Table(
                         {
-                            label: tableAsContent(
-                                { label:"Perihal" }, 
-                                { label: "Permohonan Pembayaran", bold: true },
+                            content: tableAsContent(
+                                { content:"Perihal" }, 
+                                { content: "Permohonan Pembayaran", bold: true },
                                 100, HeadingLevel.HEADING_3
                             )
                         },
                         {
-                            label: ""
+                            content: ""
                         }
                     ),
                     new Paragraph({
@@ -204,18 +204,18 @@ export const createPaymentReqDoc = (
                     new Paragraph(""),
                     fifty2Table(
                         {
-                            label:""
+                            content:""
                         },
                         {
-                            label: "Hormat Kami,", style: HeadingLevel.HEADING_3
+                            content: "Hormat Kami,", style: HeadingLevel.HEADING_3
                         }
                     ),
                     fifty2Table(
                         {
-                            label:""
+                            content:""
                         },
                         {
-                            label: vendor.name, bold: true, style: HeadingLevel.HEADING_3
+                            content: vendor.name, bold: true, style: HeadingLevel.HEADING_3
                         }
                     ),
                     new Paragraph({
@@ -225,18 +225,18 @@ export const createPaymentReqDoc = (
                     }),                    
                     fifty2Table(
                         {
-                            label:""
+                            content:""
                         },
                         {
-                            label: vendor.owner.name, bold: true, style: HeadingLevel.HEADING_3
+                            content: vendor.owner.name, bold: true, style: HeadingLevel.HEADING_3
                         }
                     ),
                     fifty2Table(
                         {
-                            label:""
+                            content:""
                         },
                         {
-                            label: vendor.owner.rank, bold: true, style: HeadingLevel.HEADING_3
+                            content: vendor.owner.rank, bold: true, style: HeadingLevel.HEADING_3
                         }
                     )                                      
                 ]

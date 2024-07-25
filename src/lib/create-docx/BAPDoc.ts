@@ -239,30 +239,30 @@ export const createBAPDoc = (
     const vendorAddress = vendorStreet + " "  + vendorKelurahan + " " + vendorKecamatan + " " + vendorKabupaten    
 
     const lineName = tableAsContent(
-        { label: "Nama", width: 15 }, 
-        { label: name, width: 80, bold: true }, 80, HeadingLevel.HEADING_3)
+        { content: "Nama", width: 15 }, 
+        { content: name, width: 80, bold: true }, 80, HeadingLevel.HEADING_3)
     const lineRank = tableAsContent(
-        { label: "Jabatan", width: 15 }, 
-        { label: "Pejabat Pembuat Komitmen", width: 80 }, 80, HeadingLevel.HEADING_3)
+        { content: "Jabatan", width: 15 }, 
+        { content: "Pejabat Pembuat Komitmen", width: 80 }, 80, HeadingLevel.HEADING_3)
     const lineAddress = tableAsContent(
-        { label: "Alamat", width: 15}, 
-        { label: centreAddress, width: 80 }, 80, HeadingLevel.HEADING_3)
+        { content: "Alamat", width: 15}, 
+        { content: centreAddress, width: 80 }, 80, HeadingLevel.HEADING_3)
     const lineParty = tableAsContent(
-        { label: "Selanjutnya disebut", width: 15}, 
-        { label: "PIHAK PERTAMA", width: 80 }, 80, HeadingLevel.HEADING_3)
+        { content: "Selanjutnya disebut", width: 15}, 
+        { content: "PIHAK PERTAMA", width: 80 }, 80, HeadingLevel.HEADING_3)
 
     const lineName2 = tableAsContent(
-        { label: "Nama", width: 15 }, 
-        { label: ownerName, width: 80, bold: true }, 80, HeadingLevel.HEADING_3)
+        { content: "Nama", width: 15 }, 
+        { content: ownerName, width: 80, bold: true }, 80, HeadingLevel.HEADING_3)
     const lineRank2 = tableAsContent(
-        { label: "Jabatan", width: 15 }, 
-        { label: `${ownerRank} ${vendorName}`, width: 80 }, 80, HeadingLevel.HEADING_3)
+        { content: "Jabatan", width: 15 }, 
+        { content: `${ownerRank} ${vendorName}`, width: 80 }, 80, HeadingLevel.HEADING_3)
     const lineAddress2 = tableAsContent(
-        { label: "Alamat", width: 15}, 
-        { label: vendorAddress, width: 80 }, 80, HeadingLevel.HEADING_3)
+        { content: "Alamat", width: 15}, 
+        { content: vendorAddress, width: 80 }, 80, HeadingLevel.HEADING_3)
     const lineParty2 = tableAsContent(
-        { label: "Selanjutnya disebut", width: 15}, 
-        { label: "PIHAK KEDUA", width: 80 }, 80, HeadingLevel.HEADING_3)
+        { content: "Selanjutnya disebut", width: 15}, 
+        { content: "PIHAK KEDUA", width: 80 }, 80, HeadingLevel.HEADING_3)
 
     const { gig, program, satKer, instansi } = gigData
     const {
@@ -341,8 +341,8 @@ export const createBAPDoc = (
                                 "a",
                                 [
                                     tableAsContent(
-                                        { label: "No dan Tanggal DIPA", width: 20 }, 
-                                        { label: `${dipa.dipaNo} tanggal ${dipaTodate} ${dipaBulan} ${dipaYear}`, width: 80, }, 100, HeadingLevel.HEADING_3
+                                        { content: "No dan Tanggal DIPA", width: 20 }, 
+                                        { content: `${dipa.dipaNo} tanggal ${dipaTodate} ${dipaBulan} ${dipaYear}`, width: 80, }, 100, HeadingLevel.HEADING_3
                                     ),                                        
                                 ]
                             ),
@@ -350,12 +350,12 @@ export const createBAPDoc = (
                                 "b",
                                 [
                                     tableAsContent(
-                                        { label: "Nilai Kontrak ", width: 20 }, 
-                                        { label: `${displayIDR(payments.contractValue.value)}`, width: 75, }, 100, HeadingLevel.HEADING_3
+                                        { content: "Nilai Kontrak ", width: 20 }, 
+                                        { content: `${displayIDR(payments.contractValue.value)}`, width: 75, }, 100, HeadingLevel.HEADING_3
                                     ),
                                     tableAsContent(
-                                        { label: "", width: 15 }, 
-                                        { label: `(${payments.contractValue.inWords})`, width: 75, italics: true }, 100, HeadingLevel.HEADING_3
+                                        { content: "", width: 15 }, 
+                                        { content: `(${payments.contractValue.inWords})`, width: 75, italics: true }, 100, HeadingLevel.HEADING_3
                                     )
                                 ]
                             ),
@@ -363,8 +363,8 @@ export const createBAPDoc = (
                                 "c",
                                 [
                                     tableAsContent(
-                                        { label: "Uraian Pekerjaan ", width: 20 }, 
-                                        { label: `${gig}`, width: 75, italics: true }, 100, HeadingLevel.HEADING_3
+                                        { content: "Uraian Pekerjaan ", width: 20 }, 
+                                        { content: `${gig}`, width: 75, italics: true }, 100, HeadingLevel.HEADING_3
                                     )
                                 ]
                             ),
@@ -372,8 +372,8 @@ export const createBAPDoc = (
                                 "d",
                                 [
                                     tableAsContent(
-                                        { label: "Lokasi ", width: 20 }, 
-                                        { label: `${centreAddress}`, width: 75 }, 100, HeadingLevel.HEADING_3
+                                        { content: "Lokasi ", width: 20 }, 
+                                        { content: `${centreAddress}`, width: 75 }, 100, HeadingLevel.HEADING_3
                                     )
                                 ]
                             ),
@@ -381,8 +381,8 @@ export const createBAPDoc = (
                                 "e",
                                 [
                                     tableAsContent(
-                                        { label: "Program ", width: 20 }, 
-                                        { label: `${program}`, width: 75 }, 100, HeadingLevel.HEADING_3
+                                        { content: "Program ", width: 20 }, 
+                                        { content: `${program}`, width: 75 }, 100, HeadingLevel.HEADING_3
                                     )
                                 ]
                             ),
@@ -390,8 +390,8 @@ export const createBAPDoc = (
                                 "f",
                                 [
                                     tableAsContent(
-                                        { label: "Unit Organisasi / Satker ", width: 20 }, 
-                                        { label: `${satKer}`, width: 75 }, 100, HeadingLevel.HEADING_3
+                                        { content: "Unit Organisasi / Satker ", width: 20 }, 
+                                        { content: `${satKer}`, width: 75 }, 100, HeadingLevel.HEADING_3
                                     )
                                 ]
                             ),
@@ -399,8 +399,8 @@ export const createBAPDoc = (
                                 "g",
                                 [
                                     tableAsContent(
-                                        { label: "Instansi / Lembaga ", width: 20 }, 
-                                        { label: `${instansi}`, width: 75 }, 100, HeadingLevel.HEADING_3
+                                        { content: "Instansi / Lembaga ", width: 20 }, 
+                                        { content: `${instansi}`, width: 75 }, 100, HeadingLevel.HEADING_3
                                     )
                                 ]
                             )
@@ -413,8 +413,8 @@ export const createBAPDoc = (
                                 "a",
                                 [
                                     tableAsContent(
-                                        { label: "Sesuai SPK", width: 20 }, 
-                                        { label: `${spkNo}`, width: 80, }, 100, HeadingLevel.HEADING_3
+                                        { content: "Sesuai SPK", width: 20 }, 
+                                        { content: `${spkNo}`, width: 80, }, 100, HeadingLevel.HEADING_3
                                     ), 
                                 ]
                             ),
@@ -440,8 +440,8 @@ export const createBAPDoc = (
                                                 "a",
                                                 [
                                                     tableAsContent(
-                                                        { label: "Pembayaran  s/d BAP ini (bruto)", width: 20 }, 
-                                                        { label: `${displayValue(paymentUntilNow)}`, width: 80, }, 100, HeadingLevel.HEADING_3
+                                                        { content: "Pembayaran  s/d BAP ini (bruto)", width: 20 }, 
+                                                        { content: `${displayValue(paymentUntilNow)}`, width: 80, }, 100, HeadingLevel.HEADING_3
                                                     )
                                                 ]
                                             ),
@@ -449,9 +449,9 @@ export const createBAPDoc = (
                                                 "b",
                                                 [
                                                     tableAsContent(
-                                                        { label: "Nilai Pekerjaan s/d BAP yang lalu", width: 20 }, 
+                                                        { content: "Nilai Pekerjaan s/d BAP yang lalu", width: 20 }, 
                                                         { 
-                                                            label: `${displayValue(valueUntilLastGig)}`, 
+                                                            content: `${displayValue(valueUntilLastGig)}`, 
                                                             width: 80, 
                                                         }, 100, HeadingLevel.HEADING_3
                                                     )
@@ -461,9 +461,9 @@ export const createBAPDoc = (
                                                 "c",
                                                 [
                                                     tableAsContent(
-                                                        { label: "Pembayaran BAP ini", width: 20 }, 
+                                                        { content: "Pembayaran BAP ini", width: 20 }, 
                                                         { 
-                                                            label: `${displayValue(currentPayment)}`, 
+                                                            content: `${displayValue(currentPayment)}`, 
                                                             width: 80, 
                                                         }, 100, HeadingLevel.HEADING_3
                                                     )
@@ -482,9 +482,9 @@ export const createBAPDoc = (
                                                         "a",
                                                         [
                                                             tableAsContent(
-                                                                { label: "Uang Jaminan / Retensi", width: 20 }, 
+                                                                { content: "Uang Jaminan / Retensi", width: 20 }, 
                                                                 { 
-                                                                    label: `${displayValue(retention)}`, 
+                                                                    content: `${displayValue(retention)}`, 
                                                                     width: 80, 
                                                                 }, 100, HeadingLevel.HEADING_3
                                                             )
@@ -494,9 +494,9 @@ export const createBAPDoc = (
                                                         "b",
                                                         [
                                                             tableAsContent(
-                                                                { label: "Pengembalian Uang Muka", width: 20 }, 
+                                                                { content: "Pengembalian Uang Muka", width: 20 }, 
                                                                 { 
-                                                                    label: `${displayValue(refund)}`, 
+                                                                    content: `${displayValue(refund)}`, 
                                                                     width: 80, 
                                                                 }, 100, HeadingLevel.HEADING_3
                                                             )
@@ -506,9 +506,9 @@ export const createBAPDoc = (
                                                         "c",
                                                         [
                                                             tableAsContent(
-                                                                { label: "Jumlah Potongan", width: 20 }, 
+                                                                { content: "Jumlah Potongan", width: 20 }, 
                                                                 { 
-                                                                    label: `${displayValue(retention + refund)}`, 
+                                                                    content: `${displayValue(retention + refund)}`, 
                                                                     width: 80, 
                                                                 }, 100, HeadingLevel.HEADING_3
                                                             )
@@ -518,9 +518,9 @@ export const createBAPDoc = (
                                                         "d",
                                                         [
                                                             tableAsContent(
-                                                                { label: "Pembayaran Fisik BAP ini	(Netto)", width: 20 }, 
+                                                                { content: "Pembayaran Fisik BAP ini	(Netto)", width: 20 }, 
                                                                 { 
-                                                                    label: `${displayValue(currentNetPayment)}`, 
+                                                                    content: `${displayValue(currentNetPayment)}`, 
                                                                     width: 80, 
                                                                 }, 100, HeadingLevel.HEADING_3
                                                             )
@@ -530,9 +530,9 @@ export const createBAPDoc = (
                                                         "e",
                                                         [
                                                             tableAsContent(
-                                                                { label: "PPN 11%", width: 20 }, 
+                                                                { content: "PPN 11%", width: 20 }, 
                                                                 { 
-                                                                    label: `${displayValue(taxes)}`, 
+                                                                    content: `${displayValue(taxes)}`, 
                                                                     width: 80, 
                                                                 }, 100, HeadingLevel.HEADING_3
                                                             )
@@ -580,19 +580,19 @@ export const createBAPDoc = (
                     new Paragraph(""),
                     new Paragraph(""),
                     fifty2Table(
-                        { label:"", style: HeadingLevel.HEADING_3 },
-                        { label: `Jakarta ${todate} ${bulan} ${year}`, style: HeadingLevel.HEADING_3}
+                        { content:"", style: HeadingLevel.HEADING_3 },
+                        { content: `Jakarta ${todate} ${bulan} ${year}`, style: HeadingLevel.HEADING_3}
                     ),
                     fifty2Table(
-                        { label: "PIHAK KEDUA", bold: true, style: HeadingLevel.HEADING_3 },
-                        { label: `PIHAK PERTAMA`, bold: true, style: HeadingLevel.HEADING_3 }
+                        { content: "PIHAK KEDUA", bold: true, style: HeadingLevel.HEADING_3 },
+                        { content: `PIHAK PERTAMA`, bold: true, style: HeadingLevel.HEADING_3 }
                     ),
                     new Paragraph(""),
                     new Paragraph(""),
                     new Paragraph(""),
                     fifty2Table(
-                        { label: `${ownerName}`, bold: true, style: HeadingLevel.HEADING_3 },
-                        { label: `${name}`, bold: true, style: HeadingLevel.HEADING_3 }
+                        { content: `${ownerName}`, bold: true, style: HeadingLevel.HEADING_3 },
+                        { content: `${name}`, bold: true, style: HeadingLevel.HEADING_3 }
                     ),
                 ]
             }

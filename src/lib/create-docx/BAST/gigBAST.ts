@@ -135,20 +135,20 @@ export const createGigBASTDoc = (
         ]
     }
 
-    const gigTable = tableAsContent({ label: "Pekerjaan" }, {label: gig })
-    const bastNoTable = tableAsContent({ label: "Nomor" }, { label: bastNo })
+    const gigTable = tableAsContent({ content: "Pekerjaan" }, {content: gig })
+    const bastNoTable = tableAsContent({ content: "Nomor" }, { content: bastNo })
 
-    const locationTable = tableAsContent({ label:"Lokasi" }, { label: location })
-    const dateTable = tableAsContent({ label: "Tanggal" }, { label: "25 Maret 2024" })
-    const attachmentTable = tableAsContent({ label: "Lampiran" }, { label: "-" })
+    const locationTable = tableAsContent({ content:"Lokasi" }, { content: location })
+    const dateTable = tableAsContent({ content: "Tanggal" }, { content: "25 Maret 2024" })
+    const attachmentTable = tableAsContent({ content: "Lampiran" }, { content: "-" })
 
     const { NIP, name, rank } = decidingOperator
-    const line1 = tableAsContent({ label: "Nama", width: 15 }, { label: name, width: 80, bold: true }, 80, HeadingLevel.HEADING_6)
-    const line2 = tableAsContent({ label: "Jabatan", width: 15 }, { label: "Pejabat Pembuat Komitmen", width: 80 }, 80, HeadingLevel.HEADING_6)
-    const line3 = tableAsContent({ label: "Alamat", width: 15}, { label: "Jl. Tat Twam Asi No. 47 Komplek Depsos Pasar Rebo Jakarta Timur", width: 80 }, 80, HeadingLevel.HEADING_6)
+    const line1 = tableAsContent({ content: "Nama", width: 15 }, { content: name, width: 80, bold: true }, 80, HeadingLevel.HEADING_6)
+    const line2 = tableAsContent({ content: "Jabatan", width: 15 }, { content: "Pejabat Pembuat Komitmen", width: 80 }, 80, HeadingLevel.HEADING_6)
+    const line3 = tableAsContent({ content: "Alamat", width: 15}, { content: "Jl. Tat Twam Asi No. 47 Komplek Depsos Pasar Rebo Jakarta Timur", width: 80 }, 80, HeadingLevel.HEADING_6)
     const line4 = tableAsContent(
-        { label: "", width: 15 }, 
-        { label: "Dalam hal ini bertindak untuk dan atas nama Sentra ’’Mulya Jaya’’ di Jakarta, yang selanjutnya disebut PIHAK PERTAMA", bold: true, width: 80 }, 80, HeadingLevel.HEADING_6)    
+        { content: "", width: 15 }, 
+        { content: "Dalam hal ini bertindak untuk dan atas nama Sentra ’’Mulya Jaya’’ di Jakarta, yang selanjutnya disebut PIHAK PERTAMA", bold: true, width: 80 }, 80, HeadingLevel.HEADING_6)    
 
     const { 
         owner: { name: ownerName, rank: ownerRank }, 
@@ -160,80 +160,80 @@ export const createGigBASTDoc = (
         name: vendorName
     } = vendor
     const line21 = tableAsContent(
-        { label: "Nama", width: 15 }, 
-        { label: ownerName, width: 80, bold: true }, 80, HeadingLevel.HEADING_6
+        { content: "Nama", width: 15 }, 
+        { content: ownerName, width: 80, bold: true }, 80, HeadingLevel.HEADING_6
     )
     const line22 = tableAsContent(
-        { label: "Jabatan", width: 15 }, 
-        { label: `${ownerRank} ${vendor.name}`, width: 80 }, 80, HeadingLevel.HEADING_6
+        { content: "Jabatan", width: 15 }, 
+        { content: `${ownerRank} ${vendor.name}`, width: 80 }, 80, HeadingLevel.HEADING_6
     )
     const line23 = tableAsContent(
-        { label: "Alamat", width: 15}, 
-        { label: `${vendorStreet} desa/kelurahan ${vendorKelurahan}, kec. ${vendorKecamatan}, 
+        { content: "Alamat", width: 15}, 
+        { content: `${vendorStreet} desa/kelurahan ${vendorKelurahan}, kec. ${vendorKecamatan}, 
             ${vendorKabupaten}, provinsi ${vendorPropinsi}, kode pos: ${vendorPostCode}`, width: 80 }, 
         80, HeadingLevel.HEADING_6)
     const line24 = tableAsContent(
-        { label: "", width: 15 }, 
-        { label: `Dalam hal ini bertindak untuk dan atas nama ${vendorName} yang Selanjutnya disebut PIHAK KEDUA`, 
+        { content: "", width: 15 }, 
+        { content: `Dalam hal ini bertindak untuk dan atas nama ${vendorName} yang Selanjutnya disebut PIHAK KEDUA`, 
         bold: true, width: 80 }, 80, HeadingLevel.HEADING_6)        
     
     const { todate, hari, tanggal, bulan, tahun, year } = localizeDate(endDate)
     const { todate: todateStart, bulan: bulanStart,  year: yearStart } = localizeDate(startDate)
 
     const line31 = tableAsContent(
-        { label: "Pekerjaaan", width: 15 },
-        { label: gig, width: 80 },
+        { content: "Pekerjaaan", width: 15 },
+        { content: gig, width: 80 },
         100,
         HeadingLevel.HEADING_6
     )
     const line32 = tableAsContent(
-        { label: "Lokasi", width: 15 },
-        { label: location, width: 80 },
+        { content: "Lokasi", width: 15 },
+        { content: location, width: 80 },
         100,
         HeadingLevel.HEADING_6
     )
     const line33 = tableAsContent(
-        { label: "Daftar Isian", width: 15 },
-        { label: "Sentra ‘’Mulya Jaya’’ Di Jakarta", width: 80 },
+        { content: "Daftar Isian", width: 15 },
+        { content: `Sentra "Mulya Jaya" Di Jakarta`, width: 80 },
         100,
         HeadingLevel.HEADING_6
     )
     const line34 = tableAsContent(
-        { label: `Pelaksanaan Anggaran (DIPA) Tahun Anggaran ${year}`, width: 15 },
-        { label: year.toString(), width: 80 },
+        { content: `Pelaksanaan Anggaran (DIPA) Tahun Anggaran ${year}`, width: 15 },
+        { content: year.toString(), width: 80 },
         100,
         HeadingLevel.HEADING_6
     )
     const line35 = tableAsContent(
-        { label: "Kontraktor Pelaksana", width: 15 },
-        { label: vendorName, width: 80, bold: true },
+        { content: "Kontraktor Pelaksana", width: 15 },
+        { content: vendorName, width: 80, bold: true },
         100,
         HeadingLevel.HEADING_6
     )
     const line36 = tableAsContent(
-        { label: "Surat Perintah Kerja", width: 15 },
-        { label: `${spkNo} Tanggal ${todateStart} ${bulanStart} ${yearStart}`, width: 80 },
+        { content: "Surat Perintah Kerja", width: 15 },
+        { content: `${spkNo} Tanggal ${todateStart} ${bulanStart} ${yearStart}`, width: 80 },
         100,
         HeadingLevel.HEADING_6
     )
     
     const line41 = tableAsContent(
-        { label: "Biaya Pelaksanaan", width: 15 },
-        { label: `${displayIDR(total)} (${nominalInWords.nominal})`, width: 80, bold: true },
+        { content: "Biaya Pelaksanaan", width: 15 },
+        { content: `${displayIDR(total)} (${nominalInWords.nominal})`, width: 80, bold: true },
         100,
         HeadingLevel.HEADING_6
     )    
     const line42 = tableAsContent(
-        { label: "Jangka Waktu", width: 15 },
-        { label: `${dateDiff(
+        { content: "Jangka Waktu", width: 15 },
+        { content: `${dateDiff(
             new Date(startDate.year + "-" + startDate.month + "-" + startDate.day),
             new Date(endDate.year + "-" + endDate.month + "-" + endDate.day))} hari kerja`, width: 80 },
         100,
         HeadingLevel.HEADING_6
     )
     const line43 = tableAsContent(
-        { label: "Pelaksanaan", width: 15 },
-        { label: `${todateStart} ${bulanStart} sampai ${todate} ${bulan} ${year}`, width: 80 },
+        { content: "Pelaksanaan", width: 15 },
+        { content: `${todateStart} ${bulanStart} sampai ${todate} ${bulan} ${year}`, width: 80 },
         100,
         HeadingLevel.HEADING_6
     )
@@ -388,25 +388,25 @@ export const createGigBASTDoc = (
                     }),
                     lineBreaker("", 2),
                     fifty2Table(
-                        { label: "PIHAK KEDUA", style: HeadingLevel.HEADING_6 }, 
-                        { label: "PIHAK PERTAMA", style: HeadingLevel.HEADING_6 }
+                        { content: "PIHAK KEDUA", style: HeadingLevel.HEADING_6 }, 
+                        { content: "PIHAK PERTAMA", style: HeadingLevel.HEADING_6 }
                     ),
                     fifty2Table(
-                        { label: vendorName, bold: true, style: HeadingLevel.HEADING_6 }, 
-                        { label: "PEJABAT PENERIMA HASIL PEKERJAAN", style: HeadingLevel.HEADING_6 }
+                        { content: vendorName, bold: true, style: HeadingLevel.HEADING_6 }, 
+                        { content: "PEJABAT PENERIMA HASIL PEKERJAAN", style: HeadingLevel.HEADING_6 }
                     ),
                     fifty2Table(
-                        { label: "", style: HeadingLevel.HEADING_6 }, 
-                        { label: "Sentra Mulya Jaya di Jakarta", bold: true, style: HeadingLevel.HEADING_6 }
+                        { content: "", style: HeadingLevel.HEADING_6 }, 
+                        { content: "Sentra Mulya Jaya di Jakarta", bold: true, style: HeadingLevel.HEADING_6 }
                     ),
                     lineBreaker("", 3),
                     fifty2Table(
-                        { label: name, bold: true, style: HeadingLevel.HEADING_6 }, 
-                        { label: ownerName, bold: true, style: HeadingLevel.HEADING_6 }
+                        { content: name, bold: true, style: HeadingLevel.HEADING_6 }, 
+                        { content: ownerName, bold: true, style: HeadingLevel.HEADING_6 }
                     ),
                     fifty2Table(
-                        { label: ownerRank, style: HeadingLevel.HEADING_6 }, 
-                        { label: `NIP. ${NIP}`, style: HeadingLevel.HEADING_6 }
+                        { content: ownerRank, style: HeadingLevel.HEADING_6 }, 
+                        { content: `NIP. ${NIP}`, style: HeadingLevel.HEADING_6 }
                     ),
                 ],
             },
