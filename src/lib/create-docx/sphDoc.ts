@@ -179,19 +179,19 @@ export const createSphDoc = (
                     ),
                     new Paragraph({
                         children:[
-                            textRun("Kepada Yth :", false, 1),
-                            textRun(`Pejabat Pembuat Komitment Sentra "${centre.name}"`, true, 1),
-                            textRun('di', false, 1),
-                            textRun(`   ${centreAddress}`, false, 1, true),
+                            textRun({ text: "Kepada Yth :", lineBreak: 1}),
+                            textRun({ text: `Pejabat Pembuat Komitment Sentra "${centre.name}"`, lineBreak: 1}),
+                            textRun({ text: 'di', lineBreak: 1 }),
+                            textRun({ text: `   ${centreAddress}`, lineBreak: 1, italics: true}),
                             //first paragraph
-                            textRun(`Sehubungan dengan Pengadaan Langsung ${purpose} Sentra ${centre.name}, dan setelah kami pelajari dengan saksama Dokumen Pengadaan, dengan ini kami mengajukan penawaran untuk Pengadaan Bantuan Atensi Alat Bantu Di Kota Tangerang Sentra “${centre.name}” Di Jakarta Tahun 2024 `, false, 2),                            
-                            textRun(`${displayIDR(value.value)} (${value.inWords}).`, true),
+                            textRun({ text: `Sehubungan dengan Pengadaan Langsung ${purpose} Sentra ${centre.name}, dan setelah kami pelajari dengan saksama Dokumen Pengadaan, dengan ini kami mengajukan penawaran untuk Pengadaan Bantuan Atensi Alat Bantu Di Kota Tangerang Sentra “${centre.name}” Di Jakarta Tahun 2024 `, lineBreak: 2 }),                            
+                            textRun({ text: `${displayIDR(value.value)} (${value.inWords}).`, bold: true}),
                             //2nd paragraph
-                            textRun(`Penawaran ini sudah memperhatikan ketentuan dan persyaratan yang tercantum dalam Dokumen Pengadaan Langsung  untuk melaksanakan pekerjaan tersebut di atas.`, false, 2),
+                            textRun({ text: `Penawaran ini sudah memperhatikan ketentuan dan persyaratan yang tercantum dalam Dokumen Pengadaan Langsung  untuk melaksanakan pekerjaan tersebut di atas.`, lineBreak: 2 }),
                             //3rd paragraph
-                            textRun(`Kami akan melaksanakan pekerjaan tersebut dengan jangka waktu pelaksanaan pekerjaan Selama 8 Hari Kalender. Penawaran ini berlaku selama 14 (empat belas hari) hari kalender sejak tanggal surat penawaran ini. Surat Penawaran beserta lampirannya kami sampaikan sebanyak 1 (satu) rangkap dokumen asli.`, false, 2),
+                            textRun({ text: `Kami akan melaksanakan pekerjaan tersebut dengan jangka waktu pelaksanaan pekerjaan Selama 8 Hari Kalender. Penawaran ini berlaku selama 14 (empat belas hari) hari kalender sejak tanggal surat penawaran ini. Surat Penawaran beserta lampirannya kami sampaikan sebanyak 1 (satu) rangkap dokumen asli.`, lineBreak: 2 }),
                             //4th paragraph
-                            textRun(`Dengan disampaikannya Surat Penawaran ini, maka kami menyatakan sanggup dan akan tunduk pada semua ketentuan yang tercantum dalam Dokumen Pengadaan.`, false, 2)
+                            textRun({ text: `Dengan disampaikannya Surat Penawaran ini, maka kami menyatakan sanggup dan akan tunduk pada semua ketentuan yang tercantum dalam Dokumen Pengadaan.`, lineBreak: 2})
                         ],
                         heading: HeadingLevel.HEADING_3
                     }),
@@ -207,7 +207,7 @@ export const createSphDoc = (
                     ),
                     new Paragraph({
                         children:[
-                            textRun("", false, 3)
+                            textRun({text: "", lineBreak: 3 })
                         ]
                     }),                    
                     fifty2Table(

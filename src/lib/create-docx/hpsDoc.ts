@@ -113,9 +113,9 @@ export const createHpsDoc = (
                     header(logo, centre, HeadingLevel.HEADING_1, true),
                     new Paragraph({
                         children:[
-                            textRun("PENENTUAN STANDARD HARGA PERKIRAAN SENDIRI/OWNER’S ESTIMATE (HPS/OE)", false, 1),
-                            textRun(purpose.toUpperCase(), false, 1),
-                            textRun("TAHUN ANGGARAN 2024", false, 1)
+                            textRun({ text: "PENENTUAN STANDARD HARGA PERKIRAAN SENDIRI/OWNER’S ESTIMATE (HPS/OE)", lineBreak: 1 }),
+                            textRun({ text: purpose.toUpperCase(), lineBreak: 1 }),
+                            textRun({ text: "TAHUN ANGGARAN 2024", lineBreak: 1 })
                         ],                        
                         heading: HeadingLevel.HEADING_2,
                         alignment: AlignmentType.CENTER  
@@ -133,7 +133,7 @@ export const createHpsDoc = (
                     }),
                     new Paragraph({
                         children:[
-                            textRun(`Nomor : ${hps.hpsNo}`, true, 1)
+                            textRun({ text: `Nomor : ${hps.hpsNo}`, bold: true, lineBreak: 1 })
                         ],
                         heading: HeadingLevel.HEADING_2,
                         alignment: AlignmentType.CENTER
@@ -141,19 +141,19 @@ export const createHpsDoc = (
                     new Paragraph(""),
                     new Paragraph({
                         children: [
-                            textRun(`Berdasarkan ketentuan BAB III pasal 11 angka (1) huruf d Peraturan Presiden Republik Indonesia Nomor 12 tahun 2021 tentang Pengadaan Barang/Jasa Pemerintah dan Peraturan Presiden Republik Indonesia Nomor 12 tahun 2023 tentang Perubahan atas Peraturan Presiden Republik Indonesia Nomor 16 Tahun 2018 tentang Pengadaan Barang/Jasa Pemerintah bahwa pengguna barang/jasa wajib mempersiapkan Harga Perkiraan Sendiri (HPS/OE).`, false, 0)
+                            textRun({ text: `Berdasarkan ketentuan BAB III pasal 11 angka (1) huruf d Peraturan Presiden Republik Indonesia Nomor 12 tahun 2021 tentang Pengadaan Barang/Jasa Pemerintah dan Peraturan Presiden Republik Indonesia Nomor 12 tahun 2023 tentang Perubahan atas Peraturan Presiden Republik Indonesia Nomor 16 Tahun 2018 tentang Pengadaan Barang/Jasa Pemerintah bahwa pengguna barang/jasa wajib mempersiapkan Harga Perkiraan Sendiri (HPS/OE).`, lineBreak: 0 })
                         ],
                         heading: HeadingLevel.HEADING_2
                     }),
                     new Paragraph({
                         children: [
-                            textRun(`Sehubungan adanya rencana Pengadaan Bantuan Atensi Alat Bantu Di Kota Tangerang Sentra Mulya Jaya, Pejabat Pembuat Komitmen telah mengadakan penelitian harga dengan hasil sebagaimana terlampir, dengan spesifikasi bahan terlampir.`, false, 1)
+                            textRun({ text: `Sehubungan adanya rencana Pengadaan Bantuan Atensi Alat Bantu Di Kota Tangerang Sentra Mulya Jaya, Pejabat Pembuat Komitmen telah mengadakan penelitian harga dengan hasil sebagaimana terlampir, dengan spesifikasi bahan terlampir.`, lineBreak: 1 })
                         ],
                         heading: HeadingLevel.HEADING_2
                     }),
                     new Paragraph({
                         children: [
-                            textRun(`Demikian Harga Perkiraan Sendiri (HPS/OE) ini dibuat untuk dipergunakan sebagaimana mestinya.`, false, 1)
+                            textRun({ text: `Demikian Harga Perkiraan Sendiri (HPS/OE) ini dibuat untuk dipergunakan sebagaimana mestinya.`, lineBreak: 1 })
                         ],
                         heading: HeadingLevel.HEADING_2
                     }),

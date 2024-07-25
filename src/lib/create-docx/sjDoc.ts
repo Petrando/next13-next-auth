@@ -250,9 +250,9 @@ export const createSjDoc = (
                     ...header(logo, vendor, HeadingLevel.HEADING_3),
                     new Paragraph({
                         children: [
-                            textRun("Kepada Yth. ", false, 1),
-                            textRun(sendTo, false, 1),
-                            textRun(`Bersama ini kami kirimkan ${totalItem} unit. Perincian per barang adalah sebagai berikut : `, false, 2)
+                            textRun({ text: "Kepada Yth. ", lineBreak: 1 }),
+                            textRun({ text: sendTo, lineBreak: 1 }),
+                            textRun({ text: `Bersama ini kami kirimkan ${totalItem} unit. Perincian per barang adalah sebagai berikut : `, lineBreak: 2 })
                         ],
                         heading: HeadingLevel.HEADING_5,
                         alignment: AlignmentType.LEFT
@@ -390,8 +390,8 @@ export const createSjDoc = (
                     new Paragraph(""),
                     new Paragraph({
                         children: [
-                            textRun("Mengetahui", false, 1),
-                            textRun(`Sentra ${centre.name} di Jakarta`, false, 1)
+                            textRun({ text: "Mengetahui", lineBreak: 1}),
+                            textRun({ text: `Sentra ${centre.name} di Jakarta`, lineBreak: 1 })
                         ],
                         heading: HeadingLevel.HEADING_5,
                         alignment: AlignmentType.CENTER

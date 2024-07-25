@@ -333,12 +333,12 @@ export const createGigBASTDoc = (
                     new Paragraph(""),
                     new Paragraph({
                         children:[
-                            textRun("Pada hari ini, "),
-                            textRun(hari, true),
-                            textRun(" tanggal "), textRun(tanggal, true),
-                            textRun(" bulan "), textRun(bulan, true),
-                            textRun(" tahun "), textRun(tahun, true),
-                            textRun(", kami yang bertandatangan dibawah ini : ")
+                            textRun({ text: "Pada hari ini, "}),
+                            textRun({ text: hari, bold: true }),
+                            textRun({ text: " tanggal " }), textRun({ text: tanggal, bold: true }),
+                            textRun({ text: " bulan "}), textRun({ text: bulan, bold: true }),
+                            textRun({ text: " tahun "}), textRun({ text: tahun, bold: true }),
+                            textRun({ text: ", kami yang bertandatangan dibawah ini : "})
                         ],
                         heading: HeadingLevel.HEADING_6
                     }),
@@ -349,7 +349,7 @@ export const createGigBASTDoc = (
                     new Paragraph(""),                    
                     new Paragraph({
                         children:[
-                            textRun(`Berdasarkan Surat Perintah Kerja Nomor : ${spkNo}, Tanggal ${todateStart} ${bulanStart} ${yearStart} Pekerjaan Pengadaan Bantuan Atensi Alat Bantu Di Kota Tangerang Pada Sentra ‘’Mulya Jaya’’ Di Jakarta PIHAK PERTAMA dan PIHAK KEDUA telah setuju dan sepakat bahwa untuk :`),                            
+                            textRun({ text: `Berdasarkan Surat Perintah Kerja Nomor : ${spkNo}, Tanggal ${todateStart} ${bulanStart} ${yearStart} Pekerjaan Pengadaan Bantuan Atensi Alat Bantu Di Kota Tangerang Pada Sentra ‘’Mulya Jaya’’ Di Jakarta PIHAK PERTAMA dan PIHAK KEDUA telah setuju dan sepakat bahwa untuk :` }),                            
                         ],
                         heading: HeadingLevel.HEADING_6
                     }),

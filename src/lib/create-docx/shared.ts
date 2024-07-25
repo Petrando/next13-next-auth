@@ -1,5 +1,7 @@
 import { ICentre, IVendor } from "@/types"
-import { Paragraph, ImageRun, HorizontalPositionRelativeFrom, HorizontalPositionAlign, VerticalPositionRelativeFrom, VerticalPositionAlign, TextWrappingType, TextWrappingSide, TextRun, HeadingLevel, Table, TableBorders, TableCell, TableRow, WidthType, AlignmentType } from "docx"
+import { Paragraph, ImageRun, HorizontalPositionRelativeFrom, HorizontalPositionAlign, VerticalPositionRelativeFrom, VerticalPositionAlign, 
+    TextWrappingType, TextWrappingSide, TextRun, HeadingLevel, Table, TableBorders, TableCell, TableRow, WidthType, AlignmentType,
+        UnderlineType } from "docx"
 
 type tStyle = "Heading1" | "Heading2" | "Heading3" | "Heading4" | "Heading5" | "Heading6" | "Title" | undefined
 
@@ -275,11 +277,20 @@ export const vendorHeader = ( logo: string, vendor: IVendor, style: tStyle = und
     )
 }
 
-export const textRun = (text:string, bold:boolean = false, lineBreak: number = 0, 
-    italics: boolean = false) => {
+type tTextRunParam = {
+    text: string;
+    bold?: boolean;
+    italics?: boolean;
+    underline?: any;//{ type?: typeof UnderlineType, color?: string };
+    lineBreak?: number;
+}
+
+export const textRun = ({text, bold = false, lineBreak = 0, 
+    italics = false, underline = {}}: tTextRunParam) => {
     return (
         new TextRun({
-            text, bold, break: lineBreak, italics
+            text, bold, break: lineBreak, italics, 
+            underline
         })
     )
 }
@@ -301,7 +312,7 @@ export const tableAsContent = (param1: tTableContentParam, param2: tTableContent
         return (
             new Paragraph({
                 children:[
-                    textRun(content, bold, 0, italics)
+                    textRun({ text: content, bold, lineBreak: 0, italics })
                 ], 
                 heading: style,
             })
@@ -409,7 +420,7 @@ export const fifty2Table = (param1: tTableContentParam, param2: tTableContentPar
         return (
             new Paragraph({
                 children:[
-                    textRun(content, bold)
+                    textRun({text: content, bold})
                 ], 
                 heading: style,
                 alignment: AlignmentType.CENTER

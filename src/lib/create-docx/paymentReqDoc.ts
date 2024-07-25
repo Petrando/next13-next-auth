@@ -187,17 +187,17 @@ export const createPaymentReqDoc = (
                     ),
                     new Paragraph({
                         children:[
-                            textRun("Kepada Yth :", false, 1),
-                            textRun(`Pejabat Pembuat Komitment Sentra "${centre.name}"`, true, 1),
-                            textRun('di', false, 1),
-                            textRun(`   ${centreAddress}`, false, 1, true),
+                            textRun({ text: "Kepada Yth :", lineBreak: 1}),
+                            textRun({ text: `Pejabat Pembuat Komitment Sentra "${centre.name}"`, bold: true, lineBreak: 1 }),
+                            textRun({ text: 'di', lineBreak: 1 }),
+                            textRun({ text: `   ${centreAddress}`, lineBreak: 1, italics: true }),
                             //first paragraph
-                            textRun('Sehubungan dengan telah selesainya ', false, 2),
-                            textRun(`${purpose} `, true),
-                            textRun(`sesuai SPK nomor ${spk.spkNum} tanggal ${spkTodate} ${spkBulan} ${spkYear} Bersama kami dari Rekanan Pelaksana memohon agar diberikan pembayaran pekerjaan tersebut sebesar `),
-                            textRun(`${displayIDR(payment.value)} (${payment.inWords}).`, true),
+                            textRun({ text: 'Sehubungan dengan telah selesainya ', lineBreak: 2 }),
+                            textRun({ text: `${purpose} `, bold: true }),
+                            textRun({ text: `sesuai SPK nomor ${spk.spkNum} tanggal ${spkTodate} ${spkBulan} ${spkYear} Bersama kami dari Rekanan Pelaksana memohon agar diberikan pembayaran pekerjaan tersebut sebesar ` }),
+                            textRun({ text: `${displayIDR(payment.value)} (${payment.inWords}).`, bold: true }),
                             //2nd paragraph
-                            textRun(`Demikian Surat Permohonan Pembayaran ini kami sampaikan, atas perhatian dan kerjasamanya kami ucapkan terima kasih.`, false, 2)
+                            textRun({ text: `Demikian Surat Permohonan Pembayaran ini kami sampaikan, atas perhatian dan kerjasamanya kami ucapkan terima kasih.`, lineBreak: 2 })
                         ],
                         heading: HeadingLevel.HEADING_3
                     }),
@@ -220,7 +220,7 @@ export const createPaymentReqDoc = (
                     ),
                     new Paragraph({
                         children:[
-                            textRun("", false, 3)
+                            textRun({ text: "", lineBreak: 3})
                         ]
                     }),                    
                     fifty2Table(
