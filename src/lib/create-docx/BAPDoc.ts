@@ -423,7 +423,8 @@ export const createBAPDoc = (
                                 [
                                     new Paragraph({
                                         children: [
-                                            textRun("Sesuai Surat Perintah Kerja Pengadaan Barang di Panti tentang cara pembayaran, maka PIHAK KEDUA berhak menerima pembayaran langsung dari PIHAK PERTAMA dengan rincian sebagai berikut :")
+                                            textRun(
+                                                {text: "Sesuai Surat Perintah Kerja Pengadaan Barang di Panti tentang cara pembayaran, maka PIHAK KEDUA berhak menerima pembayaran langsung dari PIHAK PERTAMA dengan rincian sebagai berikut :"})
                                         ],
                                         heading: HeadingLevel.HEADING_3,
                                     }),
@@ -432,7 +433,7 @@ export const createBAPDoc = (
                                         [
                                             new Paragraph({
                                                 children: [
-                                                    textRun("Perhitungan Pembayaran")
+                                                    textRun({text: "Perhitungan Pembayaran"})
                                                 ],
                                                 heading: HeadingLevel.HEADING_3,
                                             }),
@@ -474,7 +475,7 @@ export const createBAPDoc = (
                                                 [
                                                     new Paragraph({
                                                         children: [
-                                                            textRun("Potongan Pembayaran")
+                                                            textRun({text: "Potongan Pembayaran"})
                                                         ],
                                                         heading: HeadingLevel.HEADING_3,
                                                     }),
@@ -547,7 +548,7 @@ export const createBAPDoc = (
                                         [
                                             new Paragraph({
                                                 children: [
-                                                    textRun("Rekapitulasi Pembayaran Kontrak :")
+                                                    textRun({text: "Rekapitulasi Pembayaran Kontrak :"})
                                                 ],
                                                 heading: HeadingLevel.HEADING_3,
                                             })
