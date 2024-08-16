@@ -19,10 +19,10 @@ export type TItemForm = {
 
 export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
     const [ bapDate, setBapDate ] = useState(createDateString())    
-    const [ bapNo, setBapNo ] = useState("091/4.11/PL.01.02/BAP/3/2024")
-    const [ dipaNo, setDipaNo ] = useState("SP DIPA- 027.04.2.690564/2024 ")
+    const [ bapNo, setBapNo ] = useState("")
+    const [ dipaNo, setDipaNo ] = useState("")
     const [ dipaDate, setDipaDate] = useState(createDateString())
-    const [ spkNo, setSpkNo ] = useState("080/4.11/PL.01.02/SPK/3/2024")
+    const [ spkNo, setSpkNo ] = useState("")
        
     const [ picData, setPicData ] = useState("")
 
@@ -32,28 +32,28 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
     const [ operators, setOperators ] = useState<IOperator[]>([])
     const [ decidingOperatorNip, setDecidingOperator] = useState<string>("");            
 
-    const [ gig, setGig ] = useState("Pengadaan Bantuan Atensi Alat Bantu Di Kota Tangerang Tahun Anggaran 2024")
-    const [ program, setProgram ] = useState("Perlindungan Sosial")
-    const [ satKer, setSatKer ] = useState("Sentra Mulya Jaya Jakarta")
-    const [ instansi, setInstansi ] = useState("Kementerian Sosial RI")
+    const [ gig, setGig ] = useState("")
+    const [ program, setProgram ] = useState("")
+    const [ satKer, setSatKer ] = useState("")
+    const [ instansi, setInstansi ] = useState("")
 
     const [ contractValue, setContractValue ] = useState({
-        value: 147370000, inWords: "Seratus Empat Puluh Tujuh Juta Tiga Ratus Tujuh Puluh Ribu Rupiah"
+        value: 0, inWords: ""
     })//nilai kontrak
-    const [ paymentUntilNow, setPaymentUntilNow ] = useState(147370000)//Pembayaran s/d BAP ini
+    const [ paymentUntilNow, setPaymentUntilNow ] = useState(0)//147370000//Pembayaran s/d BAP ini
     const [ valueUntilLastGig, setValueUntilLastGig ] = useState(0) //Nilai Pekerjaan s/d BAP yang lalu
-    const [ currentPayment, setCurrentPayment ] = useState(147370000) //Pembayaran BAP ini
+    const [ currentPayment, setCurrentPayment ] = useState(0)//147370000 //Pembayaran BAP ini
     const [ discounts, setDiscounts ] = useState({ // Potongan Pembayaran
         retention: 0, // Uang Jaminan
         refund: 0 // Pengembalian Uang Muka
     })
-    const [ currentNetPayment, setCurrentNetPayment ] = useState(124562568) // Pembayaran Fisik BAP ini
-    const [ taxes, setTaxes ] = useState(13910541) // PPN 11%
+    const [ currentNetPayment, setCurrentNetPayment ] = useState(0)//124562568 // Pembayaran Fisik BAP ini
+    const [ taxes, setTaxes ] = useState(0)//13910541 // PPN 11%
 
-    const [ vendorBank, setVendorBank ] = useState("Bank Mandiri")
-    const [ vendorAccNum, setAccNum ] = useState("1220012237791")
+    const [ vendorBank, setVendorBank ] = useState("")
+    const [ vendorAccNum, setAccNum ] = useState("")
 
-    const [ location, setLocation ] = useState("Dinas Sosial Kota Tangerang")
+    const [ location, setLocation ] = useState("")
     
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -155,22 +155,22 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                     ))}
                             </Select>
                             <Select                        
-                                    label="Pejabat Pembuat Komitmen"
-                                    variant="bordered"
-                                    placeholder="Pilih Pejabat"
-                                    selectedKeys={[decidingOperatorNip]}
-                                    className="basis-full md:basis-1/2"
-                                    onChange={
-                                        (e:ChangeEvent<HTMLSelectElement>)=>{
-                                            setDecidingOperator(e.target.value)
-                                    }}
-                                >
-                                    {operators.map((operator) => (
-                                        <SelectItem key={operator.NIP}>
-                                            {operator.name}
-                                        </SelectItem>
-                                        ))}
-                                </Select>                                                    
+                                label="Pejabat Pembuat Komitmen"
+                                variant="bordered"
+                                placeholder="Pilih Pejabat"
+                                selectedKeys={[decidingOperatorNip]}
+                                className="basis-full md:basis-1/2"
+                                onChange={
+                                    (e:ChangeEvent<HTMLSelectElement>)=>{
+                                        setDecidingOperator(e.target.value)
+                                }}
+                            >
+                                {operators.map((operator) => (
+                                    <SelectItem key={operator.NIP}>
+                                        {operator.name}
+                                    </SelectItem>
+                                    ))}
+                            </Select>                                                    
                             <Divider className="my-2"/>                                                                                        
                                 <Select                        
                                     label="Vendor"
@@ -200,7 +200,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                             <Divider className="my-2" />
                                 <Input
                                     label="Pekerjaaan"
-                                    placeholder="Bantuan Atensi Alat Bantu Di Kota Tangerang"                        
+                                    placeholder="Contoh: Pengadaan Bantuan Atensi Alat Bantu Di Kota Tangerang Tahun Anggaran 2024"                        
                                     variant="bordered"
                                     size="sm"
                                     className="basis-full md:basis-1/2"
@@ -209,7 +209,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                 />
                                 <Input
                                     label="Lokasi"
-                                    placeholder="Dinas Sosial Kota Tangerang"                        
+                                    placeholder="Contoh : Dinas Sosial Kota Tangerang"                        
                                     variant="bordered"
                                     size="sm"
                                     className="basis-full md:basis-1/2"
@@ -218,7 +218,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                 />
                             <Divider className="my-2" />
                                 <Input
-                                    placeholder={`Contoh : "080/4.11/PL.01.02/SPK/3/2024"`}
+                                    placeholder={`Contoh : 091/4.11/PL.01.02/BAP/3/2024`}
                                     label="Nomor BAP"                        
                                     variant="bordered"
                                     size="sm"
@@ -227,7 +227,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                     onChange={(e)=>{setBapNo(e.target.value)}}
                                 />
                                 <Input
-                                    placeholder={`Contoh : "080/4.11/PL.01.02/SPK/3/2024"`}
+                                    placeholder={`Contoh : 080/4.11/PL.01.02/SPK/3/2024`}
                                     label="Nomor SPK"                        
                                     variant="bordered"
                                     size="sm"
@@ -236,7 +236,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                     onChange={(e)=>{setSpkNo(e.target.value)}}
                                 />
                                 <Input
-                                    placeholder={`Contoh : "591/BAST/4.11/5/2024"`}
+                                    placeholder={`Contoh : SP DIPA- 027.04.2.690564/2024`}
                                     label="No DIPA"                        
                                     variant="bordered"
                                     size="sm"
@@ -250,7 +250,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                 />                                    
                             <Divider className="my-2" />                                             
                                 <Input
-                                    placeholder={``}
+                                    placeholder={`Contoh: Perlindungan Sosial`}
                                     label="Program"                        
                                     variant="bordered"
                                     size="sm"
@@ -259,7 +259,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                     onChange={(e)=>{setProgram(e.target.value)}}
                                 />
                                 <Input
-                                    placeholder={``}
+                                    placeholder={`Contoh: Sentra Mulya Jaya Jakarta`}
                                     label="Unit Kerja"                        
                                     variant="bordered"
                                     size="sm"
@@ -268,7 +268,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                     onChange={(e)=>{setSatKer(e.target.value)}}
                                 />
                                 <Input
-                                    placeholder={``}
+                                    placeholder={`Contoh: Kementerian Sosial RI`}
                                     label="Instansi"                        
                                     variant="bordered"
                                     size="sm"
@@ -288,12 +288,12 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                     description={displayIDR(contractValue.value)}
                                 />
                                 <Input
-                                    placeholder={``}
+                                    placeholder={`Contoh: Seratus Empat Puluh Tujuh Juta Tiga Ratus Tujuh Puluh Ribu Rupiah`}
                                     label="Nilai Kontrak"                        
                                     variant="bordered"
                                     size="sm"
                                     className="basis-full md:basis-1/2"
-                                    value={contractValue.inWords}                                    
+                                    value={contractValue.inWords}                                                                        
                                     onChange={(e)=>{setContractValue({...contractValue, inWords: e.target.value})}}
                                     description={`Nilai dari angka ${displayIDR(contractValue.value)}`}
                                 />
@@ -369,7 +369,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                 />
                                 <Input                                    
                                     label="Bank Vendor"
-                                    placeholder="Bank Mandiri"                        
+                                    placeholder="Contoh : Bank Mandiri"                        
                                     variant="bordered"
                                     size="sm"
                                     className="basis-full md:basis-1/3"
@@ -377,7 +377,7 @@ export const PrintBAP:FC<TItemForm> = ({items, show, hideForm }) => {
                                     onChange={(e)=>{setVendorBank(vendorBank)}}
                                 />
                                 <Input
-                                    placeholder={``}
+                                    placeholder={`Contoh : 1220012237791`}
                                     label="No Rekening"                        
                                     variant="bordered"
                                     size="sm"
