@@ -19,7 +19,7 @@ const createAttachment1 = (
     const { todate, bulan, year } = localizeDate(date)
 
     const { items } = recipient    
-    const { name: itemName, unit } = items[0]                     
+    const { name: itemName, unit, amount } = items[0]                         
     
     const attachmentDoc = new Document({
         styles: {
@@ -181,7 +181,7 @@ const createAttachment1 = (
                                             new Paragraph({
                                                 children:[
                                                     new TextRun({
-                                                        text: unit + ""
+                                                        text: amount + ""
                                                     })
                                                 ],
                                                 heading: HeadingLevel.HEADING_6,
@@ -199,7 +199,7 @@ const createAttachment1 = (
                                             new Paragraph({
                                                 children:[
                                                     new TextRun({
-                                                        text: "Unit"
+                                                        text: unit
                                                     })
                                                 ],
                                                 heading: HeadingLevel.HEADING_6,
