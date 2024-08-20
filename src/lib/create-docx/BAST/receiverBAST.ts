@@ -3,9 +3,9 @@ import { Document, Paragraph, TextRun, Table, TableBorders, TableCell,
     UnderlineType,
     AlignmentType,
     LevelFormat,
-    convertInchesToTwip} from "docx";
+    convertInchesToTwip } from "docx";
 import { centreHeader as header } from "../shared";
-import { displayIDR, totalPrice, localizeDate } from "../../functions";
+import { displayIDR, totalPrice, localizeDate, rtRwFormatter } from "../../functions";
 import { emptyOperator } from "@/variables-and-constants";
 import { PersonRecipientWItems, IRABCharityOrg,  IOperator, ICentre, OrderedItem } from "@/types";
 import { CalendarDate } from "@internationalized/date";
@@ -706,8 +706,8 @@ export const createReceiverBASTDocs = (
     } = recType === "person"?
         destructurePersonRecipient(recipient as PersonRecipientWItems):
             destructureOrgRecipient(recipient as IRABCharityOrg)
-
-    const recipientAddress = street + ", " + kelurahan + "-" + kecamatan + "-" + kabupaten    
+        
+    const recipientAddress = street + ", " + rtRwFormatter(rtRw) + " " + kelurahan + "-" + kecamatan + "-" + kabupaten    
     const price = totalPrice(items)
 
     const { name:officerName, NIP, rank } = decidingOperator 
@@ -716,10 +716,10 @@ export const createReceiverBASTDocs = (
     const noFieldOperator = fieldOperatorName === "" && fieldOperatorNip === ""    
 
     const { name: centreName, address } = centre
-    const {street:centreStreet, kabupaten:centreKab, kelurahan: centreKel, kecamatan: centreKec, postCode} = 
-        address
+    const {street:centreStreet, rtRw: centreRtRw, kabupaten:centreKab, kelurahan: centreKel, kecamatan: centreKec, postCode} = 
+        address    
 
-    const centreAddress = centreStreet + ", "  + centreKel + "-" + centreKec + "-" + centreKab
+    const centreAddress = centreStreet + ", " + rtRwFormatter(centreRtRw) + " "  + centreKel + "-" + centreKec + "-" + centreKab
     
     const BASTdoc = new Document({
         styles: {

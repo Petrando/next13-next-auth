@@ -2,6 +2,16 @@ import { CalendarDate, parseDate } from "@internationalized/date";
 import { OrderedItem, Item, PersonRecipientWItems } from "@/types";
 import { weekDays, localizedDates, localizedMonths, localizedYears } from "@/variables-and-constants";
 
+export const rtRwFormatter = (rtRw: string) => {
+    if(rtRw === ""){
+        return ""
+    }
+    const slashIndex = rtRw.indexOf("/")
+    const rt = rtRw.substring(0, slashIndex)
+    const rw = rtRw.substring(slashIndex + 1)
+
+    return `RT.${rt} RW.${rw}`
+}
 export const localizeDate = (date: CalendarDate) => {
     type dayIndexes = 0 | 1 | 2 | 3 | 4| 5 | 6
     type dateNums = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 
