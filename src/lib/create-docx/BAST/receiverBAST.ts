@@ -702,12 +702,13 @@ export const createReceiverBASTDocs = (
     
     const recType = recipientType(recipient)
     const {
-        name, nik, street, rtRw, kecamatan, kelurahan, kabupaten, items
+        name, nik, street, rtRw, kecamatan, kelurahan, kabupaten, propinsi, items
     } = recType === "person"?
         destructurePersonRecipient(recipient as PersonRecipientWItems):
             destructureOrgRecipient(recipient as IRABCharityOrg)
         
-    const recipientAddress = street + ", " + rtRwFormatter(rtRw) + " " + kelurahan + "-" + kecamatan + "-" + kabupaten    
+    const recipientAddress = street + ", " + rtRwFormatter(rtRw) + " " + kelurahan + "-" + kecamatan + "-" + kabupaten 
+        + `${propinsi===''?'':`- ${propinsi}`}`     
     const price = totalPrice(items)
 
     const { name:officerName, NIP, rank } = decidingOperator 
@@ -716,11 +717,12 @@ export const createReceiverBASTDocs = (
     const noFieldOperator = fieldOperatorName === "" && fieldOperatorNip === ""    
 
     const { name: centreName, address } = centre
-    const {street:centreStreet, rtRw: centreRtRw, kabupaten:centreKab, kelurahan: centreKel, kecamatan: centreKec, postCode} = 
+    const {street:centreStreet, rtRw: centreRtRw, kabupaten:centreKab, kelurahan: centreKel, kecamatan: centreKec, 
+        propinsi: centrePropinsi, postCode} = 
         address    
 
     const centreAddress = centreStreet + ", " + rtRwFormatter(centreRtRw) + " "  + centreKel + "-" + centreKec + "-" + centreKab
-    
+        + `${centrePropinsi===''?'':`- ${centrePropinsi}`}`     
     const BASTdoc = new Document({
         styles: {
             default: {
@@ -1286,19 +1288,19 @@ const recipientType = (recipient:PersonRecipientWItems | IRABCharityOrg) => {
 }
 
 const destructurePersonRecipient = (recipient: PersonRecipientWItems) => {
-    const {name, ids:{nik}, address:{street, rtRw, kabupaten, kecamatan, kelurahan},
+    const {name, ids:{nik}, address:{street, rtRw, kabupaten, kecamatan, kelurahan, propinsi},
         items
     } = recipient
 
     return {
-        name, nik, street, rtRw, kecamatan, kelurahan, kabupaten, items
+        name, nik, street, rtRw, kecamatan, kelurahan, kabupaten, items, propinsi
     }
 }
 
 const destructureOrgRecipient = (recipient:IRABCharityOrg) => {
     const {recipient:charityOrg, items} = recipient
     const {address, name} = charityOrg
-    const { street, rtRw, kecamatan, kelurahan, kabupaten } = address
+    const { street, rtRw, kecamatan, kelurahan, kabupaten, propinsi } = address
 
-    return { name, items, street, rtRw, kecamatan, kelurahan, kabupaten, nik:"" }
+    return { name, items, street, rtRw, kecamatan, kelurahan, kabupaten, propinsi, nik:"" }
 }
