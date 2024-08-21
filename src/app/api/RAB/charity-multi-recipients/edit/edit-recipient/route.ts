@@ -12,9 +12,7 @@ in the future, consider to modify to change other recipient's field as well
 export async function PATCH(req:NextRequest) {
     const { RABId, recipientIdx, recipientNik, address } = await req.json();
     
-    const client = await clientPromise
-    
-    
+    const client = await clientPromise        
 
     const session = client.startSession()  
         
@@ -23,7 +21,7 @@ export async function PATCH(req:NextRequest) {
         const db = client.db("charity-org")        
         const recipientsColl = db.collection("recipients")        
         const RABColl = db.collection("RAB")
-
+        
         const result1 = await RABColl.updateOne(
             { _id: new ObjectId(RABId) },
             { $set: { [`recipients.${recipientIdx}.address`]: address } }

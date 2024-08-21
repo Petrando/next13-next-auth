@@ -1,14 +1,21 @@
 import { CalendarDate, parseDate } from "@internationalized/date";
-import { OrderedItem, Item, PersonRecipientWItems } from "@/types";
+import { OrderedItem, Item, PersonRecipientWItems, Address } from "@/types";
 import { weekDays, localizedDates, localizedMonths, localizedYears } from "@/variables-and-constants";
+
+export const getRtRw = (rtRw: string) => {
+    const slashIndex = rtRw.indexOf("/")
+    const rt = rtRw.substring(0, slashIndex)
+    const rw = rtRw.substring(slashIndex + 1)
+
+    return { rt, rw }
+}
 
 export const rtRwFormatter = (rtRw: string) => {
     if(rtRw === ""){
         return ""
     }
-    const slashIndex = rtRw.indexOf("/")
-    const rt = rtRw.substring(0, slashIndex)
-    const rw = rtRw.substring(slashIndex + 1)
+    
+    const { rt, rw } = getRtRw(rtRw)
 
     return `RT.${rt} RW.${rw}`
 }
@@ -57,6 +64,19 @@ export const totalPrice = (items:OrderedItem[]) => {
     return items.reduce((acc: number, curr: OrderedItem) => {
         return acc + (curr.amount * curr.price)
     }, 0)
+}
+
+export const addressChanged = ( address1: Address, address2: Address ) => {
+    const { street, rtRw, kelurahan, kecamatan, kabupaten, propinsi, postCode } = address1
+    const { street: street2, rtRw: rtRw2, kelurahan: kelurahan2, kecamatan: kecamatan2, 
+        kabupaten: kabupaten2, propinsi: propinsi2, postCode: postCode2 } = address2
+
+    if(street === street2 && rtRw === rtRw2 && kelurahan === kelurahan2 && kecamatan === kecamatan2 
+        && kabupaten === kabupaten2 && propinsi === propinsi2){
+        return false
+    }
+
+    return true
 }
 
 export const personDataChanged = (person1:PersonRecipientWItems, person2:PersonRecipientWItems, checkItem = false) => {

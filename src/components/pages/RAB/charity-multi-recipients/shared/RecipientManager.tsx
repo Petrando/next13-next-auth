@@ -116,7 +116,7 @@ export const RecipientTable:FC<IRecipientTable> = ({ recipients, setRecipients, 
                                         </TableCell>
                                         <TableCell>
                                             <Skeleton isLoaded={fetchState === ""}>                                        
-                                            {address.street}, {address.rtRw}, {address.kelurahan}, {address.kecamatan}, {address.kabupaten}                                        
+                                            {address.street}, {address.rtRw}, {address.kelurahan}, {address.kecamatan}, {address.kabupaten}, {address.propinsi}                                        
                                             </Skeleton> 
                                         </TableCell>
                                         <TableCell>

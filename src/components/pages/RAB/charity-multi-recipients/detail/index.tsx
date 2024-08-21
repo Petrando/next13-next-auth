@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button, Table, TableHeader, TableBody, TableRow, TableColumn, TableCell,    
-        DatePicker, Input,  Skeleton, Tabs, Tab,
+        DatePicker, Input,  Skeleton, Tabs, Tab, Card, CardBody, CardFooter,
             Link
  } from "@nextui-org/react"
 import { AddRecipients } from './AddRecipients';
@@ -17,6 +17,8 @@ import { SelectBAST } from '../../shared/SelectBASTButton';
 import { PrintBAST as PrintReceiverBAST } from './print-BAST-dialog/BASTReceiverDialog';
 import { PrintBAST as PrintGigBAST } from '../../shared/PrintDocDialogs/BASTGigDialog';
 import { PrintDocs } from '../../shared/PrintDocDialogs';
+import { EditRecipientDialog } from './EditRecipientDialog';
+import { EditBtn } from '@/components/shared/Buttons';
 import { createDateString } from '@/lib/functions';
 import { emptyRAB, emptyPerson } from '@/variables-and-constants';
 import { IRABMultiPerson, PersonRecipientWItems, OrderedItem } from '@/types';
@@ -26,6 +28,8 @@ export const RABDetail = () => {
 
     const [RAB, setRAB] = useState<IRABMultiPerson>(emptyRAB)
     const [fetchState, setFetchState] = useState("loading")
+
+    const [editRecipientIdx, setEditRecIdx] = useState(-1)
 
     const [ printingRecipient, setPrintingRecipient ] = useState(emptyPerson)
     const [ printWorkingBast, setPrintWorkingBast ] = useState(false)
@@ -60,6 +64,7 @@ export const RABDetail = () => {
         }
         finally{
             setFetchState("complete")
+            setEditRecIdx(-1)
         } 
     }
     
@@ -186,8 +191,15 @@ export const RABDetail = () => {
                                             <TableCell>                                        
                                                 {d.name}                                        
                                             </TableCell>
-                                            <TableCell>                                        
-                                                {d.address.street}, {d.address.rtRw}, {d.address.kelurahan}, {d.address.kecamatan}, {d.address.kabupaten}                                        
+                                            <TableCell>
+                                                <Card>
+                                                    <CardBody>
+                                                        {d.address.street}, {d.address.rtRw}, {d.address.kelurahan}, {d.address.kecamatan}, {d.address.kabupaten}, {d.address.propinsi}                                        
+                                                    </CardBody>
+                                                    <CardFooter className='flex items-center justify-end'>
+                                                        <EditBtn onPress={()=>{ setEditRecIdx(i)} } />
+                                                    </CardFooter>
+                                                </Card>                                        
                                             </TableCell>
                                             <TableCell>
                                                 {d.ids.nik}                                        
@@ -251,6 +263,22 @@ export const RABDetail = () => {
             {
                 printDocs &&
                 <PrintDocs RAB={RAB} show={printDocs} hideForm={()=>{setPrintDocs(false)}} />
+            }
+            {
+                editRecipientIdx > -1 &&
+                <EditRecipientDialog 
+                    idx={editRecipientIdx} rabId={RAB._id} 
+                    recipient={recipients[editRecipientIdx]}
+                    show={editRecipientIdx > -1}                    
+                    close={(refetch)=>{
+                        if(refetch){
+                            getRAB()
+                        }else{
+                            setEditRecIdx(-1)
+                        }
+                        
+                    }}
+                />
             }
         </div>
     )
