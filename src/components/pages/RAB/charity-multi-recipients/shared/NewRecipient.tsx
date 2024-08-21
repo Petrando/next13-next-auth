@@ -337,7 +337,7 @@ export const NewRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, nik
                         }}
                         isDisabled={
                             (nikExist.exist || !nikExist.checked) || 
-                                fetchState === "checking NIK"}
+                                fetchState === "checking NIK" || !requiredFilled}
                     >
                         Tambahkan
                     </Button>

@@ -356,7 +356,7 @@ export const EditRecipientForm:FC<TRecipientForm> = ({show, hideForm, submit, ed
                         isDisabled={
                             isNewRecipient && 
                                 ((nikExist.exist || !nikExist.checked) || 
-                                fetchState === "checking NIK")
+                                fetchState === "checking NIK" || !requiredFilled)
                             }
                     >
                         Simpan
