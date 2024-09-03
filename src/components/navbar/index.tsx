@@ -21,7 +21,7 @@ export function Navigation() {
         <Navbar maxWidth="full">
             <NavbarBrand>
                 {/*<AcmeLogo />*/}
-                <p className="font-bold text-inherit">Kreativitas Muda Nusantara</p>
+                <p className="font-bold text-inherit">Medical Infosys</p>
             </NavbarBrand>
             <NavbarContent className="hidden sm:flex gap-4" justify="end">
                 <NavbarItem isActive>
