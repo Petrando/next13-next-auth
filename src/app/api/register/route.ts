@@ -10,26 +10,26 @@ export async function POST(req:NextRequest) {
     const session = client.startSession();
     try {
         session.startTransaction()
-        const users = client.db("charity-org").collection("users");
+        const users = client.db("medical-study").collection("users");
         const user = await users.findOne({ email })
         
         if(user){
-            throw `Email ${email} sudah terdaftar`
+            throw `Email ${email} already used`
         }
 
         const userWithName = await users.findOne({ name })
         if(userWithName){
-            throw `Nama user ${user} sudah terdaftar.`
+            throw `Username ${user} already exists.`
         }
         
-        await users.insertOne({ name, email, password: hashedPassword });        
+        await users.insertOne({ name, email, password: hashedPassword, role: 0 });        
         await session.commitTransaction()
         
-        return NextResponse.json({ message: "Pengguna berhasil terdaftar." }, { status: 201 });
+        return NextResponse.json({ message: "User registered." }, { status: 201 });
     } catch (error) {
         await session.abortTransaction()        
         return NextResponse.json(
-            { message: error === `Email ${email} sudah terdaftar`?error:"Kesalahan sewaktu mendaftar." },
+            { message: error === `Email ${email} already used`?error:"Error when registering." },
             { status: 500 }
         );
     }finally {

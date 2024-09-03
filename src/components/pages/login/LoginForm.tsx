@@ -1,6 +1,5 @@
 "use client"
 
-import { FormEvent } from "react";
 import { Card, Input, Button, CardHeader, CardBody, CardFooter, Chip  } from "@nextui-org/react";
 //import Link from "next/link";
 import { useState } from "react";
@@ -53,14 +52,12 @@ export const LoginForm = () => {
                         value={name}
                         onValueChange={setName}
                         type="text"
-                        placeholder="nama login"
                         disabled={fetchState === "logging"}                        
                     />
                     <Input  
                         value={password}
                         onValueChange={setPassword}
                         type="password"
-                        placeholder="password"
                         disabled={fetchState === "logging"}                        
                     />
                 </form>
