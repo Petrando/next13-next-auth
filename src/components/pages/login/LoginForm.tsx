@@ -34,7 +34,7 @@ export const LoginForm = () => {
             }
 
             console.log(res)
-            router.replace("RAB");
+            router.replace("main");
         } catch (error) {
             console.log(error);
         } finally {

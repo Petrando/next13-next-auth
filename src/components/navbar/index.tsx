@@ -26,9 +26,10 @@ export function Navigation() {
             <NavbarContent className="hidden sm:flex gap-4" justify="end">
                 <NavbarItem isActive>
                     <Link href="/RAB" aria-current="page">
-                        RAB
+                        Content
                     </Link>
                 </NavbarItem>
+                {/*
                 <NavbarItem>
                     <Link color="foreground" href="#">
                         Penerima
@@ -40,6 +41,7 @@ export function Navigation() {
                         Bantuan
                     </Link>
                 </NavbarItem>
+                */}
             </NavbarContent>
             <NavbarContent justify="end">
                 {
