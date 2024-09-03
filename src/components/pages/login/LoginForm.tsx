@@ -52,12 +52,14 @@ export const LoginForm = () => {
                         value={name}
                         onValueChange={setName}
                         type="text"
+                        placeholder="username"
                         disabled={fetchState === "logging"}                        
                     />
                     <Input  
                         value={password}
                         onValueChange={setPassword}
                         type="password"
+                        placeholder="password"
                         disabled={fetchState === "logging"}                        
                     />
                 </form>
